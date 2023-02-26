@@ -36,6 +36,7 @@ axum-prometheus = "~0"
 sea-orm = { version= "~0", features = ["sqlx-postgres", "runtime-tokio-native-tls", "mock"] }
 entity = { path = "entity" }
 migration = { path = "migration" }
+cqrs-es = "0.4.5"
 
 [workspace]
 members = [".", "entity", "migration"]

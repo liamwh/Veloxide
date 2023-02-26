@@ -14,8 +14,10 @@ use axum::{
     Router, Server,
 };
 use axum_prometheus::PrometheusMetricLayer;
+use cqrs_es::mem_store::MemStore;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
+use velox_todo_api::domain::Task;
 
 use crate::domain::DynTodoRepo;
 use crate::infrastructure::*;
@@ -41,6 +43,9 @@ async fn main() -> Result<()> {
             tracing::error!("error setting tracing subscriber: {}", err);
         }
     };
+
+    let event_store = MemStore::<Task>::default();
+
     let configuration = configuration::load_app_configuration().await?;
     let pool = configuration::get_db_connection_sqlx(&configuration).await?;
     let repository = match configuration.repository {
