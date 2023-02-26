@@ -118,9 +118,9 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 - [ ] Add "Mark to-do as done" endpoint with tonic (gRPC)
 - [ ] Implement CQRS
 - [ ] Add a clear aggregate root, entity and value object example.
-- [ ] Create a cool logo!
 - [ ] Use CFG to enable/disable features (e.g. database selection, tracing, metrics)
 - [ ] If we keep SeaORM, consider [Seaography](https://www.sea-ql.org/Seaography/) for GraphQL
+- [ ] Create a cool logo!
 
 ### Done
 
