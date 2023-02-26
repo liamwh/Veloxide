@@ -1,6 +1,5 @@
-<!-- markdownlint-disable MD033 -->
 # Velox: A template for building web APIs in Rust
-
+<!-- markdownlint-disable MD033 -->
 ---
 <p align="center">
     <a href="https://github.com/liamwh/Velox"><img src="./docs/.assets/under-construction.jpg" alt="Velox"
