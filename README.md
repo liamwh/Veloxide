@@ -55,11 +55,12 @@ Velox implements the following design patterns to support maintainability and fl
 | Tracing | [Tracing](https://docs.rs/tracing/latest/tracing/) & [Tracing OpenTelemetry](https://docs.rs/tracing-otracing_opentelemetry/) & [OpenTelemetry-Jaeger](https://docs.rs/opentelemetry-jaeger/latest/opentelemetry_jaeger/) |
 | Metrics | [Axum Prometheus](https://docs.rs/axum-prometheus/latest/axum_prometheus/) |
 | Serializing & Deserializing | [Serde](https://docs.rs/serde/latest/serde/index.html) ([yaml](https://docs.rs/serde_yaml/latest/serde_yaml/) & [json](https://docs.rs/serde_json/latest/serde_json/)) |
-| Async Database Driver (SQL)* | [Sqlx](https://docs.rs/sqlx/latest/sqlx/) |
+| Async Database Driver (SQL)* | [sqlx](https://docs.rs/sqlx/latest/sqlx/) |
 | Async Object Relational Mapping* | [SeaORM](https://docs.rs/sea-orm/latest/sea_orm/) |
 | Mocking | [mockall](https://docs.rs/mockall/latest/mockall/) |
 | Error Handling | [thiserror](https://docs.rs/thiserror/latest/thiserror/) |
 | Behavior Driven Development / Cucumber Testing | [Cucumber](https://docs.rs/cucumber/latest/cucumber/) |
+| Command Query Responsibility Segregation | [cqrs-es](https://docs.rs/cqrs-es/latest/cqrs_es/) |
 | Loading env variables & .env file | [Dotenvy](https://docs.rs/dotenvy/latest/dotenvy/) |
 | Improved assertion difference identification | [Pretty Assertions](https://docs.rs/pretty_assertions/latest/pretty_assertions/) |
 
@@ -98,9 +99,10 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 
 ### In-progress
 
-- [ ] Make todo done field an enum instead of bool for demonstrative purposes
+- [ ] Make todo "done" field an enum instead of bool for demonstrative purposes
+- [ ] Implement CQRS and the concepts of aggregates, entities, domain events and commands.
 - [ ] Add a project model with a has-many relationship to the todo model
-- [ ] Consider adding [SeaORM](https://www.sea-ql.org/SeaORM) for async Object Relational Mapping instead of writing raw SQL
+- [ ] Consider adding an ORM such as [SeaORM](https://www.sea-ql.org/SeaORM) or [Diesel](https://docs.rs/diesel/latest/diesel/) for Object Relational Mapping instead of writing raw SQL with sqlx
 
 ### Endpoints
 
@@ -115,9 +117,7 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 
 ### Other
 
-- [ ] Add "Mark to-do as done" endpoint with tonic (gRPC)
-- [ ] Implement CQRS
-- [ ] Add a clear aggregate root, entity and value object example.
+- [ ] Add "Mark to-do as done" endpoint with [tonic](https://docs.rs/tonic/latest/tonic/) (gRPC)
 - [ ] Use CFG to enable/disable features (e.g. database selection, tracing, metrics)
 - [ ] If we keep SeaORM, consider [Seaography](https://www.sea-ql.org/Seaography/) for GraphQL
 - [ ] Create a cool logo!
