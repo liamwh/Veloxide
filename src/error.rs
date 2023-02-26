@@ -30,3 +30,14 @@ pub enum Error {
     #[error(transparent)]
     SeaOrmDbError(#[from] sea_orm::DbErr),
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_error() {
+        let err = Error::Generic("test".to_string());
+        assert_eq!(err.to_string(), "Generic: test");
+    }
+}
