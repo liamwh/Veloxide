@@ -23,7 +23,7 @@
             <img src="https://img.shields.io/badge/unsafe-forbidden-success.svg" />
         </a>
         <a href="https://github.com/liamwh/velox/blob/main/README.md">
-            <img src="https://img.shields.io/badge/License-MIT-blue.svg)">
+            <img src="https://img.shields.io/badge/License-MIT-blue.svg">
         </a>
     </p>
 
