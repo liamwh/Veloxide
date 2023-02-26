@@ -1,0 +1,163 @@
+use async_trait::async_trait;
+#[cfg(test)]
+use mockall::{automock, predicate::*};
+use sea_orm::{DatabaseConnection, EntityTrait};
+use tracing::instrument;
+
+use crate::domain::TodoRepository;
+
+use entity::todo::Entity as Todo;
+use entity::*;
+
+#[derive(Debug)]
+
+pub struct PostgresTodoRepository {
+    db: DatabaseConnection,
+}
+
+#[cfg_attr(test, automock)]
+impl PostgresTodoRepository {
+    pub fn new(db: DatabaseConnection) -> Self {
+        Self { db }
+    }
+
+    #[instrument]
+    async fn get_all(&self) -> Vec<Todo> {
+        // sqlx::query_as!(Todo, "SELECT * FROM todos")
+        //     .fetch_all(&self.pool)
+        //     .await
+        //     .unwrap()
+        vec![]
+    }
+
+    #[instrument]
+    async fn get_todo_by_id(&self, id: &i32) -> crate::prelude::Result<todo::Model> {
+        let todo: Option<todo::Model> = Todo::find_by_id(*id).one(&self.db).await?;
+        let todo: todo::Model = todo.unwrap();
+        Ok(todo)
+    }
+
+    #[instrument]
+    async fn create_todo(&self, todo: &Todo) -> crate::prelude::Result<Todo> {
+        Ok(Todo::default())
+    }
+
+    #[instrument]
+    async fn delete_todo(&self, id: &i32) -> crate::prelude::Result<()> {
+        Ok(())
+    }
+
+    #[instrument]
+    async fn update_todo(&self, todo: &Todo) -> crate::prelude::Result<Todo> {
+        Ok(Todo::default())
+    }
+}
+
+// #[async_trait]
+// #[cfg_attr(test, automock)]
+// impl TodoRepository for PostgresTodoRepository {
+// #[instrument]
+// async fn get_all(&self) -> Vec<Todo> {
+//     // sqlx::query_as!(Todo, "SELECT * FROM todos")
+//     //     .fetch_all(&self.pool)
+//     //     .await
+//     //     .unwrap()
+//     vec![]
+// }
+
+// #[instrument]
+// async fn get_todo_by_id(&self, id: &i32) -> crate::prelude::Result<Todo> {
+//     let todo: Option<todo::Model> = Todo::find_by_id(1).one(self.db).await?;
+//     Ok(todo)
+// }
+
+// #[instrument]
+// async fn create_todo(&self, todo: &Todo) -> crate::prelude::Result<Todo> {
+//     Ok(Todo::default())
+// }
+
+// #[instrument]
+// async fn delete_todo(&self, id: &i32) -> crate::prelude::Result<()> {
+//     Ok(())
+// }
+
+// #[instrument]
+// async fn update_todo(&self, todo: &Todo) -> crate::prelude::Result<Todo> {
+//     Ok(Todo::default())
+// }
+// }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use migration::{SqliteQueryBuilder, TableCreateStatement};
+    use pretty_assertions::assert_eq;
+    use sea_orm::{
+        entity::prelude::*, ActiveValue::NotSet, Database, DatabaseBackend, DbBackend,
+        MockDatabase, Schema, Set,
+    };
+    use uuid::uuid;
+
+    async fn get_memory_database() -> DatabaseConnection {
+        let db = Database::connect("sqlite::memory:")
+            .await
+            .expect("Failed to open sqlite database");
+
+        // Setup Schema helper
+        let schema = Schema::new(DbBackend::Sqlite);
+
+        // Derive from Entity
+        let add_project_statement: TableCreateStatement =
+            schema.create_table_from_entity(project::Entity);
+        let add_todo_statement: TableCreateStatement =
+            schema.create_table_from_entity(todo::Entity);
+
+        // Execute create table statement
+        let _result = db
+            .execute(db.get_database_backend().build(&add_project_statement))
+            .await
+            .expect("Failed to create project table");
+        let _result = db
+            .execute(db.get_database_backend().build(&add_todo_statement))
+            .await
+            .expect("Failed to create todo table");
+        db
+    }
+
+    #[tokio::test]
+    async fn test_get_by_id() {
+        // Arrange
+        let db = get_memory_database().await;
+        let project = project::ActiveModel {
+            id: Set(uuid!("69c619b0-0797-4f62-b72d-a907d235395a")),
+            name: Set("My project".to_owned()),
+            description: Set("My project description".to_owned()),
+        };
+        let todo = todo::ActiveModel {
+            id: Set(1),
+            description: Set("My todo description".to_owned()),
+            status: Set("My status".to_owned()),
+            project_id: Set(uuid!("69c619b0-0797-4f62-b72d-a907d235395a")),
+        };
+        let _project_insert_res = project
+            .insert(&db)
+            .await
+            .expect("Expected to insert project");
+        let _todo_insert_res = todo.insert(&db).await.expect("Expected to insert todo");
+
+        let todo_repository = PostgresTodoRepository::new(db);
+
+        // Act
+        let retrieved_todo = todo_repository
+            .get_todo_by_id(&1)
+            .await
+            .expect("Failed to get todo from the repository");
+
+        // Assert
+        assert_eq!(retrieved_todo.id, 1);
+        assert_eq!(
+            retrieved_todo.description,
+            "My todo description".to_string()
+        );
+    }
+}

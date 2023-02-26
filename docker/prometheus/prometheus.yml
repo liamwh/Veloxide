@@ -1,0 +1,28 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+      scheme: http
+      timeout: 10s
+      api_version: v1
+
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+    metrics_path: /metrics
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["prometheus:9090"]
+
+  - job_name: "veloxtodoapi"
+    scrape_interval: 5s
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["host.docker.internal:4005"]
+        labels:
+          group: "local"
