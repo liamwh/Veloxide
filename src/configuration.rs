@@ -74,7 +74,7 @@ pub async fn get_db_connection_sea_orm(
     let db = Database::connect(opt).await?;
     Migrator::up(&db, None).await?;
 
-    return Ok(db);
+    Ok(db)
 }
 
 #[instrument]
