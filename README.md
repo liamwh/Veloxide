@@ -41,7 +41,7 @@ The key features are:
 Velox implements the following design patterns to support maintainability and flexibility:
 
 - **[Layered Architecture](https://en.wikipedia.org/wiki/Multitier_architecture)**: The codebased is divided into layers, each with a specific responsibility, as per the principles of [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design). This makes the application easier to understand and maintain.
-- **[Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection)**: The application comes pre-configured with dependency injection to make subsituting dependencies, such as the persistence layer, easier.
+- **[Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection)**: The application comes pre-configured with dependency injection to make subsituting dependencies, such as the database, easier.
 - **[CQS](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)**: The application uses the CQS pattern to separate the read and write models. *CQRS coming soon!
 
 ## What's included?
@@ -54,7 +54,7 @@ Velox implements the following design patterns to support maintainability and fl
 | Tracing | [Tracing](https://docs.rs/tracing/latest/tracing/) & [Tracing OpenTelemetry](https://docs.rs/tracing-otracing_opentelemetry/) & [OpenTelemetry-Jaeger](https://docs.rs/opentelemetry-jaeger/latest/opentelemetry_jaeger/) |
 | Metrics | [Axum Prometheus](https://docs.rs/axum-prometheus/latest/axum_prometheus/) |
 | Serializing & Deserializing | [Serde](https://docs.rs/serde/latest/serde/index.html) ([yaml](https://docs.rs/serde_yaml/latest/serde_yaml/) & [json](https://docs.rs/serde_json/latest/serde_json/)) |
-| Async Database Driver (SQL)* | [sqlx](https://docs.rs/sqlx/latest/sqlx/) |
+| Async Database Driver (SQL)* | [SQLx](https://docs.rs/sqlx/latest/sqlx/) |
 | Async Object Relational Mapping* | [SeaORM](https://docs.rs/sea-orm/latest/sea_orm/) |
 | Mocking | [mockall](https://docs.rs/mockall/latest/mockall/) |
 | Error Handling | [thiserror](https://docs.rs/thiserror/latest/thiserror/) |
@@ -63,32 +63,49 @@ Velox implements the following design patterns to support maintainability and fl
 | Loading env variables & .env file | [Dotenvy](https://docs.rs/dotenvy/latest/dotenvy/) |
 | Improved assertion difference identification | [Pretty Assertions](https://docs.rs/pretty_assertions/latest/pretty_assertions/) |
 
-***Note:** Investigation into selecting the preferred crate (sqlx or SeaORM) for interacting with the database is ongoing.
+***Note:** Investigation into selecting the preferred crate (Currently considering SQLx and SeaORM) for interacting with the database is ongoing.
+
+### Supporting containers
+
+Velox comes pre-configured with the following supporting containers found in the `docker-compose.yml` file:
+
+- **Jaeger**: Traces will be sent to Jaeger, which can be accessed at `http://localhost:16686`.
+- **Prometheus** will be available at `http://localhost:9090`.
+- **Grafana**: Will be available at `http://localhost:3000`. The default username and password are both `admin`. Prometheus is already configured as the default data source.
+- **Postgres** will be be listening on port `5432` for new connections. The connection string is loaded from the environment variable `DATABASE_URL`, which is pre-configured in the .env file.
+
+Note that using the supporting containers is optional if you change the config-example.yaml to use the memory database instead of postgres.
 
 ## Getting started
 
-1. Clone this repo
-1. (Optional): Run the below command to start the supporting containers.
+1. First, make sure you have the required dependencies installed:
+
+     - [Rust](https://www.rust-lang.org/tools/install)
+     - [SQLx cli](https://github.com/launchbadge/sqlx/tree/main/sqlx-cli)
+     - [Docker](https://docs.docker.com/get-docker/)
+        - Required only if using the supporting containers
+
+2. Clone this repo
+3. (Optional): Run the below command to start the supporting containers.
 
     ```bash
     docker-compose up -d
     ```
 
-1. Run the below command to start the application.
+4. Run the below command to create the database.
+
+    ```bash
+    sqlx migrate run
+    ```
+
+5. Run the below command to start the application.
 
     ```bash
     cargo run
     ```
 
-1. Browse to `http://localhost:4005/swagger-ui/` to see the interactive documentation.
-1. To use the login security restricted endpoints, the api key is `example_api_key`.
-
-### Supporting containers
-
-- **Jaeger**: Traces will be sent to Jaeger, which can be accessed at `http://localhost:16686`.
-- **Grafana**: Will be available at `http://localhost:3000`. The default username and password are both `admin`. Prometheus is already configured as the default data source.
-- **Prometheus** will be available at `http://localhost:9090`.
-- **Postgres** will be be listening on port `5432` for new connections.
+6. Browse to `http://localhost:4005/swagger-ui/` to see the interactive documentation.
+7. To use the login security restricted endpoints, the api key is `example_api_key`.
 
 ## Why the name?
 
@@ -98,8 +115,9 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 
 ### In-progress
 
-- [ ] Make todo "done" field an enum instead of bool for demonstrative purposes
+- [ ] Add [OPA](https://www.openpolicyagent.org/) + [Envoy](https://www.envoyproxy.io/) for authorization example
 - [ ] Implement CQRS and the concepts of aggregates, entities, domain events and commands.
+- [ ] Make todo "done" field an enum instead of bool for demonstrative purposes
 - [ ] Add a project model with a has-many relationship to the todo model
 - [ ] Consider adding an ORM such as [SeaORM](https://www.sea-ql.org/SeaORM) or [Diesel](https://docs.rs/diesel/latest/diesel/) for Object Relational Mapping instead of writing raw SQL with sqlx
 
@@ -123,6 +141,7 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 
 ### Done
 
+- [x] Add Dependabot to the repo to keep dependencies up to date
 - [x] Set up code coverage pipeline / badge on readme
 - [x] Set up CI Pipeline
 - [x] Load application configuration from YAML
