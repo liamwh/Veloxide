@@ -1,7 +1,7 @@
 use std::fmt::{Display, Formatter};
 
 use async_trait::async_trait;
-use cqrs_es::{Aggregate, DomainEvent};
+use cqrs_es::{Aggregate, DomainEvent, EventEnvelope, Query};
 use serde::{Deserialize, Serialize};
 
 pub struct TaskService;
@@ -61,17 +61,18 @@ impl From<&str> for TaskError {
     }
 }
 
-impl TaskService {
-    async fn atm_withdrawal(&self, atm_id: &str, amount: f64) -> Result<(), AtmError> {
-        Ok(())
-    }
+impl TaskService {}
 
-    async fn validate_check(&self, account: &str, check: &str) -> Result<(), CheckingError> {
-        Ok(())
+struct SimpleLoggingQuery;
+
+#[async_trait]
+impl Query<Task> for SimpleLoggingQuery {
+    async fn dispatch(&self, aggregate_id: &str, events: &[EventEnvelope<Task>]) {
+        for event in events {
+            println!("{}-{}\n{:#?}", aggregate_id, event.sequence, &event.payload);
+        }
     }
 }
-pub struct AtmError;
-pub struct CheckingError;
 
 #[derive(Serialize, Default, Deserialize)]
 pub struct Task {
@@ -157,7 +158,7 @@ impl Aggregate for Task {
 #[cfg(test)]
 mod aggregate_tests {
     use super::*;
-    use cqrs_es::test::TestFramework;
+    use cqrs_es::{mem_store::MemStore, test::TestFramework, CqrsFramework};
 
     type TaskTestFramework = TestFramework<Task>;
 
@@ -209,15 +210,16 @@ mod aggregate_tests {
 
     #[test]
     fn test_mark_as_incomplete_publishes_event() {
-        let expected = TaskEvent::TaskMarkedAsIncomplete;
-
         TaskTestFramework::with(TaskService)
-            .given(vec![TaskEvent::TaskCreated {
-                todo_id: 1,
-                description: "Example description".to_string(),
-            }])
+            .given(vec![
+                TaskEvent::TaskCreated {
+                    todo_id: 1,
+                    description: "Example description".to_string(),
+                },
+                TaskEvent::TaskMarkedAsComplete,
+            ])
             .when(TaskCommand::MarkAsIncomplete)
-            .then_expect_events(vec![expected]);
+            .then_expect_events(vec![TaskEvent::TaskMarkedAsIncomplete]);
     }
 
     #[test]
@@ -246,5 +248,29 @@ mod aggregate_tests {
             ])
             .when(TaskCommand::MarkAsComplete)
             .then_expect_error(TaskError("Task is already complete".to_string()));
+    }
+
+    #[tokio::test]
+    async fn test_event_store() {
+        let event_store = MemStore::<Task>::default();
+        let query = SimpleLoggingQuery {};
+        let cqrs = CqrsFramework::new(event_store, vec![Box::new(query)], TaskService);
+
+        let aggregate_id = "aggregate-instance-A";
+
+        // deposit $1000
+        cqrs.execute(
+            aggregate_id,
+            TaskCommand::ChangeDescription {
+                description: "new description".to_string(),
+            },
+        )
+        .await
+        .unwrap();
+
+        // Mark it as complete
+        cqrs.execute(aggregate_id, TaskCommand::MarkAsComplete)
+            .await
+            .unwrap();
     }
 }
