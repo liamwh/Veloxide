@@ -55,7 +55,7 @@ Velox implements the following design patterns to support maintainability and fl
 | Tracing | [Tracing](https://docs.rs/tracing/latest/tracing/) & [Tracing OpenTelemetry](https://docs.rs/tracing-otracing_opentelemetry/) & [OpenTelemetry-Jaeger](https://docs.rs/opentelemetry-jaeger/latest/opentelemetry_jaeger/) |
 | Metrics | [Axum Prometheus](https://docs.rs/axum-prometheus/latest/axum_prometheus/) |
 | Serializing & Deserializing | [Serde](https://docs.rs/serde/latest/serde/index.html) ([yaml](https://docs.rs/serde_yaml/latest/serde_yaml/) & [json](https://docs.rs/serde_json/latest/serde_json/)) |
-| Async Database Driver (SQL)* | [Sqlx](https://docs.rs/sqlx/latest/sqlx/) |
+| Async Database Driver (SQL)* | [SQLx](https://docs.rs/sqlx/latest/sqlx/) |
 | Async Object Relational Mapping* | [SeaORM](https://docs.rs/sea-orm/latest/sea_orm/) |
 | Mocking | [mockall](https://docs.rs/mockall/latest/mockall/) |
 | Error Handling | [thiserror](https://docs.rs/thiserror/latest/thiserror/) |
@@ -63,32 +63,49 @@ Velox implements the following design patterns to support maintainability and fl
 | Loading env variables & .env file | [Dotenvy](https://docs.rs/dotenvy/latest/dotenvy/) |
 | Improved assertion difference identification | [Pretty Assertions](https://docs.rs/pretty_assertions/latest/pretty_assertions/) |
 
-***Note:** Investigation into selecting the preferred crate (sqlx or SeaORM) for interacting with the database is ongoing.
+***Note:** Investigation into selecting the preferred crate (Currently considering SQLx and SeaORM) for interacting with the database is ongoing.
+
+### Supporting containers
+
+Velox comes pre-configured with the following supporting containers found in the `docker-compose.yml` file:
+
+- **Jaeger**: Traces will be sent to Jaeger, which can be accessed at `http://localhost:16686`.
+- **Prometheus** will be available at `http://localhost:9090`.
+- **Grafana**: Will be available at `http://localhost:3000`. The default username and password are both `admin`. Prometheus is already configured as the default data source.
+- **Postgres** will be be listening on port `5432` for new connections. The connection string is loaded from the environment variable `DATABASE_URL`, which is pre-configured in the .env file.
+
+Note that using the supporting containers is optional if you change the config-example.yaml to use the memory database instead of postgres.
 
 ## Getting started
 
-1. Clone this repo
-1. (Optional): Run the below command to start the supporting containers.
+1. First, make sure you have the required dependencies installed:
+
+     - [Rust](https://www.rust-lang.org/tools/install)
+     - [SQLx cli](https://github.com/launchbadge/sqlx/tree/main/sqlx-cli)
+     - [Docker](https://docs.docker.com/get-docker/)
+        - Required only if using the supporting containers
+
+2. Clone this repo
+3. (Optional): Run the below command to start the supporting containers.
 
     ```bash
     docker-compose up -d
     ```
 
-1. Run the below command to start the application.
+4. Run the below command to create the database.
+
+    ```bash
+    sqlx migrate run
+    ```
+
+5. Run the below command to start the application.
 
     ```bash
     cargo run
     ```
 
-1. Browse to `http://localhost:4005/swagger-ui/` to see the interactive documentation.
-1. To use the login security restricted endpoints, the api key is `example_api_key`.
-
-### Supporting containers
-
-- **Jaeger**: Traces will be sent to Jaeger, which can be accessed at `http://localhost:16686`.
-- **Grafana**: Will be available at `http://localhost:3000`. The default username and password are both `admin`. Prometheus is already configured as the default data source.
-- **Prometheus** will be available at `http://localhost:9090`.
-- **Postgres** will be be listening on port `5432` for new connections.
+6. Browse to `http://localhost:4005/swagger-ui/` to see the interactive documentation.
+7. To use the login security restricted endpoints, the api key is `example_api_key`.
 
 ## Why the name?
 
