@@ -20,7 +20,7 @@ async fn mark_it_as_completed(world: &mut TodoWorld) {
 
 #[then("it should be completed")]
 async fn it_should_be_completed(world: &mut TodoWorld) {
-    assert_eq!(world.todo.done, true);
+    assert!(world.todo.done);
 }
 
 // This runs before everything else, things can be setup here.
