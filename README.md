@@ -42,7 +42,7 @@ The key features are:
 Velox implements the following design patterns to support maintainability and flexibility:
 
 - **[Layered Architecture](https://en.wikipedia.org/wiki/Multitier_architecture)**: The codebased is divided into layers, each with a specific responsibility, as per the principles of [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design). This makes the application easier to understand and maintain.
-- **[Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection)**: The application comes pre-configured with dependency injection to make subsituting dependencies, such as the persistence layer, easier.
+- **[Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection)**: The application comes pre-configured with dependency injection to make subsituting dependencies, such as the database, easier.
 - **[CQS](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)**: The application uses the CQS pattern to separate the read and write models. *CQRS coming soon!
 
 ## What's included?
@@ -98,7 +98,9 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 
 ### In-progress
 
-- [ ] Make todo done field an enum instead of bool for demonstrative purposes
+- [ ] Add [OPA](https://www.openpolicyagent.org/) + [Envoy](https://www.envoyproxy.io/) for authorization example
+- [ ] Implement CQRS and the concepts of aggregates, entities, domain events and commands.
+- [ ] Make todo "done" field an enum instead of bool for demonstrative purposes
 - [ ] Add a project model with a has-many relationship to the todo model
 - [ ] Consider adding [SeaORM](https://www.sea-ql.org/SeaORM) for async Object Relational Mapping instead of writing raw SQL
 
@@ -124,6 +126,7 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 
 ### Done
 
+- [x] Add Dependabot to the repo to keep dependencies up to date
 - [x] Set up code coverage pipeline / badge on readme
 - [x] Set up CI Pipeline
 - [x] Load application configuration from YAML
