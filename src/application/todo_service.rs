@@ -91,7 +91,7 @@ mod test {
         // Assert
         assert_eq!(todo.id, 1);
         assert_eq!(todo.description, "Test");
-        assert_eq!(todo.done, false);
+        assert!(!todo.done);
     }
 
     #[tokio::test]
@@ -141,7 +141,7 @@ mod test {
         // Assert
         assert_eq!(todo.id, 1);
         assert_eq!(todo.description, "Test");
-        assert_eq!(todo.done, true);
+        assert!(todo.done);
     }
 
     #[tokio::test]
@@ -181,7 +181,7 @@ mod test {
         // Assert
         assert_eq!(todo.id, 1);
         assert_eq!(todo.description, "Test");
-        assert_eq!(todo.done, false);
+        assert!(!todo.done);
     }
 
     #[tokio::test]
@@ -233,9 +233,9 @@ mod test {
         assert_eq!(todos.len(), 2);
         assert_eq!(todos[0].id, 1);
         assert_eq!(todos[0].description, "Test");
-        assert_eq!(todos[0].done, false);
+        assert!(!todos[0].done);
         assert_eq!(todos[1].id, 2);
         assert_eq!(todos[1].description, "Test 2");
-        assert_eq!(todos[1].done, false);
+        assert!(!todos[1].done);
     }
 }

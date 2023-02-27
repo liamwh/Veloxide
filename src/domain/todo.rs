@@ -96,14 +96,14 @@ mod test {
     async fn todo_set_status_to_complete() {
         let mut todo = Todo::default();
         todo.set_status(true);
-        assert_eq!(todo.done, true);
+        assert!(todo.done);
     }
 
     #[tokio::test]
     async fn todo_set_status_to_not_started() {
         let mut todo = Todo::new(1, "Get started building my new API!".to_string(), true);
         todo.set_status(false);
-        assert_eq!(todo.done, false);
+        assert!(!todo.done);
     }
 
     #[tokio::test]
