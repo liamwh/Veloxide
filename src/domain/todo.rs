@@ -59,7 +59,7 @@ pub struct Todo {
     #[schema(example = "Get started building my new API!")]
     pub description: String,
 
-    #[schema(example = "NotStarted")]
+    #[schema(example = false)]
     pub completed: bool,
 }
 
