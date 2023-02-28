@@ -19,7 +19,6 @@ use super::todo_dtos::TodoError;
   )
 )]
 #[instrument(skip(todo_service))]
-#[axum_macros::debug_handler]
 pub async fn list_todos(State(todo_service): State<DynTodoService>) -> Json<Vec<Todo>> {
     let todos = todo_service.get_all().await;
 
