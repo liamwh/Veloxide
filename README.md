@@ -44,6 +44,8 @@ Velox implements the following design patterns to support maintainability and fl
 - **[Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection)**: The application comes pre-configured with dependency injection to make subsituting dependencies, such as the database, easier.
 - **[CQS](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)**: The application uses the CQS pattern to separate the read and write models. *CQRS coming soon!
 
+Note: Additional documentation on the design and implementation of Velox be found in the [docs](https://github.com/liamwh/velox/tree/main/docs) folder.
+
 ## What's included?
 
 | Feature | Crate(s) of Significance |

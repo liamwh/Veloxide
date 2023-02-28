@@ -1,4 +1,4 @@
-# Folder Explanations
+# Velox Code Folder Explanations
 
 This document explains the purpose of each folder in the repository.
 
