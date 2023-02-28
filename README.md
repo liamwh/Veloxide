@@ -53,15 +53,14 @@ Note: Additional documentation on the design and implementation of Velox be foun
 | Web Server | [Axum](https://docs.rs/axum/latest/axum/) |
 | OpenAPI Doc Generation | [Utopia](https://docs.rs/utoipa/latest/utoipa/) |
 | Async Runtime | [Tokio](https://docs.rs/tokio/latest/tokio/index.html) |
-| Tracing | [Tracing](https://docs.rs/tracing/latest/tracing/) & [Tracing OpenTelemetry](https://docs.rs/tracing-otracing_opentelemetry/) & [OpenTelemetry-Jaeger](https://docs.rs/opentelemetry-jaeger/latest/opentelemetry_jaeger/) |
+| Tracing | [Tracing](https://docs.rs/tracing/latest/tracing/) & [Tracing OpenTelemetry](https://docs.rs/tracing-opentelemetry/latest/) & [OpenTelemetry-Jaeger](https://docs.rs/opentelemetry-jaeger/latest/) & [Tracing Log](https://docs.rs/tracing-log/latest/tracing_log/index.html) |
 | Metrics | [Axum Prometheus](https://docs.rs/axum-prometheus/latest/axum_prometheus/) |
 | Serializing & Deserializing | [Serde](https://docs.rs/serde/latest/serde/index.html) ([yaml](https://docs.rs/serde_yaml/latest/serde_yaml/) & [json](https://docs.rs/serde_json/latest/serde_json/)) |
+| Command Query Responsibility Segregation & Event Sourcing | [cqrs-es](https://docs.rs/cqrs-es/latest/cqrs_es/) |
 | Async Database Driver (SQL)* | [SQLx](https://docs.rs/sqlx/latest/sqlx/) |
-| Async Object Relational Mapping* | [SeaORM](https://docs.rs/sea-orm/latest/sea_orm/) |
 | Mocking | [mockall](https://docs.rs/mockall/latest/mockall/) |
 | Error Handling | [thiserror](https://docs.rs/thiserror/latest/thiserror/) |
 | Behavior Driven Development / Cucumber Testing | [Cucumber](https://docs.rs/cucumber/latest/cucumber/) |
-| Command Query Responsibility Segregation | [cqrs-es](https://docs.rs/cqrs-es/latest/cqrs_es/) |
 | Loading env variables & .env file | [Dotenvy](https://docs.rs/dotenvy/latest/dotenvy/) |
 | Improved assertion difference identification | [Pretty Assertions](https://docs.rs/pretty_assertions/latest/pretty_assertions/) |
 
@@ -83,7 +82,7 @@ Note that using the supporting containers is optional if you change the config-e
 1. First, make sure you have the required dependencies installed:
 
      - [Rust](https://www.rust-lang.org/tools/install)
-     - [SQLx cli](https://github.com/launchbadge/sqlx/tree/main/sqlx-cli)
+     - [SQLx CLI](https://github.com/launchbadge/sqlx/tree/main/sqlx-cli)
      - [Docker](https://docs.docker.com/get-docker/)
         - Required only if using the supporting containers
 
@@ -133,10 +132,13 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 ### Testing
 
 - [ ] Once the models and persistence of entities is finalised, add further testing of the infrastructure and presentation layers
+- [ ] Improve mocking of CQRS components with [mockall](https://docs.rs/mockall/latest/mockall/)
 
 ### Other
 
-- [ ] Add "Mark to-do as completed" endpoint with [tonic](https://docs.rs/tonic/latest/tonic/) (gRPC)
+- [ ] Improve discoverability of the API using utopia
+- [ ] Tidy up imports, use super::* where appropriate to reduce multiplication of imports
+- [ ] Add [Tonic](https://docs.rs/tonic/latest/tonic/) (gRPC) example
 - [ ] Use CFG to enable/disable features (e.g. database selection, tracing, metrics)
 - [ ] If we keep SeaORM, consider [Seaography](https://www.sea-ql.org/Seaography/) for GraphQL
 - [ ] Create a cool logo!
