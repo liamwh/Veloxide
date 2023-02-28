@@ -17,6 +17,7 @@ tower = "~0"
 axum-macros = "~0"
 axum-prometheus = "~0"
 async-trait = "~0"
+tower-http = "~0"
 
 # OpenAPI
 utoipa = {version = "~3", features = ["axum_extras"]}
@@ -29,8 +30,8 @@ serde_yaml = "~0"
 uuid = { version = "~1", features = ["v4", "serde"] }
 
 # Persistence
-sqlx = { version = "~0", features = ["runtime-tokio-native-tls", "sqlite", "chrono", "postgres", "json", "uuid", "offline"] }
-sea-orm = { version= "~0", features = ["sqlx-postgres", "runtime-tokio-native-tls", "mock"] }
+sqlx = { version = "~0", features = ["runtime-tokio-rustls", "sqlite", "chrono", "postgres", "json", "uuid", "offline"] }
+sea-orm = { version= "~0", features = ["sqlx-postgres", "runtime-tokio-rustls", "mock"] }
 entity = { path = "entity" }
 migration = { path = "migration" }
 
@@ -47,10 +48,12 @@ thiserror = "~1"
 log = "~0"
 dotenvy = "~0"
 cqrs-es = "~0"
+postgres-es = "~0"
+chrono = "~0"
 
 [features]
 default = ["tracing"]
-tracing = ["tracing-log", "tracing-subscriber", "tracing-opentelemetry", "opentelemetry", "opentelemetry-jaeger",]
+tracing = ["tracing-log", "tracing-subscriber", "tracing-opentelemetry", "opentelemetry", "opentelemetry-jaeger"]
 
 [workspace]
 members = [".", "entity", "migration"]
