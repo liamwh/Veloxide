@@ -119,7 +119,7 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 
 - [ ] Add [OPA](https://www.openpolicyagent.org/) + [Envoy](https://www.envoyproxy.io/) for authorization example
 - [ ] Implement CQRS and the concepts of aggregates, entities, domain events and commands.
-- [ ] Make todo "done" field an enum instead of bool for demonstrative purposes
+- [ ] Make todo "completed" field an enum instead of bool for demonstrative purposes
 - [ ] Add a project model with a has-many relationship to the todo model
 - [ ] Consider adding an ORM such as [SeaORM](https://www.sea-ql.org/SeaORM) or [Diesel](https://docs.rs/diesel/latest/diesel/) for Object Relational Mapping instead of writing raw SQL with sqlx
 
@@ -136,7 +136,7 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 
 ### Other
 
-- [ ] Add "Mark to-do as done" endpoint with [tonic](https://docs.rs/tonic/latest/tonic/) (gRPC)
+- [ ] Add "Mark to-do as completed" endpoint with [tonic](https://docs.rs/tonic/latest/tonic/) (gRPC)
 - [ ] Use CFG to enable/disable features (e.g. database selection, tracing, metrics)
 - [ ] If we keep SeaORM, consider [Seaography](https://www.sea-ql.org/Seaography/) for GraphQL
 - [ ] Create a cool logo!

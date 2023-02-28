@@ -7,13 +7,13 @@ Feature: Todo feature
 
  Scenario: I want to be able to give a table of todos in and get a table of todos out
     Given the following todos
-      | id | Description                      | Completed |
-      | 1  | Get started building my new API! | false     |
-      | 2  | Get started building my new API! | false     |
-      | 3  | Get started building my new API! | true     |
+      | id | Description                           | Completed |
+      | 1  | Get started building my new API!      | false     |
+      | 2  | Seriously, why haven't I started yet? | true     |
+      | 3  | Rust makes it too easy!               | false     |
     When I mark them all as completed
     Then I expect the following todos
-      | completed | id | Description                      |
-      | true      | 1  | Get started building my new API! |
-      | true      | 2  | Get started building my new API! |
-      | false     | 3  | Get started building my new API! |
+      | completed | ID | description                           |
+      | true      | 1  | Get started building my new API!      |
+      | true      | 2  | Seriously, why haven't I started yet? |
+      | true      | 3  | Rust makes it too easy!               |

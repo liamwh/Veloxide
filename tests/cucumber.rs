@@ -23,7 +23,7 @@ async fn mark_it_as_completed(world: &mut TodoWorld) {
 
 #[then("it should be completed")]
 async fn it_should_be_completed(world: &mut TodoWorld) {
-    assert!(world.todo.done);
+    assert!(world.todo.completed);
 }
 
 // Table version:
@@ -32,7 +32,7 @@ async fn it_should_be_completed(world: &mut TodoWorld) {
 pub struct TodoHeaderToColumnIndexMap {
     id: u16,
     description: u16,
-    done: u16,
+    completed: u16,
 }
 
 async fn parse_todo_header_rows<'a>(
@@ -46,7 +46,7 @@ async fn parse_todo_header_rows<'a>(
             match header.to_lowercase().as_str() {
                 "id" => map_header_to_column_index.id = index as u16,
                 "description" => map_header_to_column_index.description = index as u16,
-                "completed" => map_header_to_column_index.done = index as u16,
+                "completed" => map_header_to_column_index.completed = index as u16,
                 _ => panic!("Unexpected header in table"),
             }
         }
@@ -63,10 +63,10 @@ async fn parse_todo_from_row<'a>(
         .parse::<i32>()
         .expect("Expected a 'id' value in this column, but got something else");
     let description = row[map_header_to_column_index.description as usize].to_string();
-    let done = row[map_header_to_column_index.done as usize]
+    let completed = row[map_header_to_column_index.completed as usize]
         .parse::<bool>()
-        .expect("Expected a 'done' value in this column, but got something else");
-    return (Todo::new(id, description, done), world);
+        .expect("Expected a 'completed' value in this column, but got something else");
+    return (Todo::new(id, description, completed), world);
 }
 
 #[given("the following todos")]
@@ -80,10 +80,10 @@ async fn the_following_todos(world: &mut TodoWorld, step: &Step) {
                 .parse::<i32>()
                 .expect("Expected a 'id' value in this column, but got something else");
             let description = row[map_header_to_column_index.description as usize].to_string();
-            let done = row[map_header_to_column_index.done as usize]
+            let completed = row[map_header_to_column_index.completed as usize]
                 .parse::<bool>()
                 .expect("Expected a 'completed' value in this column, but got something else");
-            world.todos.push(Todo::new(id, description, done));
+            world.todos.push(Todo::new(id, description, completed));
         }
     }
 }
@@ -120,9 +120,9 @@ async fn i_expect_the_following_todos(world: &mut TodoWorld, step: &Step) {
             world.expected_todos[index].description, todo.description
         );
         assert_eq!(
-            todo.done, world.expected_todos[index].done,
+            todo.completed, world.expected_todos[index].completed,
             "expected completed: {} but got: {}",
-            world.expected_todos[index].done, todo.done
+            world.expected_todos[index].completed, todo.completed
         );
     }
 }
