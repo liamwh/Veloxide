@@ -12,40 +12,6 @@
     },
     "query": "DELETE FROM todos WHERE id = $1"
   },
-  "24c68b7fdffb195c463fb2872f8bdace748d8bcd256c6f5dbee26eabf9ecc781": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Int4"
-        },
-        {
-          "name": "description",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "completed",
-          "ordinal": 2,
-          "type_info": "Bool"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Int4",
-          "Bool",
-          "Text"
-        ]
-      }
-    },
-    "query": "INSERT INTO todos (id, completed, description) VALUES ($1, $2, $3) RETURNING *"
-  },
   "297e94e2258bca1971264392f93a03055684ab1cae1351680512db573e47ad47": {
     "describe": {
       "columns": [
@@ -78,37 +44,7 @@
     },
     "query": "SELECT * FROM todos WHERE id = $1"
   },
-  "9a60ae96398dc07faf7360c43ffdbae23577151585dfea78e60dc4f72a49288b": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Int4"
-        },
-        {
-          "name": "description",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "completed",
-          "ordinal": 2,
-          "type_info": "Bool"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "SELECT * FROM todos"
-  },
-  "bef9bb5501a36587aaab6c1cfe7a6b032b96b011d9ea18ab152ca1853e54d9e1": {
+  "7dfd80d648403fc7bd2dcf953f47dc8848fc65f605fe6db2fe05cbc22d44d4bd": {
     "describe": {
       "columns": [
         {
@@ -141,5 +77,69 @@
       }
     },
     "query": "UPDATE todos SET description = $1, completed = $2 WHERE id = $3 RETURNING *"
+  },
+  "9a60ae96398dc07faf7360c43ffdbae23577151585dfea78e60dc4f72a49288b": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "description",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "completed",
+          "ordinal": 2,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT * FROM todos"
+  },
+  "f1dd2ce67421a78a7693047d4abda1ae317e5cfa04356e5e3755c4dff98a0982": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "description",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "completed",
+          "ordinal": 2,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Bool",
+          "Text"
+        ]
+      }
+    },
+    "query": "INSERT INTO todos (id, completed, description) VALUES ($1, $2, $3) RETURNING *"
   }
 }
