@@ -51,12 +51,12 @@ async fn parse_todo_header_rows<'a>(
             }
         }
     }
-    return (map_header_to_column_index, world, step);
+    (map_header_to_column_index, world, step)
 }
 
 async fn parse_todo_from_row<'a>(
     map_header_to_column_index: &TodoHeaderToColumnIndexMap,
-    row: &Vec<String>,
+    row: &[String],
     world: &'a mut TodoWorld,
 ) -> (Todo, &'a mut TodoWorld) {
     let id = row[map_header_to_column_index.id as usize]
@@ -66,7 +66,7 @@ async fn parse_todo_from_row<'a>(
     let completed = row[map_header_to_column_index.completed as usize]
         .parse::<bool>()
         .expect("Expected a 'completed' value in this column, but got something else");
-    return (Todo::new(id, description, completed), world);
+    (Todo::new(id, description, completed), world)
 }
 
 #[given("the following todos")]
@@ -101,7 +101,7 @@ async fn i_expect_the_following_todos(world: &mut TodoWorld, step: &Step) {
         let (map_header_to_column_index, world, _step) = parse_todo_header_rows(world, step).await;
 
         for row in table.rows.iter().skip(1) {
-            // NOTE: skip header row
+            // NOTE: skip header row when iterating
             let (expected_todo, world) =
                 parse_todo_from_row(&map_header_to_column_index, row, world).await;
             world.expected_todos.push(expected_todo);
