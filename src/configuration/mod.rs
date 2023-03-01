@@ -1,23 +1,12 @@
+pub mod config;
 pub mod postgres_db_sqlx;
 
 // Re-exports
+pub use config::*;
 pub use postgres_db_sqlx::*;
 
-use serde::{Deserialize, Serialize};
 use tracing::{instrument, Level};
 use tracing_subscriber::prelude::__tracing_subscriber_SubscriberExt;
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub enum Repository {
-    Postgres,
-    Memory,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct AppConfiguration {
-    pub my_example_configuration: String,
-    pub repository: Repository,
-}
 
 #[instrument]
 pub async fn configure_tracing() -> std::result::Result<(), crate::error::Error> {

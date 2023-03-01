@@ -32,35 +32,36 @@
 The key features are:
 
 - **Fast to code**: Velox increases the speed of development by being simple, flexible and easy to use. Rust naturally [shifts bugs left](https://en.wikipedia.org/wiki/Shift-left_testing) to the compiler, so less time is spent debugging code, and more time is spent delivering value.
-- **Fewer bugs**: All components of Velox are written in [Rust](https://www.rust-lang.org), which is known for its safety and reliability [[1]](https://security.googleblog.com/2021/04/rust-in-linux-kernel.html) [[2]](https://security.googleblog.com/2023/01/supporting-use-of-rust-in-chromium.html) [[3]](https://security.googleblog.com/2022/12/memory-safe-languages-in-android-13.html)
+- **Fewer bugs**: All components of Velox are written in [Rust](https://www.rust-lang.org), which is known for its safety and reliability [[1]](https://www.infoq.com/news/2021/04/rust-linux-kernel-development/) [[2]](https://security.googleblog.com/2023/01/supporting-use-of-rust-in-chromium.html) [[3]](https://security.googleblog.com/2022/12/memory-safe-languages-in-android-13.html)
 - **Highly Performant**: Velox is built on top of the [Tokio](https://tokio.rs) async runtime and [Axum framework](https://github.com/tokio-rs/axum), which leverage the power of Rust's [async/await syntax](https://doc.rust-lang.org/reference/expressions/await-expr.html) and [zero-cost abstractions](https://doc.rust-lang.org/beta/embedded-book/static-guarantees/zero-cost-abstractions.html) to give blazingly fast bare-metal performance.
-- **Standards-based**: Based on (and fully compatible with) the open standards for APIs: [OpenAPI](https://github.com/OAI/OpenAPI-Specification) and [JSON Schema](https://json-schema.org/specification.html).
+- **Standards-based**: Velox leverages the open standards for APIs: [OpenAPI](https://github.com/OAI/OpenAPI-Specification), [JSON Schema](https://json-schema.org/specification.html) and [GraphQL](https://graphql.org/). You choose how you want your API to be consumed.
 - **Cloud Native**: Velox comes pre-configured with [OpenTelemetry](https://opentelemetry.io/) for distributed tracing and /metrics endpoint preconfigured for collection from [Prometheus](https://prometheus.io/).
 
 ## Design Patterns
 
 Velox implements the following design patterns to support maintainability and flexibility:
 
-- **[CQRS](https://martinfowler.com/bliki/CQRS.html)**: Velox uses Command Query Responsibility Segregation (CQRS) to help simplify and optimize the design by separating the read and write operations into distinct components.
+- **[CQRS](https://martinfowler.com/bliki/CQRS.html)**: Velox uses Command Query Responsibility Segregation (CQRS) to help simplify and optimize the design by separating the read (view) and write (command) models.
 - **[Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html)**: Velox uses Event Sourcing to persist events to the database. Event sourcing provides a complete and accurate audit trail of changes made to a system, which can be useful for debugging, compliance, and various other purposes.
 - **[Layered Architecture](https://en.wikipedia.org/wiki/Multitier_architecture)**: The codebase is divided into layers, each with a specific responsibility, as per the principles of [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design). This makes the application easier to understand and maintain.
 - **[Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection)**: Velox comes pre-configured with dependency injection to make subsituting dependencies, such as the database, easier.
 
-Note: Additional documentation on the design and implementation of Velox be found in the [docs](https://github.com/liamwh/velox/tree/main/docs) folder.
+Further documentation on the design and implementation of Velox be found in the [/docs folder](https://github.com/liamwh/velox/tree/main/docs).
 
 ## What's included?
 
 | Feature                                                   | Crate(s) of Significance                                                                                                                                                                                                                                                      | Notes                                                                                                                         |
 | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | Web Server                                                | [Axum](https://docs.rs/axum/latest/axum/)                                                                                                                                                                                                                                     | The endpoint path and timestamp metadata for each issued command are captured and stored in the database in the events table. |
+| GraphQL | [async-graphql](https://docs.rs/async-graphql/latest/async_graphql/) |
 | OpenAPI Doc Generation                                    | [Utopia](https://docs.rs/utoipa/latest/utoipa/)                                                                                                                                                                                                                               | Serves interactive documentation at `/swagger-ui`                                                                             |
 | Async Runtime                                             | [Tokio](https://docs.rs/tokio/latest/tokio/index.html)                                                                                                                                                                                                                        |                                                                                                                               |
 | Tracing                                                   | [Tracing](https://docs.rs/tracing/latest/tracing/) & [Tracing OpenTelemetry](https://docs.rs/tracing-opentelemetry/latest/) & [OpenTelemetry-Jaeger](https://docs.rs/opentelemetry-jaeger/latest/) & [Tracing Log](https://docs.rs/tracing-log/latest/tracing_log/index.html) | All logs are automatically embbed in Trace spans                                                                              |
 | Metrics                                                   | [Axum Prometheus](https://docs.rs/axum-prometheus/latest/axum_prometheus/)                                                                                                                                                                                                    | Metrics are pre-configured for collection at /metrics                                                                         |
 | Serializing & Deserializing                               | [Serde](https://docs.rs/serde/latest/serde/index.html) ([yaml](https://docs.rs/serde_yaml/latest/serde_yaml/) & [json](https://docs.rs/serde_json/latest/serde_json/))                                                                                                        |                                                                                                                               |
 | Command Query Responsibility Segregation & Event Sourcing | [cqrs-es](https://docs.rs/cqrs-es/latest/cqrs_es/)                                                                                                                                                                                                                            |                                                                                                                               |
-| Async Database Driver (SQL)\*                             | [SQLx](https://docs.rs/sqlx/latest/sqlx/)                                                                                                                                                                                                                                     | SQL queries are checked against the database for validity _at compile time_                                                   |
-| Mocking                                                   | [mockall](https://docs.rs/mockall/latest/mockall/)                                                                                                                                                                                                                            |                                                                                                                               |
+| Async Database Driver (SQL)                             | [SQLx](https://docs.rs/sqlx/latest/sqlx/)                                                                                                                                                                                                                                     | SQL queries are checked against the database for validity _at compile time_                                                   |
+| Mocking                                                   | [mockall](https://docs.rs/mockall/latest/mockall/)                                                                                                                                                                                                                            | Leverage the power of Rust's macro system by using `#[automock]` to automatically create mocks!                                                                                                                               |
 | Error Handling                                            | [thiserror](https://docs.rs/thiserror/latest/thiserror/)                                                                                                                                                                                                                      |                                                                                                                               |
 | Behavior Driven Development / Cucumber Testing            | [Cucumber](https://docs.rs/cucumber/latest/cucumber/)                                                                                                                                                                                                                         |                                                                                                                               |
 | Loading env variables & .env file                         | [Dotenvy](https://docs.rs/dotenvy/latest/dotenvy/)                                                                                                                                                                                                                            |                                                                                                                               |
@@ -78,7 +79,7 @@ Velox comes pre-configured with the following supporting containers found in the
 - **[Envoy](https://www.envoyproxy.io/)**: Coming soon.
 - **[Open Policy Agent](https://www.openpolicyagent.org/)**: Coming soon.
 
-Note that using the supporting containers is optional if you change the config-example.yaml to use the memory database instead of postgres.
+Note that using the supporting containers is optional if you change the velox-config.yaml to use the memory database instead of postgres.
 
 ## Getting started
 
@@ -119,29 +120,28 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 
 ### In-progress
 
+- [ ] Expose the BankAccountView using GraphQL
 - [ ] Add [OPA](https://www.openpolicyagent.org/) + [Envoy](https://www.envoyproxy.io/) for authorization example
-- [ ] Make todo "completed" field an enum instead of bool for demonstrative purposes
-- [ ] Add a project model with a has-many relationship to the todo model
 
-### Endpoints
+### Domain
 
-- [ ] Clean up error handling and propagation from domain layer to presentation layer
-- [ ] Include functionality to generically search by any property via the API
+- [ ] Rip out todo model, leave BankAccount as the only aggregate
+- [ ] Consider adding a second aggregate to demonstrate how to use multiple aggregates
 
 ### Testing
 
-- [ ] Once the models and persistence of entities is finalised, add further testing of the infrastructure and presentation layers
-- [ ] Improve mocking of CQRS components with [mockall](https://docs.rs/mockall/latest/mockall/)
+- [ ] Improve code coverage, leverage [mockall](https://docs.rs/mockall/latest/mockall/) where applicable
 
 ### Other
 
-- [ ] Add [Tonic](https://docs.rs/tonic/latest/tonic/) (gRPC) example
-- [ ] Use CFG to enable/disable features (e.g. database selection, tracing, metrics)
-- [ ] Consider adding GraphQL in some form
+- [ ] Add [Tonic](https://docs.rs/tonic/latest/tonic/) ([gRPC](https://grpc.io/)) example
+- [ ] Use Rust's built in feature functionality to enable/disable Velox features (e.g. tracing, metrics, graphql, gRPC etc)
+- [ ] Create a Rust Book
 - [ ] Create a cool logo!
 
 ### Done
 
+- [x] Get a [GraphQL](https://docs.rs/async-graphql/latest/async_graphql/) server running
 - [x] Implement CQRS and the concepts of aggregates, entities, domain events and commands.
 - [x] Add Dependabot to the repo to keep dependencies up to date
 - [x] Set up code coverage pipeline / badge on readme

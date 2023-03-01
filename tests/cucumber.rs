@@ -1,6 +1,6 @@
 use cucumber::{gherkin::Step, given, then, when, World};
 use pretty_assertions::assert_eq;
-use velox_todo_api::domain::todo::*;
+use velox::domain::todo::*;
 
 // `World` is your shared, likely mutable state.
 // Cucumber constructs it via `Default::default()` for each scenario.

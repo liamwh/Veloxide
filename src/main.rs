@@ -65,6 +65,13 @@ async fn main() -> Result<()> {
     // Configure prometheus layer
     let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
 
+    if configuration.graphql.enabled {
+        tracing::debug!("Starting graphql server");
+        tokio::spawn(async move {
+            presentation::graphql::run_graphql_server(&configuration.graphql).await;
+        });
+    }
+
     // Set up the router
     let app = Router::new()
         .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
