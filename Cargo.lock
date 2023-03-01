@@ -88,6 +88,7 @@ checksum = "2bd379e511536bad07447f899300aa526e9bae8e6f66dc5e5ca45d7587b7c1ec"
 dependencies = [
  "async-trait",
  "axum-core",
+ "axum-macros",
  "bitflags",
  "bytes",
  "futures-util",
@@ -2949,7 +2950,6 @@ dependencies = [
  "anyhow",
  "async-trait",
  "axum",
- "axum-macros",
  "axum-prometheus",
  "chrono",
  "cqrs-es",

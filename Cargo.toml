@@ -8,11 +8,10 @@ authors = ["Liam Woodleigh-Hardinge liam.woodleigh@gmail.com"]
 
 [dependencies]
 # Web / Async
-axum = "~0"
+axum = { version = "~0", features = ["macros"] }
 hyper = { version = "~0", features = ["full"] }
 tokio = { version = "~1", features = ["full"] }
 tower = "~0"
-axum-macros = "~0"
 axum-prometheus = "~0"
 async-trait = "~0"
 tower-http = "~0"
