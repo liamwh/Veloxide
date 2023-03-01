@@ -50,6 +50,7 @@ dotenvy = "~0"
 cqrs-es = "~0"
 postgres-es = "~0"
 chrono = "~0"
+derivative = "~2"
 
 [features]
 default = ["tracing"]

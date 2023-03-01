@@ -63,6 +63,7 @@ Note: Additional documentation on the design and implementation of Velox be foun
 | Behavior Driven Development / Cucumber Testing | [Cucumber](https://docs.rs/cucumber/latest/cucumber/) |
 | Loading env variables & .env file | [Dotenvy](https://docs.rs/dotenvy/latest/dotenvy/) |
 | Improved assertion difference identification | [Pretty Assertions](https://docs.rs/pretty_assertions/latest/pretty_assertions/) |
+| Supercharged derive attributes | [Derivative](https://mcarton.github.io/rust-derivative/latest/index.html)
 
 ***Note:** Investigation into selecting the preferred crate (Currently considering SQLx and SeaORM) for interacting with the database is ongoing.
 
