@@ -31,9 +31,6 @@ uuid = { version = "~1", features = ["v4", "serde"] }
 
 # Persistence
 sqlx = { version = "~0", features = ["runtime-tokio-rustls", "sqlite", "chrono", "postgres", "json", "uuid", "offline"] }
-sea-orm = { version= "~0", features = ["sqlx-postgres", "runtime-tokio-rustls", "mock"] }
-entity = { path = "entity" }
-migration = { path = "migration" }
 
 # Tracing
 tracing = {version="~0", features = ["log-always"] }
@@ -57,7 +54,7 @@ default = ["tracing"]
 tracing = ["tracing-log", "tracing-subscriber", "tracing-opentelemetry", "opentelemetry", "opentelemetry-jaeger"]
 
 [workspace]
-members = [".", "entity", "migration"]
+members = ["."]
 
 [dev-dependencies]
 anyhow = "~1"

@@ -1,11 +1,8 @@
-pub mod postgres_db_sea_orm;
 pub mod postgres_db_sqlx;
 
 // Re-exports
-pub use postgres_db_sea_orm::*;
 pub use postgres_db_sqlx::*;
 
-use migration::{Migrator, MigratorTrait};
 use serde::{Deserialize, Serialize};
 use tracing::{instrument, Level};
 use tracing_subscriber::prelude::__tracing_subscriber_SubscriberExt;

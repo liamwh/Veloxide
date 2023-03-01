@@ -65,8 +65,6 @@ Note: Additional documentation on the design and implementation of Velox be foun
 | Improved assertion difference identification | [Pretty Assertions](https://docs.rs/pretty_assertions/latest/pretty_assertions/) |
 | Supercharged derive attributes | [Derivative](https://mcarton.github.io/rust-derivative/latest/index.html)
 
-***Note:** Investigation into selecting the preferred crate (Currently considering SQLx and SeaORM) for interacting with the database is ongoing.
-
 ### Supporting containers
 
 Velox comes pre-configured with the following supporting containers found in the `docker-compose.yml` file:
@@ -121,7 +119,6 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 - [ ] Implement CQRS and the concepts of aggregates, entities, domain events and commands.
 - [ ] Make todo "completed" field an enum instead of bool for demonstrative purposes
 - [ ] Add a project model with a has-many relationship to the todo model
-- [ ] Consider adding an ORM such as [SeaORM](https://www.sea-ql.org/SeaORM) or [Diesel](https://docs.rs/diesel/latest/diesel/) for Object Relational Mapping instead of writing raw SQL with sqlx
 
 ### Endpoints
 
@@ -141,7 +138,7 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 - [ ] Tidy up imports, use super::* where appropriate to reduce multiplication of imports
 - [ ] Add [Tonic](https://docs.rs/tonic/latest/tonic/) (gRPC) example
 - [ ] Use CFG to enable/disable features (e.g. database selection, tracing, metrics)
-- [ ] If we keep SeaORM, consider [Seaography](https://www.sea-ql.org/Seaography/) for GraphQL
+- [ ] Consider adding GraphQL in some form
 - [ ] Create a cool logo!
 
 ### Done

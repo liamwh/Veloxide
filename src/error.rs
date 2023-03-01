@@ -26,9 +26,6 @@ pub enum Error {
 
     #[error(transparent)]
     ParseIntError(#[from] std::num::ParseIntError),
-
-    #[error(transparent)]
-    SeaOrmDbError(#[from] sea_orm::DbErr),
 }
 
 #[cfg(test)]
