@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 use tracing::*;
 
 use crate::application::BankAccountServices;
-use crate::domain::commands::BankAccountCommand;
-use crate::domain::events::{BankAccountError, BankAccountEvent};
+use crate::domain::bank_account_commands::BankAccountCommand;
+use crate::domain::bank_account_events::{BankAccountError, BankAccountEvent};
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BankAccount {
     account_id: String,
@@ -166,6 +166,10 @@ impl BankAccount {
             balance,
         }])
     }
+
+    pub fn balance(&self) -> f64 {
+        self.balance
+    }
 }
 
 impl Default for BankAccount {
@@ -189,9 +193,9 @@ mod aggregate_tests {
     use super::*;
 
     use crate::application::{AtmError, BankAccountApi, BankAccountServices, CheckingError};
-    use crate::domain::aggregate::BankAccount;
-    use crate::domain::commands::BankAccountCommand;
-    use crate::domain::events::BankAccountEvent;
+    use crate::domain::bank_account_aggregate::BankAccount;
+    use crate::domain::bank_account_commands::BankAccountCommand;
+    use crate::domain::bank_account_events::BankAccountEvent;
 
     // A test framework that will apply our events and command
     // and verify that the logic works as expected.
@@ -204,7 +208,7 @@ mod aggregate_tests {
             balance: 200.0,
         };
         let command = BankAccountCommand::DepositMoney { amount: 200.0 };
-        let services = BankAccountServices::new(Box::new(MockBankAccountServices::default()));
+        let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
         // Obtain a new test framework
         AccountTestFramework::with(services)
             // In a test case with no previous events
@@ -226,7 +230,7 @@ mod aggregate_tests {
             balance: 400.0,
         };
         let command = BankAccountCommand::DepositMoney { amount: 200.0 };
-        let services = BankAccountServices::new(Box::new(MockBankAccountServices::default()));
+        let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
 
         AccountTestFramework::with(services)
             // Given this previously applied event
@@ -287,7 +291,7 @@ mod aggregate_tests {
             atm_id: "ATM34f1ba3c".to_string(),
         };
 
-        let services = BankAccountServices::new(Box::new(MockBankAccountServices::default()));
+        let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
         AccountTestFramework::with(services)
             .given_no_previous_events()
             .when(command)
@@ -347,7 +351,7 @@ mod aggregate_tests {
             amount: 100.0,
         };
 
-        let services = BankAccountServices::new(Box::new(MockBankAccountServices::default()));
+        let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
         AccountTestFramework::with(services)
             .given_no_previous_events()
             .when(command)
