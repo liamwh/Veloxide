@@ -59,8 +59,8 @@ pub struct Todo {
     #[schema(example = "Get started building my new API!")]
     pub description: String,
 
-    #[schema(example = "NotStarted")]
-    pub done: bool,
+    #[schema(example = false)]
+    pub completed: bool,
 }
 
 impl Default for Todo {
@@ -75,7 +75,7 @@ impl Todo {
         Self {
             id,
             description,
-            done: status,
+            completed: status,
         }
     }
 
@@ -84,7 +84,7 @@ impl Todo {
     }
 
     pub fn set_status(&mut self, status: bool) {
-        self.done = status;
+        self.completed = status;
     }
 }
 
@@ -96,14 +96,14 @@ mod test {
     async fn todo_set_status_to_complete() {
         let mut todo = Todo::default();
         todo.set_status(true);
-        assert_eq!(todo.done, true);
+        assert!(todo.completed);
     }
 
     #[tokio::test]
     async fn todo_set_status_to_not_started() {
         let mut todo = Todo::new(1, "Get started building my new API!".to_string(), true);
         todo.set_status(false);
-        assert_eq!(todo.done, false);
+        assert!(!todo.completed);
     }
 
     #[tokio::test]

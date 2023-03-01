@@ -99,7 +99,7 @@ impl TodoRepository for MemoryTodoRepository {
             .find(|existing_todo| existing_todo.id == todo.id)
             .map(|found| {
                 found.set_description(todo.description.clone());
-                found.set_status(todo.done);
+                found.set_status(todo.completed);
                 Ok(found.clone())
             })
             .unwrap_or_else(|| {

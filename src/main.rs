@@ -6,12 +6,11 @@ use std::{
 };
 
 use presentation::{todo_handlers, ApiDoc};
-use tracing_log::LogTracer;
 
 use application::todo_service;
 use axum::{
     routing::{get, post},
-    Router, Server,
+    Extension, Router, Server,
 };
 use axum_prometheus::PrometheusMetricLayer;
 use utoipa::OpenApi;
@@ -28,6 +27,7 @@ mod error;
 mod infrastructure;
 mod prelude;
 mod presentation;
+use tracing_log::LogTracer;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -41,12 +41,16 @@ async fn main() -> Result<()> {
             tracing::error!("error setting tracing subscriber: {}", err);
         }
     };
+
     let configuration = configuration::load_app_configuration().await?;
     let pool = configuration::get_db_connection_sqlx(&configuration).await?;
+    let pool2 = configuration::get_db_connection_sqlx(&configuration).await?;
+    let (cqrs, account_query) = presentation::get_cqrs_framework(pool);
+
     let repository = match configuration.repository {
         configuration::Repository::Postgres => {
             tracing::debug!("using postgres repository");
-            Arc::new(PostgresTodoRepository::new(pool)) as DynTodoRepo
+            Arc::new(PostgresTodoRepository::new(pool2)) as DynTodoRepo
         }
         configuration::Repository::Memory => {
             tracing::debug!("using memory repository");
@@ -55,9 +59,17 @@ async fn main() -> Result<()> {
     };
     let todo_service = Arc::new(todo_service::TodoServiceImpl::new(repository));
 
+    // Configure prometheus layer
     let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
+
+    // Set up the router
     let app = Router::new()
         .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
+        .route(
+            "/bank-accounts/:id",
+            get(presentation::bank_account::query_handler)
+                .post(presentation::bank_account::command_handler),
+        )
         .route(
             "/todo",
             get(todo_handlers::list_todos).post(todo_handlers::post_todo),
@@ -72,11 +84,13 @@ async fn main() -> Result<()> {
         )
         .route("/metrics", get(|| async move { metric_handle.render() }))
         .with_state(todo_service)
+        .layer(Extension(cqrs))
+        .layer(Extension(account_query))
         .layer(prometheus_layer);
 
+    // Run the router
     let port = dotenvy::var("HTTP_PORT").unwrap_or_else(|_| "4005".to_string());
     let port = port.parse::<u16>()?;
-
     let address = SocketAddr::from((Ipv4Addr::UNSPECIFIED, port));
     Ok(Server::bind(&address)
         .serve(app.into_make_service())

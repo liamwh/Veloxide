@@ -45,9 +45,9 @@ impl TodoRepository for PostgresTodoRepository {
     async fn create_todo(&self, todo: &Todo) -> crate::prelude::Result<Todo> {
         let todo = sqlx::query_as!(
             Todo,
-            "INSERT INTO todos (id, done, description) VALUES ($1, $2, $3) RETURNING *",
+            "INSERT INTO todos (id, completed, description) VALUES ($1, $2, $3) RETURNING *",
             &todo.id,
-            &todo.done,
+            &todo.completed,
             &todo.description,
         )
         .fetch_one(&self.pool)
@@ -70,9 +70,9 @@ impl TodoRepository for PostgresTodoRepository {
     async fn update_todo(&self, todo: &Todo) -> crate::prelude::Result<Todo> {
         let todo = sqlx::query_as!(
             Todo,
-            "UPDATE todos SET description = $1, done = $2 WHERE id = $3 RETURNING *",
+            "UPDATE todos SET description = $1, completed = $2 WHERE id = $3 RETURNING *",
             &todo.description,
-            &todo.done,
+            &todo.completed,
             &todo.id
         )
         .fetch_one(&self.pool)

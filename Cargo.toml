@@ -9,41 +9,57 @@ authors = [
 ]
 
 [dependencies]
-thiserror = "~1"
-axum = "0.6"
-hyper = { version = "0.14", features = ["full"] }
-tokio = { version = "1.17", features = ["full"] }
-tower = "0.4"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-env_logger = "0.10.0"
-log = "0.4"
-utoipa = {version = "~3", features = ["axum_extras"]}
-utoipa-swagger-ui = {version = "3.0.2", features = ["axum"]}
-tracing = {version="~0", features = ["log-always"]}
-opentelemetry = {version ="~0", features = ["rt-tokio"] }
-tracing-subscriber = {version = "~0"}
-opentelemetry-jaeger = {version = "~0", features = ["rt-tokio"] }
-tracing-opentelemetry = "~0.18.0"
-dotenvy = "~0"
-sqlx = { version = "0.6.2", features = ["runtime-tokio-native-tls", "sqlite", "chrono", "postgres", "json", "uuid", "offline"] }
-serde_yaml = "~0.9"
-async-trait = "0.1.64"
-uuid = { version = "~1", features = ["v4", "serde"] }
-axum-macros = "0.3.4"
-tracing-log = "0.1.3"
+# Web / Async
+axum = "~0"
+hyper = { version = "~0", features = ["full"] }
+tokio = { version = "~1", features = ["full"] }
+tower = "~0"
+axum-macros = "~0"
 axum-prometheus = "~0"
-sea-orm = { version= "~0", features = ["sqlx-postgres", "runtime-tokio-native-tls", "mock"] }
-entity = { path = "entity" }
-migration = { path = "migration" }
+async-trait = "~0"
+tower-http = "~0"
+
+# OpenAPI
+utoipa = {version = "~3", features = ["axum_extras"]}
+utoipa-swagger-ui = {version = "~3", features = ["axum"]}
+
+# Serialization
+serde = { version = "~1", features = ["derive"] }
+serde_json = "~1"
+serde_yaml = "~0"
+uuid = { version = "~1", features = ["v4", "serde"] }
+
+# Persistence
+sqlx = { version = "~0", features = ["runtime-tokio-rustls", "sqlite", "chrono", "postgres", "json", "uuid", "offline"] }
+
+# Tracing
+tracing = {version="~0", features = ["log-always"] }
+opentelemetry = {version ="~0", features = ["rt-tokio"], optional=true }
+tracing-subscriber = {version = "~0", optional=true }
+opentelemetry-jaeger = {version = "~0", features = ["rt-tokio"], optional=true  }
+tracing-opentelemetry = {version = "~0", optional=true }
+tracing-log = {version = "~0", optional=true }
+
+# Misc
+thiserror = "~1"
+log = "~0"
+dotenvy = "~0"
+cqrs-es = "~0"
+postgres-es = "~0"
+chrono = "~0"
+derivative = "~2"
+
+[features]
+default = ["tracing"]
+tracing = ["tracing-log", "tracing-subscriber", "tracing-opentelemetry", "opentelemetry", "opentelemetry-jaeger"]
 
 [workspace]
-members = [".", "entity", "migration"]
+members = ["."]
 
 [dev-dependencies]
 anyhow = "~1"
-pretty_assertions = "1.3.0"
-cucumber = "0.19.1"
+pretty_assertions = "~1"
+cucumber = "~0"
 mockall = { version= "~0" }
 
 [[test]]

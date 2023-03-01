@@ -1,4 +1,4 @@
-# Folder Explanations
+# Velox Code Folder Explanations
 
 This document explains the purpose of each folder in the repository.
 
@@ -26,17 +26,9 @@ This folder contains the presentation layer.
 
 This folder contains the test code for the application, including the BDD tests.
 
-## [entity](https://github.com/liamwh/velox/tree/main/entity)
-
-This folder contains the entity definitions created by SeaORM.
-
-## [migration](https://github.com/liamwh/velox/tree/main/migration)
-
-This folder contains the migrations for use with SeaORM.
-
 ## [migrations](https://github.com/liamwh/velox/tree/main/migrations)
 
-This folder contains the migrations for use with sqlx.
+This folder contains the database migrations.
 
 ## [docker](https://github.com/liamwh/velox/tree/main/docker)
 

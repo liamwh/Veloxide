@@ -1,13 +1,15 @@
+#[cfg(test)]
+use mockall::{automock, predicate::*};
+
+use tracing::instrument;
+
 use std::sync::Arc;
 
 use async_trait::async_trait;
-#[cfg(test)]
-use mockall::{automock, predicate::*};
-use tracing::instrument;
 
 use crate::domain::DynTodoRepo;
-pub use crate::domain::*;
-pub use crate::prelude::*;
+use crate::domain::*;
+use crate::prelude::*;
 
 #[async_trait]
 #[cfg_attr(test, automock)]
@@ -79,7 +81,7 @@ mod test {
                     Ok(Todo {
                         id: 1,
                         description: "Test".to_string(),
-                        done: false,
+                        completed: false,
                     })
                 })
             });
@@ -91,7 +93,7 @@ mod test {
         // Assert
         assert_eq!(todo.id, 1);
         assert_eq!(todo.description, "Test");
-        assert_eq!(todo.done, false);
+        assert!(!todo.completed);
     }
 
     #[tokio::test]
@@ -107,7 +109,7 @@ mod test {
                     Ok(Todo {
                         id: 1,
                         description: "Test".to_string(),
-                        done: false,
+                        completed: false,
                     })
                 })
             });
@@ -117,7 +119,7 @@ mod test {
             .with(eq(Todo {
                 id: 1,
                 description: "Test".to_string(),
-                done: true,
+                completed: true,
             }))
             .times(1)
             .returning(|_| {
@@ -125,7 +127,7 @@ mod test {
                     Ok(Todo {
                         id: 1,
                         description: "Test".to_string(),
-                        done: true,
+                        completed: true,
                     })
                 })
             });
@@ -141,7 +143,7 @@ mod test {
         // Assert
         assert_eq!(todo.id, 1);
         assert_eq!(todo.description, "Test");
-        assert_eq!(todo.done, true);
+        assert!(todo.completed);
     }
 
     #[tokio::test]
@@ -153,7 +155,7 @@ mod test {
             .with(eq(Todo {
                 id: 1,
                 description: "Test".to_string(),
-                done: false,
+                completed: false,
             }))
             .times(1)
             .returning(|_| {
@@ -161,7 +163,7 @@ mod test {
                     Ok(Todo {
                         id: 1,
                         description: "Test".to_string(),
-                        done: false,
+                        completed: false,
                     })
                 })
             });
@@ -173,7 +175,7 @@ mod test {
             .create_todo(&Todo {
                 id: 1,
                 description: "Test".to_string(),
-                done: false,
+                completed: false,
             })
             .await
             .expect("Expected create todo to be ok");
@@ -181,7 +183,7 @@ mod test {
         // Assert
         assert_eq!(todo.id, 1);
         assert_eq!(todo.description, "Test");
-        assert_eq!(todo.done, false);
+        assert!(!todo.completed);
     }
 
     #[tokio::test]
@@ -213,12 +215,12 @@ mod test {
                     Todo {
                         id: 1,
                         description: "Test".to_string(),
-                        done: false,
+                        completed: false,
                     },
                     Todo {
                         id: 2,
                         description: "Test 2".to_string(),
-                        done: false,
+                        completed: false,
                     },
                 ]
             })
@@ -233,9 +235,9 @@ mod test {
         assert_eq!(todos.len(), 2);
         assert_eq!(todos[0].id, 1);
         assert_eq!(todos[0].description, "Test");
-        assert_eq!(todos[0].done, false);
+        assert!(!todos[0].completed);
         assert_eq!(todos[1].id, 2);
         assert_eq!(todos[1].description, "Test 2");
-        assert_eq!(todos[1].done, false);
+        assert!(!todos[1].completed);
     }
 }

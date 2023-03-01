@@ -1,1 +1,1 @@
-DROP TABLE todos;
+DROP TABLE IF EXISTS todos;
