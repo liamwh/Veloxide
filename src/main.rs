@@ -1,7 +1,3 @@
-#![allow(dead_code)]
-#![allow(clippy::pedantic)]
-#![warn(clippy::all)]
-
 use std::{
     net::{Ipv4Addr, SocketAddr},
     sync::Arc,
