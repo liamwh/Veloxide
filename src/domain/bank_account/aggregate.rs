@@ -82,7 +82,7 @@ impl BankAccount {
         services: &BankAccountServices,
         account_id: String,
     ) -> Result<Vec<BankAccountEvent>, BankAccountError> {
-        if self.account_id != "" {
+        if !self.account_id.is_empty() {
             return Err(BankAccountError::AccountAlreadyOpen);
         }
         Ok(vec![BankAccountEvent::AccountOpened { account_id }])
@@ -144,7 +144,7 @@ impl BankAccount {
     ) -> Result<Vec<BankAccountEvent>, BankAccountError> {
         if amount < 0_f64 {
             error!("cannot write negative check amount");
-            return Err(BankAccountError::CannotWriteNegativeCheckAmount.into());
+            return Err(BankAccountError::CannotWriteNegativeCheckAmount);
         }
         let balance = self.balance - amount;
         if balance < 0_f64 {

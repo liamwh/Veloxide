@@ -22,7 +22,9 @@ pub trait TodoRepository {
 
 pub type DynTodoRepo = Arc<dyn TodoRepository + Send + Sync>;
 
-#[derive(Serialize, Deserialize, ToSchema, Clone, Copy, Debug, PartialEq, sqlx::Type, Default)]
+#[derive(
+    Serialize, Deserialize, ToSchema, Clone, Copy, Debug, sqlx::Type, Default, PartialEq, Eq,
+)]
 #[sqlx(type_name = "status", rename_all = "lowercase")]
 pub enum Status {
     Complete,
@@ -52,7 +54,7 @@ impl ToString for Status {
     }
 }
 
-#[derive(Serialize, Deserialize, ToSchema, Clone, Debug, FromRow, PartialEq)]
+#[derive(Serialize, Deserialize, ToSchema, Clone, Debug, FromRow, PartialEq, Eq)]
 pub struct Todo {
     pub id: i32,
 

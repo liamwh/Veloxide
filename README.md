@@ -1,6 +1,7 @@
 # Velox: A template for building web APIs in Rust
-<!-- markdownlint-disable MD033 -->
----
+
+## <!-- markdownlint-disable MD033 -->
+
 <p align="center">
     <a href="https://github.com/liamwh/Velox"><img src="./docs/.assets/under-construction.jpg" alt="Velox"
             width=100%></a>
@@ -49,22 +50,22 @@ Note: Additional documentation on the design and implementation of Velox be foun
 
 ## What's included?
 
-| Feature | Crate(s) of Significance | Notes |
-| --- | --- | --- |
-| Web Server | [Axum](https://docs.rs/axum/latest/axum/) | The endpoint path and timestamp metadata for each issued command are captured and stored in the database in the events table. |
-| OpenAPI Doc Generation | [Utopia](https://docs.rs/utoipa/latest/utoipa/) | Serves interactive documentation at `/swagger-ui` |
-| Async Runtime | [Tokio](https://docs.rs/tokio/latest/tokio/index.html) | |
-| Tracing | [Tracing](https://docs.rs/tracing/latest/tracing/) & [Tracing OpenTelemetry](https://docs.rs/tracing-opentelemetry/latest/) & [OpenTelemetry-Jaeger](https://docs.rs/opentelemetry-jaeger/latest/) & [Tracing Log](https://docs.rs/tracing-log/latest/tracing_log/index.html) | All logs are automatically embbed in Trace spans|
-| Metrics | [Axum Prometheus](https://docs.rs/axum-prometheus/latest/axum_prometheus/) | Metrics are pre-configured for collection at /metrics |
-| Serializing & Deserializing | [Serde](https://docs.rs/serde/latest/serde/index.html) ([yaml](https://docs.rs/serde_yaml/latest/serde_yaml/) & [json](https://docs.rs/serde_json/latest/serde_json/)) | |
-| Command Query Responsibility Segregation & Event Sourcing | [cqrs-es](https://docs.rs/cqrs-es/latest/cqrs_es/) | |
-| Async Database Driver (SQL)* | [SQLx](https://docs.rs/sqlx/latest/sqlx/) | SQL queries are checked against the database for validity *at compile time* |
-| Mocking | [mockall](https://docs.rs/mockall/latest/mockall/) | |
-| Error Handling | [thiserror](https://docs.rs/thiserror/latest/thiserror/) | |
-| Behavior Driven Development / Cucumber Testing | [Cucumber](https://docs.rs/cucumber/latest/cucumber/) | |
-| Loading env variables & .env file | [Dotenvy](https://docs.rs/dotenvy/latest/dotenvy/) | |
-| Improved assertion difference identification | [Pretty Assertions](https://docs.rs/pretty_assertions/latest/pretty_assertions/) | Highlights the difference in tests character by character|
-| Supercharged derive attributes | [Derivative](https://mcarton.github.io/rust-derivative/latest/index.html) |
+| Feature                                                   | Crate(s) of Significance                                                                                                                                                                                                                                                      | Notes                                                                                                                         |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Web Server                                                | [Axum](https://docs.rs/axum/latest/axum/)                                                                                                                                                                                                                                     | The endpoint path and timestamp metadata for each issued command are captured and stored in the database in the events table. |
+| OpenAPI Doc Generation                                    | [Utopia](https://docs.rs/utoipa/latest/utoipa/)                                                                                                                                                                                                                               | Serves interactive documentation at `/swagger-ui`                                                                             |
+| Async Runtime                                             | [Tokio](https://docs.rs/tokio/latest/tokio/index.html)                                                                                                                                                                                                                        |                                                                                                                               |
+| Tracing                                                   | [Tracing](https://docs.rs/tracing/latest/tracing/) & [Tracing OpenTelemetry](https://docs.rs/tracing-opentelemetry/latest/) & [OpenTelemetry-Jaeger](https://docs.rs/opentelemetry-jaeger/latest/) & [Tracing Log](https://docs.rs/tracing-log/latest/tracing_log/index.html) | All logs are automatically embbed in Trace spans                                                                              |
+| Metrics                                                   | [Axum Prometheus](https://docs.rs/axum-prometheus/latest/axum_prometheus/)                                                                                                                                                                                                    | Metrics are pre-configured for collection at /metrics                                                                         |
+| Serializing & Deserializing                               | [Serde](https://docs.rs/serde/latest/serde/index.html) ([yaml](https://docs.rs/serde_yaml/latest/serde_yaml/) & [json](https://docs.rs/serde_json/latest/serde_json/))                                                                                                        |                                                                                                                               |
+| Command Query Responsibility Segregation & Event Sourcing | [cqrs-es](https://docs.rs/cqrs-es/latest/cqrs_es/)                                                                                                                                                                                                                            |                                                                                                                               |
+| Async Database Driver (SQL)\*                             | [SQLx](https://docs.rs/sqlx/latest/sqlx/)                                                                                                                                                                                                                                     | SQL queries are checked against the database for validity _at compile time_                                                   |
+| Mocking                                                   | [mockall](https://docs.rs/mockall/latest/mockall/)                                                                                                                                                                                                                            |                                                                                                                               |
+| Error Handling                                            | [thiserror](https://docs.rs/thiserror/latest/thiserror/)                                                                                                                                                                                                                      |                                                                                                                               |
+| Behavior Driven Development / Cucumber Testing            | [Cucumber](https://docs.rs/cucumber/latest/cucumber/)                                                                                                                                                                                                                         |                                                                                                                               |
+| Loading env variables & .env file                         | [Dotenvy](https://docs.rs/dotenvy/latest/dotenvy/)                                                                                                                                                                                                                            |                                                                                                                               |
+| Improved assertion difference identification              | [Pretty Assertions](https://docs.rs/pretty_assertions/latest/pretty_assertions/)                                                                                                                                                                                              | Highlights the difference in tests character by character                                                                     |
+| Supercharged derive attributes                            | [Derivative](https://mcarton.github.io/rust-derivative/latest/index.html)                                                                                                                                                                                                     |
 
 ### Supporting containers
 
@@ -83,29 +84,29 @@ Note that using the supporting containers is optional if you change the config-e
 
 1. First, make sure you have the required dependencies installed:
 
-     - [Rust](https://www.rust-lang.org/tools/install)
-     - [SQLx CLI](https://github.com/launchbadge/sqlx/tree/main/sqlx-cli)
-     - [Docker](https://docs.docker.com/get-docker/)
-        - Required only if using the supporting containers
+   - [Rust](https://www.rust-lang.org/tools/install)
+   - [SQLx CLI](https://github.com/launchbadge/sqlx/tree/main/sqlx-cli)
+   - [Docker](https://docs.docker.com/get-docker/)
+     - Required only if using the supporting containers
 
 2. Clone this repo
 3. Run the below command to start the supporting containers:
 
-    ```bash
-    docker-compose up -d
-    ```
+   ```bash
+   docker-compose up -d
+   ```
 
 4. Run the below command to run the database migrations:
 
-    ```bash
-    sqlx migrate run
-    ```
+   ```bash
+   sqlx migrate run
+   ```
 
 5. Run the below command to start the application:
 
-    ```bash
-    cargo run
-    ```
+   ```bash
+   cargo run
+   ```
 
 6. Browse to `http://localhost:4005/swagger-ui/` to see the interactive documentation.
 7. To use the login security restricted endpoints, the api key is `example_api_key`.
