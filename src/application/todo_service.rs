@@ -1,13 +1,15 @@
+#[cfg(test)]
+use mockall::{automock, predicate::*};
+
+use tracing::instrument;
+
 use std::sync::Arc;
 
 use async_trait::async_trait;
-#[cfg(test)]
-use mockall::{automock, predicate::*};
-use tracing::instrument;
 
 use crate::domain::DynTodoRepo;
-pub use crate::domain::*;
-pub use crate::prelude::*;
+use crate::domain::*;
+use crate::prelude::*;
 
 #[async_trait]
 #[cfg_attr(test, automock)]

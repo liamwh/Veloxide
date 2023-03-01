@@ -1,8 +1,8 @@
-use std::fmt::{Display, Formatter};
-
+use super::*;
 use async_trait::async_trait;
 use cqrs_es::{Aggregate, DomainEvent, EventEnvelope, Query};
 use serde::{Deserialize, Serialize};
+use std::fmt::{Display, Formatter};
 
 pub struct TaskService;
 
@@ -74,7 +74,7 @@ impl Query<Task> for SimpleLoggingQuery {
     }
 }
 
-#[derive(Serialize, Default, Deserialize)]
+#[derive(Serialize, Default, Deserialize, Debug, PartialEq)]
 pub struct Task {
     pub task_id: i32,
     pub description: String,
@@ -95,10 +95,11 @@ impl Aggregate for Task {
 
     // The aggregate logic goes here. Note that this will be the _bulk_ of a CQRS system
     // so expect to use helper functions elsewhere to keep the code clean.
+    #[instrument(skip(_services))]
     async fn handle(
         &self,
         command: Self::Command,
-        services: &Self::Services,
+        _services: &Self::Services,
     ) -> Result<Vec<Self::Event>, Self::Error> {
         // The handle method does not allow any mutation of the aggregate, state should be changed only by emitting events.
         match command {

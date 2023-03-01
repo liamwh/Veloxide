@@ -1,7 +1,12 @@
+pub mod postgres_db_sea_orm;
+pub mod postgres_db_sqlx;
+
+// Re-exports
+pub use postgres_db_sea_orm::*;
+pub use postgres_db_sqlx::*;
+
 use migration::{Migrator, MigratorTrait};
-use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 use serde::{Deserialize, Serialize};
-use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use tracing::{instrument, Level};
 use tracing_subscriber::prelude::__tracing_subscriber_SubscriberExt;
 
@@ -39,42 +44,6 @@ pub async fn configure_tracing() -> std::result::Result<(), crate::error::Error>
     // that impls `LookupSpan`
     let subscriber = tracing_subscriber::Registry::default().with(telemetry);
     Ok(tracing::subscriber::set_global_default(subscriber)?)
-}
-
-#[instrument]
-pub async fn get_db_connection_sqlx(
-    app_config: &AppConfiguration,
-) -> crate::prelude::Result<Pool<Postgres>> {
-    let db_connection_url = get_database_environment_variable().await;
-
-    tracing::event!(Level::DEBUG, "connecting to db");
-    let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect(db_connection_url.as_str())
-        .await?;
-
-    sqlx::migrate!()
-        .run(&pool)
-        .await
-        .expect("could not run SQLx migrations");
-
-    Ok(pool)
-}
-
-#[instrument]
-pub async fn get_db_connection_sea_orm(
-    app_config: &AppConfiguration,
-) -> crate::prelude::Result<DatabaseConnection> {
-    tracing::event!(Level::DEBUG, "connecting to db");
-    let db_connection_url = get_database_environment_variable().await;
-
-    let mut opt = ConnectOptions::new(db_connection_url.to_owned());
-    opt.max_connections(100).min_connections(5);
-
-    let db = Database::connect(opt).await?;
-    Migrator::up(&db, None).await?;
-
-    Ok(db)
 }
 
 #[instrument]

@@ -1,4 +1,3 @@
-pub use crate::domain::Todo;
 pub mod bank_account_service;
 pub mod todo_service;
 

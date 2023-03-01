@@ -3,8 +3,9 @@ use utoipa::{
     Modify, OpenApi,
 };
 
+use crate::domain::BankAccountCommand;
 use crate::domain::Todo;
-use crate::presentation::todo;
+use crate::presentation::*;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -14,13 +15,20 @@ use crate::presentation::todo;
           todo::get_todo_by_id,
           todo::post_todo,
           todo::delete_todo,
+          bank_account::query_handler,
+          bank_account::command_handler,
       ),
       components(
-          schemas(Todo, todo::TodoError),
-      ),
+          schemas(
+            Todo,
+            todo::TodoError,
+            BankAccountView,
+            BankAccountCommand),
+    ),
       modifiers(&SecurityAddon),
       tags(
-          (name = "Todo", description = "Todo items management API")
+          (name = "Todo", description = "Todo items management API"),
+          (name = "Bank Accounts", description = "Bank Account Management API")
       ),
         info(
             title = "Todo API: built with Velox",

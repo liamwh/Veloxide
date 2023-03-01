@@ -1,12 +1,12 @@
 use async_trait::async_trait;
 use cqrs_es::Aggregate;
 use serde::{Deserialize, Serialize};
+use tracing::*;
 
 use crate::application::BankAccountServices;
 use crate::domain::commands::BankAccountCommand;
 use crate::domain::events::{BankAccountError, BankAccountEvent};
-
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct BankAccount {
     account_id: String,
     balance: f64,
@@ -26,6 +26,7 @@ impl Aggregate for BankAccount {
 
     // The aggregate logic goes here. Note that this will be the _bulk_ of a CQRS system
     // so expect to use helper functions elsewhere to keep the code clean.
+    #[instrument(skip(services))]
     async fn handle(
         &self,
         command: Self::Command,
@@ -33,54 +34,21 @@ impl Aggregate for BankAccount {
     ) -> Result<Vec<Self::Event>, Self::Error> {
         match command {
             BankAccountCommand::OpenAccount { account_id } => {
-                Ok(vec![BankAccountEvent::AccountOpened { account_id }])
+                self.handle_open_account_command(services, account_id).await
             }
             BankAccountCommand::DepositMoney { amount } => {
-                let balance = self.balance + amount;
-                Ok(vec![BankAccountEvent::CustomerDepositedMoney {
-                    amount,
-                    balance,
-                }])
+                self.handle_deposit_money_command(services, amount).await
             }
             BankAccountCommand::WithdrawMoney { amount, atm_id } => {
-                let balance = self.balance - amount;
-                if balance < 0_f64 {
-                    return Err("funds not available".into());
-                }
-                if services
-                    .services
-                    .atm_withdrawal(&atm_id, amount)
+                self.handle_withdraw_money_command(services, amount, atm_id)
                     .await
-                    .is_err()
-                {
-                    return Err("atm rule violation".into());
-                };
-                Ok(vec![BankAccountEvent::CustomerWithdrewCash {
-                    amount,
-                    balance,
-                }])
             }
             BankAccountCommand::WriteCheck {
                 check_number,
                 amount,
             } => {
-                let balance = self.balance - amount;
-                if balance < 0_f64 {
-                    return Err("funds not available".into());
-                }
-                if services
-                    .services
-                    .validate_check(&self.account_id, &check_number)
+                self.handle_write_check_command(services, check_number, amount)
                     .await
-                    .is_err()
-                {
-                    return Err("check invalid".into());
-                };
-                Ok(vec![BankAccountEvent::CustomerWroteCheck {
-                    check_number,
-                    amount,
-                    balance,
-                }])
             }
         }
     }
@@ -107,6 +75,99 @@ impl Aggregate for BankAccount {
     }
 }
 
+impl BankAccount {
+    #[instrument]
+    pub async fn handle_open_account_command(
+        &self,
+        services: &BankAccountServices,
+        account_id: String,
+    ) -> Result<Vec<BankAccountEvent>, BankAccountError> {
+        if self.account_id != "" {
+            return Err(BankAccountError::AccountAlreadyOpen);
+        }
+        Ok(vec![BankAccountEvent::AccountOpened { account_id }])
+    }
+
+    #[instrument]
+    pub async fn handle_deposit_money_command(
+        &self,
+        _services: &BankAccountServices,
+        amount: f64,
+    ) -> Result<Vec<BankAccountEvent>, BankAccountError> {
+        if amount < 0_f64 {
+            return Err(BankAccountError::CannotDepositNegativeAmount);
+        }
+        let balance = self.balance + amount;
+        Ok(vec![BankAccountEvent::CustomerDepositedMoney {
+            amount,
+            balance,
+        }])
+    }
+
+    #[instrument]
+    pub async fn handle_withdraw_money_command(
+        &self,
+        services: &BankAccountServices,
+        amount: f64,
+        atm_id: String,
+    ) -> Result<Vec<BankAccountEvent>, BankAccountError> {
+        if amount < 0_f64 {
+            error!("cannot withdraw negative amount");
+            return Err(BankAccountError::CannotWithdrawNegativeAmount);
+        }
+        let balance = self.balance - amount;
+        if balance < 0_f64 {
+            error!("insufficient funds");
+            return Err(BankAccountError::InsufficientFunds);
+        }
+        if services
+            .services
+            .atm_withdrawal(&atm_id, amount)
+            .await
+            .is_err()
+        {
+            error!("atm rule violation");
+            return Err(BankAccountError::AtmRuleViolation);
+        };
+        Ok(vec![BankAccountEvent::CustomerWithdrewCash {
+            amount,
+            balance,
+        }])
+    }
+
+    #[instrument]
+    pub async fn handle_write_check_command(
+        &self,
+        services: &BankAccountServices,
+        check_number: String,
+        amount: f64,
+    ) -> Result<Vec<BankAccountEvent>, BankAccountError> {
+        if amount < 0_f64 {
+            error!("cannot write negative check amount");
+            return Err(BankAccountError::CannotWriteNegativeCheckAmount.into());
+        }
+        let balance = self.balance - amount;
+        if balance < 0_f64 {
+            error!("insufficient funds");
+            return Err(BankAccountError::InsufficientFunds);
+        }
+        if services
+            .services
+            .validate_check(&self.account_id, &check_number)
+            .await
+            .is_err()
+        {
+            error!("invalid check");
+            return Err(BankAccountError::InvalidCheck);
+        };
+        Ok(vec![BankAccountEvent::CustomerWroteCheck {
+            check_number,
+            amount,
+            balance,
+        }])
+    }
+}
+
 impl Default for BankAccount {
     fn default() -> Self {
         BankAccount {
@@ -122,9 +183,10 @@ impl Default for BankAccount {
 #[cfg(test)]
 mod aggregate_tests {
     use async_trait::async_trait;
+    use cqrs_es::test::TestFramework;
     use std::sync::Mutex;
 
-    use cqrs_es::test::TestFramework;
+    use super::*;
 
     use crate::application::{AtmError, BankAccountApi, BankAccountServices, CheckingError};
     use crate::domain::aggregate::BankAccount;
@@ -215,7 +277,7 @@ mod aggregate_tests {
         AccountTestFramework::with(services)
             .given(vec![previous])
             .when(command)
-            .then_expect_error_message("atm rule violation");
+            .then_expect_error_message(BankAccountError::AtmRuleViolation.to_string().as_str());
     }
 
     #[test]
@@ -230,7 +292,7 @@ mod aggregate_tests {
             .given_no_previous_events()
             .when(command)
             // Here we expect an error rather than any events
-            .then_expect_error_message("funds not available")
+            .then_expect_error_message(BankAccountError::InsufficientFunds.to_string().as_str());
     }
 
     #[test]
@@ -275,7 +337,7 @@ mod aggregate_tests {
         AccountTestFramework::with(services)
             .given(vec![previous])
             .when(command)
-            .then_expect_error_message("check invalid");
+            .then_expect_error_message(BankAccountError::InvalidCheck.to_string().as_str());
     }
 
     #[test]
@@ -289,7 +351,7 @@ mod aggregate_tests {
         AccountTestFramework::with(services)
             .given_no_previous_events()
             .when(command)
-            .then_expect_error_message("funds not available")
+            .then_expect_error_message(BankAccountError::InsufficientFunds.to_string().as_str())
     }
 
     pub struct MockBankAccountServices {

@@ -1,4 +1,7 @@
-mod bank_account;
+use tracing::instrument;
+use utoipa::ToSchema;
+
+pub mod bank_account;
 pub mod project;
 pub mod task;
 pub mod todo;
