@@ -34,7 +34,7 @@ pub async fn configure_tracing() -> std::result::Result<(), crate::error::Error>
 
 #[instrument]
 pub async fn load_app_configuration() -> crate::prelude::Result<AppConfiguration> {
-    let filename = get_configuration_file_path_variable().await?;
+    let filename = get_configuration_file_path_variable("CONFIGURATION_FILE_PATH").await?;
 
     let error_string = format!("Could not open file: {filename}");
     let error_string = error_string.as_str();
@@ -54,12 +54,14 @@ async fn get_database_environment_variable() -> String {
 }
 
 #[instrument]
-pub async fn get_configuration_file_path_variable() -> crate::prelude::Result<String> {
-    let filename = match dotenvy::var("CONFIGURATION_FILE_PATH") {
+pub async fn get_configuration_file_path_variable(
+    variable_name: &str,
+) -> crate::prelude::Result<String> {
+    let filename = match dotenvy::var(variable_name) {
         Ok(val) => val,
         Err(err) => {
             return Err(crate::error::Error::Generic(format!(
-                "Could not read CONFIGURATION_FILE_PATH: {err}"
+                "Could not read {variable_name}: {err}"
             )));
         }
     };
@@ -81,7 +83,9 @@ mod tests {
     #[tokio::test]
     async fn test_get_configuration_file_path_variable() {
         env::set_var("CONFIGURATION_FILE_PATH", "test");
-        let filename = get_configuration_file_path_variable().await;
-        assert_eq!(filename.unwrap(), "test");
+        let filename = get_configuration_file_path_variable("CONFIGURATION_FILE_PATH")
+            .await
+            .unwrap();
+        assert_eq!(filename, "test");
     }
 }
