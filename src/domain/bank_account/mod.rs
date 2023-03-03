@@ -1,5 +1,3 @@
-use super::*;
-
 pub mod bank_account_aggregate;
 pub mod bank_account_commands;
 pub mod bank_account_events;

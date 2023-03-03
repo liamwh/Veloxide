@@ -11,6 +11,7 @@ pub struct BankAccountServices {
     pub services: Box<dyn BankAccountApi>,
 }
 
+#[cfg_attr(test, automock)]
 impl BankAccountServices {
     pub fn new(services: Box<dyn BankAccountApi>) -> Self {
         Self { services }

@@ -3,31 +3,21 @@
 #![allow(clippy::pedantic)]
 #![warn(clippy::all)]
 
-use std::{
-    net::{Ipv4Addr, SocketAddr},
-    sync::Arc,
-};
+use std::net::{Ipv4Addr, SocketAddr};
 
-use presentation::{todo_handlers, ApiDoc};
-
-use application::todo_service;
-use axum::{
-    routing::{get, post},
-    Extension, Router, Server,
-};
+use axum::{routing::get, Extension, Router, Server};
 use axum_prometheus::PrometheusMetricLayer;
+use presentation::ApiDoc;
+use tower::ServiceBuilder;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
-use crate::domain::DynTodoRepo;
-use crate::infrastructure::*;
 use crate::prelude::*;
+mod error;
 use dotenvy::dotenv;
 mod application;
 mod configuration;
 mod domain;
-mod error;
-mod infrastructure;
 mod prelude;
 mod presentation;
 use tracing_log::LogTracer;
@@ -49,25 +39,11 @@ async fn main() -> Result<()> {
     let pool = configuration::get_db_connection_sqlx(&configuration).await?;
     let (cqrs, account_query) = presentation::get_bank_account_cqrs_framework(pool);
 
-    // Load the hand-written repositories, these will most likely be deleted in place of the CQRS framework
-    let pool = configuration::get_db_connection_sqlx(&configuration).await?;
-    let repository = match configuration.repository {
-        configuration::Repository::Postgres => {
-            tracing::debug!("using postgres repository");
-            Arc::new(PostgresTodoRepository::new(pool)) as DynTodoRepo
-        }
-        configuration::Repository::Memory => {
-            tracing::debug!("using memory repository");
-            Arc::new(MemoryTodoRepository::new()) as DynTodoRepo
-        }
-    };
-    let todo_service = Arc::new(todo_service::TodoServiceImpl::new(repository));
-
     // Start the GraphQL server
     if configuration.graphql.enabled {
-        let account_query2 = account_query.clone();
+        let account_query = account_query.clone();
         tokio::spawn(async move {
-            presentation::graphql::run_graphql_server(&configuration.graphql, account_query2).await;
+            presentation::graphql::run_graphql_server(&configuration.graphql, account_query).await;
         });
     }
 
@@ -82,23 +58,13 @@ async fn main() -> Result<()> {
             get(presentation::bank_account::query_handler)
                 .post(presentation::bank_account::command_handler),
         )
-        .route(
-            "/todo",
-            get(todo_handlers::list_todos).post(todo_handlers::post_todo),
-        )
-        .route(
-            "/todo/:id",
-            get(todo_handlers::get_todo_by_id).delete(todo_handlers::delete_todo),
-        )
-        .route(
-            "/todo/:id/mark-as-completed",
-            post(todo_handlers::mark_as_completed),
-        )
         .route("/metrics", get(|| async move { metric_handle.render() }))
-        .with_state(todo_service)
-        .layer(Extension(cqrs))
-        .layer(Extension(account_query))
-        .layer(prometheus_layer);
+        .layer(
+            ServiceBuilder::new()
+                .layer(Extension(cqrs))
+                .layer(Extension(account_query))
+                .layer(prometheus_layer),
+        );
 
     // Run the router
     let port = dotenvy::var("HTTP_PORT").unwrap_or_else(|_| "4005".to_string());

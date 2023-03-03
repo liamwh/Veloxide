@@ -6,6 +6,7 @@ use tracing::*;
 use crate::application::BankAccountServices;
 use crate::domain::bank_account_commands::BankAccountCommand;
 use crate::domain::bank_account_events::{BankAccountError, BankAccountEvent};
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BankAccount {
     account_id: String,
@@ -201,6 +202,44 @@ mod aggregate_tests {
     // and verify that the logic works as expected.
     type AccountTestFramework = TestFramework<BankAccount>;
 
+    pub struct MockBankAccountServices {
+        atm_withdrawal_response: Mutex<Option<Result<(), AtmError>>>,
+        validate_check_response: Mutex<Option<Result<(), CheckingError>>>,
+    }
+
+    impl Default for MockBankAccountServices {
+        fn default() -> Self {
+            Self {
+                atm_withdrawal_response: Mutex::new(None),
+                validate_check_response: Mutex::new(None),
+            }
+        }
+    }
+
+    impl MockBankAccountServices {
+        fn set_atm_withdrawal_response(&self, response: Result<(), AtmError>) {
+            *self.atm_withdrawal_response.lock().unwrap() = Some(response);
+        }
+        fn set_validate_check_response(&self, response: Result<(), CheckingError>) {
+            *self.validate_check_response.lock().unwrap() = Some(response);
+        }
+    }
+
+    #[async_trait]
+    impl BankAccountApi for MockBankAccountServices {
+        async fn atm_withdrawal(&self, _atm_id: &str, _amount: f64) -> Result<(), AtmError> {
+            self.atm_withdrawal_response.lock().unwrap().take().unwrap()
+        }
+
+        async fn validate_check(
+            &self,
+            _account_id: &str,
+            _check_number: &str,
+        ) -> Result<(), CheckingError> {
+            self.validate_check_response.lock().unwrap().take().unwrap()
+        }
+    }
+
     #[test]
     fn test_deposit_money() {
         let expected = BankAccountEvent::CustomerDepositedMoney {
@@ -356,43 +395,5 @@ mod aggregate_tests {
             .given_no_previous_events()
             .when(command)
             .then_expect_error_message(BankAccountError::InsufficientFunds.to_string().as_str())
-    }
-
-    pub struct MockBankAccountServices {
-        atm_withdrawal_response: Mutex<Option<Result<(), AtmError>>>,
-        validate_check_response: Mutex<Option<Result<(), CheckingError>>>,
-    }
-
-    impl Default for MockBankAccountServices {
-        fn default() -> Self {
-            Self {
-                atm_withdrawal_response: Mutex::new(None),
-                validate_check_response: Mutex::new(None),
-            }
-        }
-    }
-
-    impl MockBankAccountServices {
-        fn set_atm_withdrawal_response(&self, response: Result<(), AtmError>) {
-            *self.atm_withdrawal_response.lock().unwrap() = Some(response);
-        }
-        fn set_validate_check_response(&self, response: Result<(), CheckingError>) {
-            *self.validate_check_response.lock().unwrap() = Some(response);
-        }
-    }
-
-    #[async_trait]
-    impl BankAccountApi for MockBankAccountServices {
-        async fn atm_withdrawal(&self, _atm_id: &str, _amount: f64) -> Result<(), AtmError> {
-            self.atm_withdrawal_response.lock().unwrap().take().unwrap()
-        }
-
-        async fn validate_check(
-            &self,
-            _account_id: &str,
-            _check_number: &str,
-        ) -> Result<(), CheckingError> {
-            self.validate_check_response.lock().unwrap().take().unwrap()
-        }
     }
 }

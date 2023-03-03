@@ -4,37 +4,28 @@ use utoipa::{
 };
 
 use crate::domain::BankAccountCommand;
-use crate::domain::Todo;
 use crate::presentation::*;
 
 #[derive(OpenApi)]
 #[openapi(
       paths(
-          todo::list_todos,
-          todo::mark_as_completed,
-          todo::get_todo_by_id,
-          todo::post_todo,
-          todo::delete_todo,
           bank_account::query_handler,
           bank_account::command_handler,
       ),
       components(
           schemas(
-            Todo,
-            todo::TodoError,
             BankAccountView,
             BankAccountCommand,
-            LedgerEntry),
+            AccountTransaction),
     ),
       modifiers(&SecurityAddon),
       tags(
-          (name = "Todo", description = "Todo items management API"),
           (name = "Bank Accounts", description = "Bank Account Management API")
       ),
         info(
-            title = "Todo API: built with Velox",
+            title = "Bank Account API: built with Velox",
             version = "0.1.0",
-            description = "A simple API to manage todo items",
+            description = "An event-sourced bank account API built with Velox",
             contact(name = "Liam Woodleigh", url="https://github.com/liamwh/"),
         ),
   )]

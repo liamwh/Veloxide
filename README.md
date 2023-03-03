@@ -115,8 +115,9 @@ Note that using the supporting containers is optional if you change the velox-co
    cargo run
    ```
 
-6. Browse to `http://localhost:4005/swagger-ui/` to see the interactive documentation.
-7. To use the login security restricted endpoints, the api key is `example_api_key`.
+6. Browse to `http://localhost:4005/swagger-ui/` to see the OpenAPI Interactive documentation.
+   - To use the login security restricted endpoints, the api key is `example_api_key`.
+7. Browse to `http://localhost:9000/` to see GraphiQL, the GraphQL interactive documentation.
 
 ## Why the name?
 
@@ -126,12 +127,11 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 
 ### In-progress
 
-- [ ] Expose the BankAccountView using GraphQL
+- [ ] Send BankAccountCommands via GraphQL
 - [ ] Add [OPA](https://www.openpolicyagent.org/) + [Envoy](https://www.envoyproxy.io/) for authorization example
 
 ### Domain
 
-- [ ] Rip out todo model, leave BankAccount as the only aggregate
 - [ ] Consider adding a second aggregate to demonstrate how to use multiple aggregates
 
 ### Testing
@@ -140,13 +140,15 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 
 ### Other
 
+- [ ] Consider offering a Postman / Insomnia collection
 - [ ] Add [Tonic](https://docs.rs/tonic/latest/tonic/) ([gRPC](https://grpc.io/)) example
 - [ ] Use Rust's built in feature functionality to enable/disable Velox features (e.g. tracing, metrics, graphql, gRPC etc)
-- [ ] Create a Rust Book
+- [ ] Create a Rust Book to aggregate documentation
 - [ ] Create a cool logo!
 
 ### Done
 
+- [x] Expose the BankAccountView using GraphQL
 - [x] Get a [GraphQL](https://docs.rs/async-graphql/latest/async_graphql/) server running
 - [x] Implement CQRS and the concepts of aggregates, entities, domain events and commands.
 - [x] Add Dependabot to the repo to keep dependencies up to date
@@ -161,10 +163,6 @@ Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
 - [x] At least one cucumber test for BDD testing example
 - [x] Use DDD layers
 - [x] Abstract repository, implment basic in-memory repository and postgres repository
-
-## A quick note on dynamic dispatch
-
-Velox uses dynamic dispatch to implement dependency injection. This is a trade-off between performance and flexibility. If you are building a high-performance application, you may want to consider using static dispatch (dependencies defined at compile time), or the [Enum Dispatch crate](https://docs.rs/enum_dispatch/latest/enum_dispatch/index.html) as a middleground solution.
 
 ## Additional Documentation
 

@@ -19,7 +19,7 @@ pub struct BankAccountView {
     account_id: Option<String>,
     balance: f64,
     written_checks: Vec<String>,
-    ledger: Vec<LedgerEntry>,
+    account_transactions: Vec<AccountTransaction>,
 }
 
 // This updates the view with events as they are committed.
@@ -33,13 +33,14 @@ impl View<BankAccount> for BankAccountView {
             }
 
             BankAccountEvent::CustomerDepositedMoney { amount, balance } => {
-                self.ledger.push(LedgerEntry::new("deposit", *amount));
+                self.account_transactions
+                    .push(AccountTransaction::new("deposit", *amount));
                 self.balance = *balance;
             }
 
             BankAccountEvent::CustomerWithdrewCash { amount, balance } => {
-                self.ledger
-                    .push(LedgerEntry::new("atm withdrawal", *amount));
+                self.account_transactions
+                    .push(AccountTransaction::new("atm withdrawal", *amount));
                 self.balance = *balance;
             }
 
@@ -48,7 +49,8 @@ impl View<BankAccount> for BankAccountView {
                 amount,
                 balance,
             } => {
-                self.ledger.push(LedgerEntry::new(check_number, *amount));
+                self.account_transactions
+                    .push(AccountTransaction::new(check_number, *amount));
                 self.written_checks.push(check_number.clone());
                 self.balance = *balance;
             }
@@ -57,11 +59,11 @@ impl View<BankAccount> for BankAccountView {
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, ToResponse, SimpleObject)]
-pub struct LedgerEntry {
+pub struct AccountTransaction {
     description: String,
     amount: f64,
 }
-impl LedgerEntry {
+impl AccountTransaction {
     fn new(description: &str, amount: f64) -> Self {
         Self {
             description: description.to_string(),

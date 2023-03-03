@@ -36,8 +36,12 @@ pub async fn query_handler(
   tag = "Bank Accounts",
   path = "/bank-accounts/{id}",
   responses(
-      (status = 204, description = "Command issued successfully"),
-      (status = 400, description = "Command failed", body = [String])
+    (status = 204, description = "Command issued successfully"),
+    (status = 400, description = "Command failed", body = [String])
+  ),
+  request_body(content = BankAccountCommand, description = "Bank account command to execute, see the Bank Account Command schema at the bottom of the page for details", content_type = "application/json"),
+  params(
+    ("id" = i32, Path, description = "Bank account ID"),
   ),
 )]
 #[instrument(skip(cqrs))]
