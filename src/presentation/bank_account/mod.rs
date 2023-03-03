@@ -18,7 +18,7 @@ pub mod bank_account_views;
 pub use bank_account_handlers::*;
 pub use bank_account_views::*;
 
-pub fn get_cqrs_framework(
+pub fn get_bank_account_cqrs_framework(
     pool: Pool<Postgres>,
 ) -> (
     Arc<PostgresCqrs<BankAccount>>,

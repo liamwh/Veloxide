@@ -1,3 +1,5 @@
+use async_graphql::SimpleObject;
+
 use super::*;
 
 // Our second query, this one will be handled with Postgres `GenericQuery`
@@ -11,7 +13,8 @@ pub type AccountQuery = GenericQuery<
 
 // The view for a BankAccount query, for a standard http application this should
 // be designed to reflect the response dto that will be returned to a user.
-#[derive(Debug, Default, Serialize, Deserialize, ToSchema, ToResponse)]
+
+#[derive(SimpleObject, Debug, Default, Serialize, Deserialize, ToSchema, ToResponse)]
 pub struct BankAccountView {
     account_id: Option<String>,
     balance: f64,
@@ -53,7 +56,7 @@ impl View<BankAccount> for BankAccountView {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, ToResponse)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, ToResponse, SimpleObject)]
 pub struct LedgerEntry {
     description: String,
     amount: f64,

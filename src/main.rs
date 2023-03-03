@@ -47,13 +47,14 @@ async fn main() -> Result<()> {
 
     let configuration = configuration::load_app_configuration().await?;
     let pool = configuration::get_db_connection_sqlx(&configuration).await?;
-    let pool2 = configuration::get_db_connection_sqlx(&configuration).await?;
-    let (cqrs, account_query) = presentation::get_cqrs_framework(pool);
+    let (cqrs, account_query) = presentation::get_bank_account_cqrs_framework(pool);
 
+    // Load the hand-written repositories, these will most likely be deleted in place of the CQRS framework
+    let pool = configuration::get_db_connection_sqlx(&configuration).await?;
     let repository = match configuration.repository {
         configuration::Repository::Postgres => {
             tracing::debug!("using postgres repository");
-            Arc::new(PostgresTodoRepository::new(pool2)) as DynTodoRepo
+            Arc::new(PostgresTodoRepository::new(pool)) as DynTodoRepo
         }
         configuration::Repository::Memory => {
             tracing::debug!("using memory repository");
@@ -62,15 +63,16 @@ async fn main() -> Result<()> {
     };
     let todo_service = Arc::new(todo_service::TodoServiceImpl::new(repository));
 
-    // Configure prometheus layer
-    let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
-
+    // Start the GraphQL server
     if configuration.graphql.enabled {
-        tracing::debug!("Starting graphql server");
+        let account_query2 = account_query.clone();
         tokio::spawn(async move {
-            presentation::graphql::run_graphql_server(&configuration.graphql).await;
+            presentation::graphql::run_graphql_server(&configuration.graphql, account_query2).await;
         });
     }
+
+    // Configure prometheus layer for Axum
+    let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
 
     // Set up the router
     let app = Router::new()
