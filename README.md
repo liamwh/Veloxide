@@ -83,14 +83,20 @@ Note that using the supporting containers is optional if you change the velox-co
 
 ## Getting started
 
-1. First, make sure you have the required dependencies installed:
+1. First, make sure you have the required dependencies installed. You can install them by runnning the below command:
+
+    ```zsh
+    make tools.required
+    ````
+
+    OR alternatively, install them as per their documentation:
 
    - [Rust](https://www.rust-lang.org/tools/install)
    - [SQLx CLI](https://github.com/launchbadge/sqlx/tree/main/sqlx-cli)
    - [Docker](https://docs.docker.com/get-docker/)
-     - Required only if using the supporting containers
 
 2. Clone this repo
+
 3. Run the below command to start the supporting containers:
 
    ```bash
