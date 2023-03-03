@@ -48,11 +48,6 @@ where
         let mut metadata = HashMap::default();
         metadata.insert("time".to_string(), chrono::Utc::now().to_rfc3339());
         metadata.insert("path".to_string(), parts.uri.path().to_string());
-        // if let Some(user_agent) = parts.headers.get(USER_AGENT_HDR) {
-        //     if let Ok(value) = user_agent.to_str() {
-        //         metadata.insert(USER_AGENT_HDR.to_string(), value.to_string());
-        //     }
-        // }
         Ok(MetadataExtension(metadata))
     }
 }
