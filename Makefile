@@ -1,4 +1,4 @@
-# MAKEFLAGS := --no-print-directory --silent
+MAKEFLAGS := --no-print-directory --silent
 
 default: help
 
@@ -13,16 +13,41 @@ lint:
 dr: docker.run
 docker.run: ## Run the containers in docker (this starts the docker stack), alias: dr
 	docker-compose up -d
+	sqlx migrate run
+	cargo run
 
+stop: docker.stop
 ds: docker.stop
 docker.stop: ## Stop the containers in docker (this stops the docker stack), alias: ds
 	docker-compose down
 
 restart: docker.restart
-docker.restart: ## Restart the containers in docker (this restarts the docker stack), alias: restart
-	docker-compose down
-	docker-compose up -d
+docker.restart: docker.stop docker.run ## Restart the containers in docker (this restarts the docker stack), alias: restart
 
 cover: ## Run the tests and generate a coverage report
 	cargo llvm-cov --html
 	open target/llvm-cov/html/index.html
+
+tools.required: ## Install the required tools for development with Velox
+	@echo "Installing tools..."
+
+	@echo "Installing cargo-llvm-cov (code coverage report generation: https://github.com/taiki-e/cargo-llvm-cov)"
+	cargo install cargo-llvm-cov
+
+	@echo "Installing sqlx-cli (database migrations: https://crates.io/crates/sqlx-cli)"
+	cargo install sqlx-cli --no-default-features --features postgres
+
+	@echo "Installing tools...Done"
+
+tools.recommended: ## Install recommended tooling that isn't required
+	@echo "Installing recommended tools..."
+
+	@echo "Installing bacon (background code checker: https://github.com/Canop/bacon)"
+	cargo install bacon
+
+	@echo "Installing cargo-watch (hot reloading: https://crates.io/crates/cargo-watch)"
+	cargo install cargo-watch
+
+	@echo "Installing recommended tools... Done"
+
+tools.all: tools.required tools.recommended ## Install all required and recommended tools

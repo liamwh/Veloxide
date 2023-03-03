@@ -3,7 +3,7 @@ use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 
 #[instrument]
 pub async fn get_db_connection_sqlx(
-    app_config: &AppConfiguration,
+    app_config: &config::AppConfiguration,
 ) -> crate::prelude::Result<Pool<Postgres>> {
     let db_connection_url = get_database_environment_variable().await;
 

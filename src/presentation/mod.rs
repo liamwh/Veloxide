@@ -14,6 +14,7 @@ pub mod metadata_extension;
 
 pub mod bank_account;
 pub mod errors;
+pub mod graphql;
 pub mod openapi;
 pub mod todo;
 

@@ -1,10 +1,10 @@
 use super::*;
 
-pub mod aggregate;
-pub mod commands;
-pub mod events;
+pub mod bank_account_aggregate;
+pub mod bank_account_commands;
+pub mod bank_account_events;
 
 // Re-exports
-pub use aggregate::*;
-pub use commands::*;
-pub use events::*;
+pub use bank_account_aggregate::*;
+pub use bank_account_commands::*;
+pub use bank_account_events::*;

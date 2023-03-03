@@ -10,15 +10,17 @@ use std::sync::Arc;
 use async_trait::async_trait;
 use sqlx::{Pool, Postgres};
 
+pub mod bank_account_graphql;
 pub mod bank_account_handlers;
 pub mod bank_account_views;
 
 // Re-exports
 
+pub use bank_account_graphql::*;
 pub use bank_account_handlers::*;
 pub use bank_account_views::*;
 
-pub fn get_cqrs_framework(
+pub fn get_bank_account_cqrs_framework(
     pool: Pool<Postgres>,
 ) -> (
     Arc<PostgresCqrs<BankAccount>>,

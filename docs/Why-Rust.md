@@ -1,16 +1,23 @@
 # Why Rust?
 
+<!-- markdownlint-disable MD033 -->
+
 ## Speed of development
 
 Rust's compiler shrinks the feedback loop between writing code and seeing the results. This makes it easy to iterate quickly and experiment with new ideas.
 
 ![value-delivery-feedback-loops](./.assets/value-delivery-feedback-loops.png)
 
-## Rust's focus on the "Happy Flow" makes it easier to read, write and maintain correct code
+## Metaprogramming with Macros
 
-Rust's `?` syntax, `Result` and `Option` types, and `match` keyword combine to make it easy to write code that focuses on the "happy flow" of the program. This makes it easy to write code that is easy to read, understand and maintain.
+[Macros](https://doc.rust-lang.org/book/ch19-06-macros.html) in Rust are a powerful tool that allows developers to write code that can generate other code at compile-time ([metaprogramming](https://en.wikipedia.org/wiki/Metaprogramming)), making it possible to automate repetitive tasks, reduce boilerplate code, and achieve greater code reuse. Rust's macro system is highly flexible and expressive, allowing developers to define complex transformations on the code, such as code generation, syntactic transformations, and type inference. This makes Rust macros an excellent choice for tasks such as domain-specific language implementation, serialization and deserialization, and code optimization, among others. Furthermore, Rust's macro system is designed to be safe and predictable, preventing accidental code execution or memory errors, and producing clear error messages when issues arise.
 
-Let's take a look at how error handling works in Go:
+## Focus on the "Happy Flow"
+
+Rust's `?` syntax, `Result` and `Option` types, lack of null/nil, and `match` keyword combine to make it easy to write code that focuses on the "happy flow" of the program. This makes it easy to write code that is easy to read, understand and maintain.
+
+<details>
+  <summary>Click to take a look at some Rust vs Go code comparisons</summary>
 
 ### Go
 
@@ -45,7 +52,7 @@ Here's how the outer function might look like in Go:
 
 ```go
 func doSomethingElse() (*MyResultType, error) {
-    val, err := someOtherOperation()
+    val, err := SomeOperation()
     if err != nil {
         if errors.Is(err, ErrorKindNotFound) {
             fmt.Println("Xyz resource was not found")
@@ -85,6 +92,8 @@ In this example, the `match` statement is used to handle different error conditi
 
 Rust's error handling, ? syntax, and match statements work together to keep the focus on the happy flow by providing concise and expressive ways to handle errors and propagate them up the call stack. This makes it easier for developers to write correct and maintainable code, and it makes it easier for other developers to read and understand the code. The value in this is hard to overstate.
 
+</details>
+
 ## Memory Safety
 
 Rust is designed to eliminate many common programming errors such as buffer overflows and null / nil pointer dereferences, which can lead to bugs and security vulnerabilities. This makes Rust best in class for developing secure and reliable software.
@@ -97,6 +106,8 @@ Rust has a growing and active community of developers who contribute to its ecos
 
 When evaluating the performance of programming languages, individual benchmarks may be vulnerable to manipulation and difficult to interpret. To mitigate this issue, the [Benchmarks Game](https://benchmarksgame-team.pages.debian.net/benchmarksgame/fastest/rust-go.html) has assessed multiple algorithms for each language, comparing various stats from their performance to provide a more comprehensive evaluation of language tradeoffs.
 
+[Test link](https://github.com/liamwh/Velox/blob/main/docs/Why-Rust.md#performance)
+
 In the Benchmarks Game's evaluation of various algorithms, Rust demonstrated superior optimization compared to Go. The most optimized Rust code outperformed the most optimized Go code by at least 30% across all tested algorithms, with some benchmarks showing even greater differences. For instance, in the binary-trees benchmark, Rust's most optimized code was 12 times faster than Go's. Additionally, in many cases, even the least optimized Rust code was faster than the most optimized Go code.
 
 ![binary-trees](./.assets/benchmark-game-binary-trees.png)
@@ -107,4 +118,4 @@ In the Benchmarks Game's evaluation of various algorithms, Rust demonstrated sup
 
 Overall, Rust provides a better developer experience by providing a shorter feedback loop and more legible code, Rust code is considered more secure than any other language out there, it's more performant than just about all languages except C, and it has a vibrant community of developers who contribute to its ecosystem of libraries and tools. These factors make Rust an outstanding choice for developing secure, reliable, and performant software of any kind.
 
-Why __*wouldn't*__ you choose rust for your next project?
+Why **_wouldn't_** you choose rust for your next project?

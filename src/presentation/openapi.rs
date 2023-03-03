@@ -23,7 +23,8 @@ use crate::presentation::*;
             Todo,
             todo::TodoError,
             BankAccountView,
-            BankAccountCommand),
+            BankAccountCommand,
+            LedgerEntry),
     ),
       modifiers(&SecurityAddon),
       tags(
