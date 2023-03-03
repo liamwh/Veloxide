@@ -16,7 +16,7 @@ use crate::presentation::*;
           schemas(
             BankAccountView,
             BankAccountCommand,
-            LedgerEntry),
+            AccountTransaction),
     ),
       modifiers(&SecurityAddon),
       tags(

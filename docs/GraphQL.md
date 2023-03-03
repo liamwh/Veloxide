@@ -28,7 +28,7 @@ Velox implements a iGraphQL web interface on `http://localhost:8000` by default.
     accountId
     balance
     writtenChecks
-    ledger{
+    account_transactions{
       description
       amount
     }
