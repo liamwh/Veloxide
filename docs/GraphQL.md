@@ -18,6 +18,22 @@ Consequently, using GraphQL can lead to faster, more efficient, and more flexibl
 
 ## GraphQL in Velox
 
-Velox implements a iGraphQL web interface on `http://localhost:8000` by default. This interface allows you to explore the GraphQL schema and execute queries against the API. most commonly, GraphQL will be used for retrieving the Aggregate view models or a subset of their data.
+Velox implements a iGraphQL web interface on `http://localhost:8000` by default. This interface allows you to explore the GraphQL schema and execute queries against the API. Most commonly, GraphQL will be used for retrieving the Aggregate view models or a subset of their data. For example, you can retrieve the `BankAccountView` model and all of its data by executing the following query:
+
+> Note: As Velox is not yet seeded at the time of writing, you will need to first create an account.
+
+```graphql
+{
+  bankAccount(id: "your-bank-account-id-here") {
+    accountId
+    balance
+    writtenChecks
+    ledger{
+      description
+      amount
+    }
+  }
+}
+```
 
 The book describing the async-graphql library used in Velox can be found [here](https://async-graphql.github.io/async-graphql/en/index.html).
