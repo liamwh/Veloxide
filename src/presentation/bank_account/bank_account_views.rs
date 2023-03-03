@@ -13,16 +13,9 @@ pub type AccountQuery = GenericQuery<
 // be designed to reflect the response dto that will be returned to a user.
 #[derive(Debug, Default, Serialize, Deserialize, ToSchema, ToResponse)]
 pub struct BankAccountView {
-    #[schema(example = "The account ID")]
     account_id: Option<String>,
-
-    #[schema(example = "The account balance")]
     balance: f64,
-
-    #[schema(example = "The checks written from the account")]
     written_checks: Vec<String>,
-
-    #[schema(example = "A history of all transactions on the account")]
     ledger: Vec<LedgerEntry>,
 }
 
