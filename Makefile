@@ -16,6 +16,7 @@ docker.run: ## Run the containers in docker (this starts the docker stack), alia
 	sqlx migrate run
 	cargo run
 
+stop: docker.stop
 ds: docker.stop
 docker.stop: ## Stop the containers in docker (this stops the docker stack), alias: ds
 	docker-compose down
