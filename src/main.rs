@@ -36,7 +36,7 @@ use tracing_log::LogTracer;
 async fn main() -> Result<()> {
     dotenv().ok();
     LogTracer::init()?;
-    match configuration::configure_tracing().await {
+    match configuration::tracing_config::configure_tracing().await {
         Ok(_) => {
             tracing::debug!("tracing subscriber set");
         }
