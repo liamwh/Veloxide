@@ -6,6 +6,7 @@ use tracing::*;
 use crate::application::BankAccountServices;
 use crate::domain::bank_account_commands::BankAccountCommand;
 use crate::domain::bank_account_events::{BankAccountError, BankAccountEvent};
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BankAccount {
     account_id: String,
