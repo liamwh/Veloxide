@@ -115,8 +115,9 @@ Note that using the supporting containers is optional if you change the velox-co
    cargo run
    ```
 
-6. Browse to `http://localhost:4005/swagger-ui/` to see the interactive documentation.
-7. To use the login security restricted endpoints, the api key is `example_api_key`.
+6. Browse to `http://localhost:4005/swagger-ui/` to see the OpenAPI Interactive documentation.
+   - To use the login security restricted endpoints, the api key is `example_api_key`.
+7. Browse to `http://localhost:9000/` to see GraphiQL, the GraphQL interactive documentation.
 
 ## Why the name?
 
