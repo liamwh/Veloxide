@@ -50,6 +50,7 @@ opentelemetry-jaeger = { version = "~0", features = [
 ], optional = true }
 tracing-opentelemetry = { version = "~0", optional = true }
 tracing-log = { version = "~0", optional = true }
+opentelemetry-otlp = {version = "0.11.0", optional = true }
 
 # Misc
 thiserror = "~1"
@@ -62,7 +63,7 @@ derivative = "~2"
 
 [features]
 default = ["tracing", "graphql"]
-tracing = ["tracing-log", "tracing-subscriber", "tracing-opentelemetry", "opentelemetry", "opentelemetry-jaeger"]
+tracing = ["tracing-log", "tracing-subscriber", "tracing-opentelemetry", "opentelemetry", "opentelemetry-jaeger", "opentelemetry-otlp"]
 graphql = ["async-graphql", "async-graphql-axum"]
 
 [workspace]

@@ -14,16 +14,22 @@ services:
   jaeger:
     image: jaegertracing/all-in-one:latest
     ports:
+      - "14250:14250"
       - "5775:5775"
       - "6831:6831/udp"
       - "6832:6832"
       - "5778:5778"
+      - "8889:8889"
+      - "16685:16685"
       - "16686:16686"
       - "9411:9411"
       - "14268:14268"
+      - "14269:14269"
     restart: unless-stopped
     environment:
       COLLECTOR_ZIPKIN_HOST_PORT: "9411"
+      METRICS_STORAGE_TYPE: "prometheus"
+      PROMETHEUS_SERVER_URL: "http://prometheus:9090"
 
   grafana:
     image: grafana/grafana
@@ -48,3 +54,14 @@ services:
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     restart: always
+
+  otel_collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    volumes:
+      - "./docker/otel-collector/otel-collector-config.yml:/etc/otelcol/otel-collector-config.yml"
+    command: --config /etc/otelcol/otel-collector-config.yml
+    ports:
+      - "4317:4317"
+      - "14278:14278"
+    depends_on:
+      - jaeger

@@ -26,3 +26,7 @@ scrape_configs:
       - targets: ["host.docker.internal:4005"]
         labels:
           group: "local"
+
+  - job_name: aggregated-trace-metrics
+    static_configs:
+      - targets: ["otel_collector:8889"]
