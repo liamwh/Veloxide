@@ -1,20 +1,26 @@
 use super::*;
 
-use async_graphql::{Context, Object};
+use async_graphql::{Context, FieldResult, Object};
 
-pub struct QueryRoot {}
+#[derive(Default)]
+pub struct BankAccountGraphQlQuery {}
 
 #[Object]
-impl QueryRoot {
-    async fn account<'a>(
+impl BankAccountGraphQlQuery {
+    /// Get a bank account by its ID
+    async fn bank_account<'ctx>(
         &self,
-        ctx: &Context<'a>,
-        #[graphql(
-            desc = "If omitted, bank account with id 1. If provided, returns the bank account with that particular id."
-        )]
-        account_id: u32,
-    ) -> BankAccountView {
-        let query = ctx.data_unchecked::<AccountQuery>();
-        query.load(&account_id).await.unwrap()
+        ctx: &Context<'ctx>,
+        id: String,
+    ) -> FieldResult<BankAccountView> {
+        let view_repo = ctx.data::<Arc<PostgresViewRepository<BankAccountView, BankAccount>>>()?;
+        let view = match view_repo.load(&id).await? {
+            Some(view) => view,
+            None => {
+                return Err(async_graphql::Error::new("Bank account not found"));
+            }
+        };
+        tracing::debug!("Loaded view in GraphQL response: {:?}", view);
+        Ok(view)
     }
 }

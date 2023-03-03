@@ -1,8 +1,7 @@
 use std::{net::SocketAddr, sync::Arc};
 
 use async_graphql::{
-    http::GraphiQLSource, Context, EmptyMutation, EmptySubscription, FieldResult, MergedObject,
-    Object, Schema, SimpleObject,
+    http::GraphiQLSource, EmptyMutation, EmptySubscription, MergedObject, Object, Schema,
 };
 use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
 
@@ -13,14 +12,13 @@ use axum::{
     Router, Server,
 };
 
-use cqrs_es::persist::ViewRepository;
 use postgres_es::PostgresViewRepository;
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
 
 use crate::domain::BankAccount;
 
-use super::BankAccountView;
+use super::{BankAccountGraphQlQuery, BankAccountView};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct GraphQlConfiguration {
@@ -60,32 +58,9 @@ impl AddQuery {
     async fn add(&self, a: i32, b: i32) -> i32 {
         a + b
     }
-
-    async fn bank_account<'ctx>(
-        &self,
-        ctx: &Context<'ctx>,
-        id: String,
-    ) -> FieldResult<BankAccountView> {
-        let view_repo = ctx.data::<Arc<PostgresViewRepository<BankAccountView, BankAccount>>>()?;
-        let view = match view_repo.load(&id).await? {
-            Some(view) => view,
-            None => {
-                return Err(async_graphql::Error::new("Bank account not found"));
-            }
-        };
-        tracing::debug!("Loaded view in GraphQL response: {:?}", view);
-        Ok(view)
-    }
 }
 #[derive(MergedObject, Default)]
-struct QueryRoot(AddQuery, TodoTwo);
-
-#[derive(SimpleObject, Default)]
-struct TodoTwo {
-    id: i32,
-    description: String,
-    completed: bool,
-}
+struct QueryRoot(AddQuery, BankAccountGraphQlQuery);
 
 #[instrument(skip(bank_account_view_repsitory))]
 pub async fn run_graphql_server(
