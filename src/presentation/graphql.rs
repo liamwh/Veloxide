@@ -1,6 +1,9 @@
 use std::net::SocketAddr;
 
-use async_graphql::{http::GraphiQLSource, EmptyMutation, EmptySubscription, Object, Schema};
+use async_graphql::{
+    http::GraphiQLSource, EmptyMutation, EmptySubscription, MergedObject, Object, Schema,
+    SimpleObject,
+};
 use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
 
 use axum::{
@@ -36,20 +39,30 @@ async fn graphiql() -> impl IntoResponse {
 
 #[instrument(skip(schema, req))]
 async fn graphql_handler(
-    schema: Extension<Schema<Query, EmptyMutation, EmptySubscription>>,
+    schema: Extension<Schema<QueryRoot, EmptyMutation, EmptySubscription>>,
     req: GraphQLRequest,
 ) -> GraphQLResponse {
     schema.execute(req.into_inner()).await.into()
 }
 
-struct Query;
+#[derive(Default)]
+struct AddQuery;
 
 #[Object]
-impl Query {
+impl AddQuery {
     /// Returns the sum of a and b
     async fn add(&self, a: i32, b: i32) -> i32 {
         a + b
     }
+}
+#[derive(MergedObject, Default)]
+struct QueryRoot(AddQuery, TodoTwo);
+
+#[derive(SimpleObject, Default)]
+struct TodoTwo {
+    id: i32,
+    description: String,
+    completed: bool,
 }
 
 #[instrument]
@@ -57,11 +70,14 @@ pub async fn run_graphql_server(config: &GraphQlConfiguration) {
     let serve_address = config.parse_serve_address();
 
     // create the schema
-    let schema = Schema::build(Query, EmptyMutation, EmptySubscription).finish();
+    let add_schema = Schema::build(AddQuery, EmptyMutation, EmptySubscription).finish();
+    let todo_schema =
+        Schema::build(QueryRoot::default(), EmptyMutation, EmptySubscription).finish();
 
     let app = Router::new()
         .route("/", get(graphiql).post(graphql_handler))
-        .layer(Extension(schema));
+        .layer(Extension(add_schema))
+        .layer(Extension(todo_schema));
 
     Server::bind(&serve_address)
         .serve(app.into_make_service())
