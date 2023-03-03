@@ -8,7 +8,11 @@ Rust's compiler shrinks the feedback loop between writing code and seeing the re
 
 ![value-delivery-feedback-loops](./.assets/value-delivery-feedback-loops.png)
 
-## Rust's focus on the "Happy Flow" makes it easier to read, write and maintain correct code
+## Metaprogramming with Macros
+
+[Macros](https://doc.rust-lang.org/book/ch19-06-macros.html) in Rust are a powerful tool that allows developers to write code that can generate other code at compile-time ([metaprogramming](https://en.wikipedia.org/wiki/Metaprogramming)), making it possible to automate repetitive tasks, reduce boilerplate code, and achieve greater code reuse. Rust's macro system is highly flexible and expressive, allowing developers to define complex transformations on the code, such as code generation, syntactic transformations, and type inference. This makes Rust macros an excellent choice for tasks such as domain-specific language implementation, serialization and deserialization, and code optimization, among others. Furthermore, Rust's macro system is designed to be safe and predictable, preventing accidental code execution or memory errors, and producing clear error messages when issues arise.
+
+## Focus on the "Happy Flow"
 
 Rust's `?` syntax, `Result` and `Option` types, lack of null/nil, and `match` keyword combine to make it easy to write code that focuses on the "happy flow" of the program. This makes it easy to write code that is easy to read, understand and maintain.
 
