@@ -21,7 +21,7 @@ utoipa = { version = "~3", features = ["axum_extras"] }
 utoipa-swagger-ui = { version = "~3", features = ["axum"] }
 
 ## GraphQL
-async-graphql = { version = "5.0.6", optional = true }
+async-graphql = { version = "5.0.6", optional = true, features = ["playground"] }
 async-graphql-axum = { version = "5.0.6", optional = true }
 
 # Serialization

@@ -35,8 +35,8 @@ impl GraphQlConfiguration {
     }
 }
 
-async fn graphiql() -> impl IntoResponse {
-    response::Html(GraphiQLSource::build().endpoint("/").finish())
+async fn graphql_playground() -> impl IntoResponse {
+    response::Html(playground_source(GraphQLPlaygroundConfig::new("/")))
 }
 
 #[instrument(skip(schema, req))]
@@ -83,7 +83,7 @@ pub async fn run_graphql_server(
     .finish();
 
     let app = Router::new()
-        .route("/", get(graphiql).post(graphql_handler))
+        .route("/", get(graphql_playground).post(graphql_handler))
         .layer(Extension(schema));
 
     Server::bind(&serve_address)
