@@ -1,5 +1,7 @@
 # GraphQL
 
+<!-- markdownlint-disable MD033 -->
+
 ## Introduction to GraphQL
 
 GraphQL is a query language for APIs that was developed by Facebook in 2012 and has since gained popularity among developers for a number of reasons:
@@ -18,22 +20,121 @@ Consequently, using GraphQL can lead to faster, more efficient, and more flexibl
 
 ## GraphQL in Velox
 
-Velox implements a iGraphQL web interface on `http://localhost:8000` by default. This interface allows you to explore the GraphQL schema and execute queries against the API. Most commonly, GraphQL will be used for retrieving the Aggregate view models or a subset of their data. For example, you can retrieve the `BankAccountView` model and all of its data by executing the following query:
+Velox implements a iGraphQL web interface on `http://localhost:9000` by default. This interface allows you to explore the GraphQL schema and execute queries against the API.
 
-> Note: As Velox is not yet seeded at the time of writing, you will need to first create an account.
+### Examples
+
+<details>
+  <summary>Open a new account:</summary>
 
 ```graphql
-{
-  bankAccount(id: "your-bank-account-id-here") {
+mutation {
+  bankAccountMutation(
+    id: "1234",
+    command: {
+      openAccount: {
+        accountId: "1234"
+      }
+    }
+  ){
     accountId
     balance
     writtenChecks
-    account_transactions{
+    accountTransactions{
       description
       amount
     }
   }
 }
 ```
+
+</details>
+
+<details>
+  <summary>Query an existing account:</summary>
+
+```graphql
+query {
+  bankAccountQuery(id: "1234") {
+    accountId
+    balance
+    writtenChecks
+    accountTransactions{
+      description
+      amount
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+  <summary>Query only the account balance:</summary>
+
+```graphql
+query {
+  bankAccountQuery(id: "1234") {
+    balance
+  }
+}
+```
+
+</details>
+
+<details>
+  <summary>Deposit money into an account::</summary>
+
+```graphql
+mutation {
+  bankAccountMutation(
+    id: "1234",
+    command: {
+      depositMoney: {
+        amount: 123
+      }
+    }
+  ){
+    accountId
+    balance
+    writtenChecks
+    accountTransactions{
+      description
+      amount
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+  <summary>Withdraw money from an account:</summary>
+
+```graphql
+mutation {
+  bankAccountMutation(
+    id: "1234",
+    command: {
+      withdrawMoney: {
+        amount: 123,
+        atmId: "ExampleAtmIdHere"
+      }
+    }
+  ){
+    accountId
+    balance
+    writtenChecks
+    accountTransactions{
+      description
+      amount
+    }
+  }
+}
+```
+
+</details>
+
+### Documentation for the GraphQL crate
 
 The book describing the async-graphql library used in Velox can be found [here](https://async-graphql.github.io/async-graphql/en/index.html).

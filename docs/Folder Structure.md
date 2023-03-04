@@ -1,4 +1,4 @@
-# Velox Code Folder Explanations
+# Velox: Folder Explanations
 
 This document explains the purpose of each folder in the repository.
 
@@ -14,17 +14,15 @@ This folder contains the application layer.
 
 This folder contains the domain layer.
 
-### [src/infrastructure](https://github.com/liamwh/velox/tree/main/src/infrastructure)
-
-This folder contains the infrastructure layer.
-
 ### [src/presentation](https://github.com/liamwh/velox/tree/main/src/presentation)
 
-This folder contains the presentation layer.
+This folder contains the presentation layer, containing things like handlers, view models, the GraphQL server and the Axum web server.
 
 ## [tests](https://github.com/liamwh/velox/tree/main/tests)
 
-This folder contains the test code for the application, including the BDD tests.
+This folder contains the [integration tests](https://doc.rust-lang.org/rust-by-example/testing/integration_testing.html) for the application, such as the BDD tests.
+
+[Unit tests](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html) are found in the tests module found in the same file as the things they're testing.
 
 ## [migrations](https://github.com/liamwh/velox/tree/main/migrations)
 

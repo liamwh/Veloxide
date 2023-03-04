@@ -1,8 +1,6 @@
 use std::{net::SocketAddr, sync::Arc};
 
-use async_graphql::{
-    http::GraphiQLSource, EmptyMutation, EmptySubscription, MergedObject, Object, Schema,
-};
+use async_graphql::{http::*, *};
 use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
 
 use axum::{
@@ -12,13 +10,13 @@ use axum::{
     Router, Server,
 };
 
-use postgres_es::PostgresViewRepository;
+use postgres_es::{PostgresCqrs, PostgresViewRepository};
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
 
 use crate::domain::BankAccount;
 
-use super::{BankAccountGraphQlQuery, BankAccountView};
+use super::{BankAccountGraphQlMutation, BankAccountGraphQlQuery, BankAccountView};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct GraphQlConfiguration {
@@ -43,7 +41,7 @@ async fn graphiql() -> impl IntoResponse {
 
 #[instrument(skip(schema, req))]
 async fn graphql_handler(
-    schema: Extension<Schema<QueryRoot, EmptyMutation, EmptySubscription>>,
+    schema: Extension<Schema<QueryRoot, MutationRoot, EmptySubscription>>,
     req: GraphQLRequest,
 ) -> GraphQLResponse {
     schema.execute(req.into_inner()).await.into()
@@ -62,18 +60,27 @@ impl AddQuery {
 #[derive(MergedObject, Default)]
 struct QueryRoot(AddQuery, BankAccountGraphQlQuery);
 
-#[instrument(skip(bank_account_view_repsitory))]
+#[derive(MergedObject, Default)]
+struct MutationRoot(BankAccountGraphQlMutation);
+
+#[instrument(skip(bank_account_view_repsitory, bank_account_cqrs_framework))]
 pub async fn run_graphql_server(
     config: &GraphQlConfiguration,
+    bank_account_cqrs_framework: Arc<PostgresCqrs<BankAccount>>,
     bank_account_view_repsitory: Arc<PostgresViewRepository<BankAccountView, BankAccount>>,
 ) {
     tracing::debug!("Starting graphql server");
     let serve_address = config.parse_serve_address();
 
     // create the schema
-    let schema = Schema::build(QueryRoot::default(), EmptyMutation, EmptySubscription)
-        .data(bank_account_view_repsitory)
-        .finish();
+    let schema = Schema::build(
+        QueryRoot::default(),
+        MutationRoot::default(),
+        EmptySubscription,
+    )
+    .data(bank_account_view_repsitory)
+    .data(bank_account_cqrs_framework)
+    .finish();
 
     let app = Router::new()
         .route("/", get(graphiql).post(graphql_handler))
