@@ -34,15 +34,15 @@ The key features are:
 - **Fast to code**: Velox increases the speed of development by being simple, flexible and easy to use. Rust naturally [shifts bugs left](https://en.wikipedia.org/wiki/Shift-left_testing) to the compiler, so less time is spent debugging code, and more time is spent delivering value.
 - **Fewer bugs**: All components of Velox are written in [Rust](https://www.rust-lang.org), which is known for its safety and reliability [[1]](https://www.infoq.com/news/2021/04/rust-linux-kernel-development/) [[2]](https://security.googleblog.com/2023/01/supporting-use-of-rust-in-chromium.html) [[3]](https://security.googleblog.com/2022/12/memory-safe-languages-in-android-13.html)
 - **Highly Performant**: Velox is built on top of the [Tokio](https://tokio.rs) async runtime and [Axum framework](https://github.com/tokio-rs/axum), which leverage the power of Rust's [async/await syntax](https://doc.rust-lang.org/reference/expressions/await-expr.html) and [zero-cost abstractions](https://doc.rust-lang.org/beta/embedded-book/static-guarantees/zero-cost-abstractions.html) to give blazingly fast bare-metal performance.
-- **Standards-based**: Velox leverages the open standards for APIs: [OpenAPI](https://github.com/OAI/OpenAPI-Specification), [JSON Schema](https://json-schema.org/specification.html) and [GraphQL](https://graphql.org/). You choose how you want your API to be consumed.
 - **Cloud Native**: Velox comes pre-configured with [OpenTelemetry](https://opentelemetry.io/) for distributed tracing and /metrics endpoint preconfigured for collection from [Prometheus](https://prometheus.io/).
+- **Standards-based**: Velox leverages the open standards for APIs: [OpenAPI](https://github.com/OAI/OpenAPI-Specification), [JSON Schema](https://json-schema.org/specification.html) and [GraphQL](https://graphql.org/). You choose how you want your API to be consumed.
 
 ## Design Patterns
 
 Velox implements the following design patterns to support maintainability and flexibility:
 
 - **[CQRS](https://martinfowler.com/bliki/CQRS.html)**: Velox uses Command Query Responsibility Segregation (CQRS) to help simplify and optimize the design by separating the read (view) and write (command) models.
-- **[Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html)**: Velox uses Event Sourcing to persist events to the database. Event sourcing provides a complete and accurate audit trail of changes made to a system, which can be useful for debugging, compliance, and various other purposes.
+- **[Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html)**: Velox uses Event Sourcing to persist domain events to the database. Event sourcing is used to tie the read and write models together, as well as providing a complete and accurate audit trail of changes made to a system, which can be useful for debugging, compliance, and various other purposes.
 - **[Layered Architecture](https://en.wikipedia.org/wiki/Multitier_architecture)**: The codebase is divided into layers, each with a specific responsibility, as per the principles of [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design). This makes the application easier to understand and maintain.
 - **[Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection)**: Velox comes pre-configured with dependency injection to make subsituting dependencies, such as the database, easier.
 
@@ -122,47 +122,6 @@ Note that using the supporting containers is optional if you change the velox-co
 ## Why the name?
 
 Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
-
-## Roadmap to v1
-
-### In-progress
-
-- [ ] Send BankAccountCommands via GraphQL
-- [ ] Add [OPA](https://www.openpolicyagent.org/) + [Envoy](https://www.envoyproxy.io/) for authorization example
-
-### Domain
-
-- [ ] Consider adding a second aggregate to demonstrate how to use multiple aggregates
-
-### Testing
-
-- [ ] Improve code coverage, leverage [mockall](https://docs.rs/mockall/latest/mockall/) where applicable
-
-### Other
-
-- [ ] Consider offering a Postman / Insomnia collection
-- [ ] Add [Tonic](https://docs.rs/tonic/latest/tonic/) ([gRPC](https://grpc.io/)) example
-- [ ] Use Rust's built in feature functionality to enable/disable Velox features (e.g. tracing, metrics, graphql, gRPC etc)
-- [ ] Create a Rust Book to aggregate documentation
-- [ ] Create a cool logo!
-
-### Done
-
-- [x] Expose the BankAccountView using GraphQL
-- [x] Get a [GraphQL](https://docs.rs/async-graphql/latest/async_graphql/) server running
-- [x] Implement CQRS and the concepts of aggregates, entities, domain events and commands.
-- [x] Add Dependabot to the repo to keep dependencies up to date
-- [x] Set up code coverage pipeline / badge on readme
-- [x] Set up CI Pipeline
-- [x] Load application configuration from YAML
-- [x] Send traces to Jaeger
-- [x] Expose metrics endpoint and scrape with Prometheus, visible in Grafana
-- [x] Example test cases using mockall
-- [x] Serve on port from environment variable
-- [x] Configure OpenAPI Doc generation
-- [x] At least one cucumber test for BDD testing example
-- [x] Use DDD layers
-- [x] Abstract repository, implment basic in-memory repository and postgres repository
 
 ## Additional Documentation
 
