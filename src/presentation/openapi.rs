@@ -16,6 +16,7 @@ use crate::presentation::*;
           schemas(
             BankAccountView,
             BankAccountCommand,
+            BankAccountOpenAccountCommandData,
             AccountTransaction),
     ),
       modifiers(&SecurityAddon),

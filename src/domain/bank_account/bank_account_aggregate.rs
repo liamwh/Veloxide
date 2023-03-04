@@ -1,3 +1,4 @@
+use super::*;
 use async_trait::async_trait;
 use cqrs_es::Aggregate;
 use serde::{Deserialize, Serialize};
@@ -34,20 +35,23 @@ impl Aggregate for BankAccount {
         services: &Self::Services,
     ) -> Result<Vec<Self::Event>, Self::Error> {
         match command {
-            BankAccountCommand::OpenAccount { account_id } => {
+            BankAccountCommand::OpenAccount(account_id) => {
                 self.handle_open_account_command(services, account_id).await
             }
-            BankAccountCommand::DepositMoney { amount } => {
+            BankAccountCommand::DepositMoney(BankAccountDepositMoneyCommandData { amount }) => {
                 self.handle_deposit_money_command(services, amount).await
             }
-            BankAccountCommand::WithdrawMoney { amount, atm_id } => {
+            BankAccountCommand::WithdrawMoney(BankAccountWithdrawMoneyCommandData {
+                amount,
+                atm_id,
+            }) => {
                 self.handle_withdraw_money_command(services, amount, atm_id)
                     .await
             }
-            BankAccountCommand::WriteCheck {
+            BankAccountCommand::WriteCheck(BankAccountWriteCheckCommandData {
                 check_number,
                 amount,
-            } => {
+            }) => {
                 self.handle_write_check_command(services, check_number, amount)
                     .await
             }
@@ -81,12 +85,14 @@ impl BankAccount {
     pub async fn handle_open_account_command(
         &self,
         services: &BankAccountServices,
-        account_id: String,
+        command: BankAccountOpenAccountCommandData,
     ) -> Result<Vec<BankAccountEvent>, BankAccountError> {
         if !self.account_id.is_empty() {
             return Err(BankAccountError::AccountAlreadyOpen);
         }
-        Ok(vec![BankAccountEvent::AccountOpened { account_id }])
+        Ok(vec![BankAccountEvent::AccountOpened {
+            account_id: command.account_id,
+        }])
     }
 
     #[instrument]
@@ -246,7 +252,8 @@ mod aggregate_tests {
             amount: 200.0,
             balance: 200.0,
         };
-        let command = BankAccountCommand::DepositMoney { amount: 200.0 };
+        let command =
+            BankAccountCommand::DepositMoney(BankAccountDepositMoneyCommandData { amount: 200.0 });
         let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
         // Obtain a new test framework
         AccountTestFramework::with(services)
@@ -268,7 +275,8 @@ mod aggregate_tests {
             amount: 200.0,
             balance: 400.0,
         };
-        let command = BankAccountCommand::DepositMoney { amount: 200.0 };
+        let command =
+            BankAccountCommand::DepositMoney(BankAccountDepositMoneyCommandData { amount: 200.0 });
         let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
 
         AccountTestFramework::with(services)
@@ -292,10 +300,10 @@ mod aggregate_tests {
         };
         let services = MockBankAccountServices::default();
         services.set_atm_withdrawal_response(Ok(()));
-        let command = BankAccountCommand::WithdrawMoney {
+        let command = BankAccountCommand::WithdrawMoney(BankAccountWithdrawMoneyCommandData {
             amount: 100.0,
             atm_id: "ATM34f1ba3c".to_string(),
-        };
+        });
 
         AccountTestFramework::with(BankAccountServices::new(Box::new(services)))
             .given(vec![previous])
@@ -311,10 +319,10 @@ mod aggregate_tests {
         };
         let services = MockBankAccountServices::default();
         services.set_atm_withdrawal_response(Err(AtmError));
-        let command = BankAccountCommand::WithdrawMoney {
+        let command = BankAccountCommand::WithdrawMoney(BankAccountWithdrawMoneyCommandData {
             amount: 100.0,
             atm_id: "ATM34f1ba3c".to_string(),
-        };
+        });
 
         let services = BankAccountServices::new(Box::new(services));
         AccountTestFramework::with(services)
@@ -325,10 +333,10 @@ mod aggregate_tests {
 
     #[test]
     fn test_withdraw_money_funds_not_available() {
-        let command = BankAccountCommand::WithdrawMoney {
+        let command = BankAccountCommand::WithdrawMoney(BankAccountWithdrawMoneyCommandData {
             amount: 200.0,
             atm_id: "ATM34f1ba3c".to_string(),
-        };
+        });
 
         let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
         AccountTestFramework::with(services)
@@ -352,10 +360,10 @@ mod aggregate_tests {
         let services = MockBankAccountServices::default();
         services.set_validate_check_response(Ok(()));
         let services = BankAccountServices::new(Box::new(services));
-        let command = BankAccountCommand::WriteCheck {
+        let command = BankAccountCommand::WriteCheck(BankAccountWriteCheckCommandData {
             check_number: "1170".to_string(),
             amount: 100.0,
-        };
+        });
 
         AccountTestFramework::with(services)
             .given(vec![previous])
@@ -372,10 +380,10 @@ mod aggregate_tests {
         let services = MockBankAccountServices::default();
         services.set_validate_check_response(Err(CheckingError));
         let services = BankAccountServices::new(Box::new(services));
-        let command = BankAccountCommand::WriteCheck {
+        let command = BankAccountCommand::WriteCheck(BankAccountWriteCheckCommandData {
             check_number: "1170".to_string(),
             amount: 100.0,
-        };
+        });
 
         AccountTestFramework::with(services)
             .given(vec![previous])
@@ -385,15 +393,31 @@ mod aggregate_tests {
 
     #[test]
     fn test_wrote_check_funds_not_available() {
-        let command = BankAccountCommand::WriteCheck {
+        let command = BankAccountCommand::WriteCheck(BankAccountWriteCheckCommandData {
             check_number: "1170".to_string(),
             amount: 100.0,
-        };
+        });
 
         let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
         AccountTestFramework::with(services)
             .given_no_previous_events()
             .when(command)
             .then_expect_error_message(BankAccountError::InsufficientFunds.to_string().as_str())
+    }
+
+    #[test]
+    fn test_open_account() {
+        let command = BankAccountCommand::OpenAccount(BankAccountOpenAccountCommandData {
+            account_id: "1234".to_string(),
+        });
+        let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
+
+        let expected = BankAccountEvent::AccountOpened {
+            account_id: "1234".to_string(),
+        };
+        AccountTestFramework::with(services)
+            .given_no_previous_events()
+            .when(command)
+            .then_expect_events(vec![expected]);
     }
 }

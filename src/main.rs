@@ -41,9 +41,11 @@ async fn main() -> Result<()> {
 
     // Start the GraphQL server
     if configuration.graphql.enabled {
+        let cqrs = cqrs.clone();
         let account_query = account_query.clone();
         tokio::spawn(async move {
-            presentation::graphql::run_graphql_server(&configuration.graphql, account_query).await;
+            presentation::graphql::run_graphql_server(&configuration.graphql, cqrs, account_query)
+                .await;
         });
     }
 
