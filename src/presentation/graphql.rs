@@ -47,18 +47,8 @@ async fn graphql_handler(
     schema.execute(req.into_inner()).await.into()
 }
 
-#[derive(Default)]
-struct AddQuery;
-
-#[Object]
-impl AddQuery {
-    /// Returns the sum of a and b
-    async fn add(&self, a: i32, b: i32) -> i32 {
-        a + b
-    }
-}
 #[derive(MergedObject, Default)]
-struct QueryRoot(AddQuery, BankAccountGraphQlQuery);
+struct QueryRoot(BankAccountGraphQlQuery);
 
 #[derive(MergedObject, Default)]
 struct MutationRoot(BankAccountGraphQlMutation);
