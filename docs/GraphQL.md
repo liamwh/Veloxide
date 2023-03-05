@@ -18,9 +18,9 @@ GraphQL is a query language for APIs that was developed by Facebook in 2012 and 
 
 Consequently, using GraphQL can lead to faster, more efficient, and more flexible API development, which can improve the developer experience and ultimately lead to better products.
 
-## GraphQL in Velox
+## GraphQL in Veloxide
 
-Velox implements a iGraphQL web interface on `http://localhost:9000` by default. This interface allows you to explore the GraphQL schema and execute queries against the API.
+Veloxide implements a iGraphQL web interface on `http://localhost:9000` by default. This interface allows you to explore the GraphQL schema and execute queries against the API.
 
 ### Examples
 
@@ -137,4 +137,4 @@ mutation {
 
 ### Documentation for the GraphQL crate
 
-The book describing the async-graphql library used in Velox can be found [here](https://async-graphql.github.io/async-graphql/en/index.html).
+The book describing the async-graphql library used in Veloxide can be found [here](https://async-graphql.github.io/async-graphql/en/index.html).

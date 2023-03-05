@@ -1,28 +1,28 @@
-# Velox: A template for building web APIs in Rust
+# Veloxide: A template for building web APIs in Rust
 
 <!-- markdownlint-disable MD033 -->
 
 <p align="center">
-    <a href="https://github.com/liamwh/Velox"><img src="./docs/.assets/under-construction.jpg" alt="Velox"
+    <a href="https://github.com/liamwh/Veloxide"><img src="./docs/.assets/under-construction.jpg" alt="Veloxide"
             width=100%></a>
     <p align="center">
-        <em>Velox: high performance, easy to learn, fast to code, ready for production*</em>
+        <em>Veloxide: high performance, easy to learn, fast to code, ready for production*</em>
         <br>
         <em>*Production quality coming soon :)</em>
     </p>
     <p align="center">
-        <a href="https://github.com/liamwh/velox/actions?query=workflow%3AVelox-ci+event%3Apush+branch%3Amain">
-            <img src="https://github.com/liamwh/velox/workflows/velox-ci/badge.svg?event=push&branch=main">
+        <a href="https://github.com/liamwh/veloxide/actions?query=workflow%3AVeloxide-ci+event%3Apush+branch%3Amain">
+            <img src="https://github.com/liamwh/veloxide/workflows/veloxide-ci/badge.svg?event=push&branch=main">
         </a>
-        <a href="https://codecov.io/gh/liamwh/velox">
-            <img src="https://codecov.io/gh/liamwh/velox/branch/main/graph/badge.svg?token=CFVJ2XAMNL" />
+        <a href="https://codecov.io/gh/liamwh/veloxide">
+            <img src="https://codecov.io/gh/liamwh/veloxide/branch/main/graph/badge.svg?token=CFVJ2XAMNL" />
         </a>
         <a href="https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html">
             <img src="https://img.shields.io/badge/rustc-1.65+-lightgray.svg"></a>
         <a href="https://github.com/rust-secure-code/safety-dance/">
             <img src="https://img.shields.io/badge/unsafe-forbidden-success.svg" />
         </a>
-        <a href="https://github.com/liamwh/velox/blob/main/README.md">
+        <a href="https://github.com/liamwh/veloxide/blob/main/README.md">
             <img src="https://img.shields.io/badge/License-MIT-blue.svg">
         </a>
     </p>
@@ -31,21 +31,21 @@
 
 The key features are:
 
-- **Fast to code**: Velox increases the speed of development by being simple, flexible and easy to use. Rust naturally [shifts bugs left](https://en.wikipedia.org/wiki/Shift-left_testing) to the compiler, so less time is spent debugging code, and more time is spent delivering value.
-- **Fewer bugs**: All components of Velox are written in [Rust](https://www.rust-lang.org), which is known for its safety and reliability [[1]](https://www.infoq.com/news/2021/04/rust-linux-kernel-development/) [[2]](https://security.googleblog.com/2023/01/supporting-use-of-rust-in-chromium.html) [[3]](https://security.googleblog.com/2022/12/memory-safe-languages-in-android-13.html)
-- **Highly Performant**: Velox is built on top of the [Tokio](https://tokio.rs) async runtime and [Axum framework](https://github.com/tokio-rs/axum), which leverage the power of Rust's [async/await syntax](https://doc.rust-lang.org/reference/expressions/await-expr.html) and [zero-cost abstractions](https://doc.rust-lang.org/beta/embedded-book/static-guarantees/zero-cost-abstractions.html) to give blazingly fast bare-metal performance.
-- **Cloud Native**: Velox comes pre-configured with [OpenTelemetry](https://opentelemetry.io/) for distributed tracing and a /metrics endpoint preconfigured for collection from [Prometheus](https://prometheus.io/).
-- **Standards-based**: Velox leverages the open standards for APIs: [OpenAPI](https://github.com/OAI/OpenAPI-Specification), [JSON Schema](https://json-schema.org/specification.html) and [GraphQL](https://graphql.org/). You choose how you want your API to be consumed.
+- **Fast to code**: Veloxide increases the speed of development by being simple, flexible and easy to use. Rust naturally [shifts bugs left](https://en.wikipedia.org/wiki/Shift-left_testing) to the compiler, so less time is spent debugging code, and more time is spent delivering value.
+- **Fewer bugs**: All components of Veloxide are written in [Rust](https://www.rust-lang.org), which is known for its safety and reliability [[1]](https://www.infoq.com/news/2021/04/rust-linux-kernel-development/) [[2]](https://security.googleblog.com/2023/01/supporting-use-of-rust-in-chromium.html) [[3]](https://security.googleblog.com/2022/12/memory-safe-languages-in-android-13.html)
+- **Highly Performant**: Veloxide is built on top of the [Tokio](https://tokio.rs) async runtime and [Axum framework](https://github.com/tokio-rs/axum), which leverage the power of Rust's [async/await syntax](https://doc.rust-lang.org/reference/expressions/await-expr.html) and [zero-cost abstractions](https://doc.rust-lang.org/beta/embedded-book/static-guarantees/zero-cost-abstractions.html) to give blazingly fast bare-metal performance.
+- **Cloud Native**: Veloxide comes pre-configured with [OpenTelemetry](https://opentelemetry.io/) for distributed tracing and a /metrics endpoint preconfigured for collection from [Prometheus](https://prometheus.io/).
+- **Standards-based**: Veloxide leverages the open standards for APIs: [OpenAPI](https://github.com/OAI/OpenAPI-Specification), [JSON Schema](https://json-schema.org/specification.html) and [GraphQL](https://graphql.org/). You choose how you want your API to be consumed.
 
 ## Design Patterns
 
-Velox implements the following design patterns to support maintainability and flexibility:
+Veloxide implements the following design patterns to support maintainability and flexibility:
 
-- **[CQRS](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)**: Velox uses Command Query Responsibility Segregation (CQRS) to help simplify and optimize the design by separating the read (view) and write (command) models.
-- **[Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html)**: Velox uses Event Sourcing to persist domain events to the database. Event sourcing is used to tie the read and write models together, as well as providing a complete and accurate audit trail of changes made to a system, which can be useful for debugging, compliance, and various other purposes.
+- **[CQRS](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)**: Veloxide uses Command Query Responsibility Segregation (CQRS) to help simplify and optimize the design by separating the read (view) and write (command) models.
+- **[Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html)**: Veloxide uses Event Sourcing to persist domain events to the database. Event sourcing is used to tie the read and write models together, as well as providing a complete and accurate audit trail of changes made to a system, which can be useful for debugging, compliance, and various other purposes.
 - **[Layered Architecture](https://en.wikipedia.org/wiki/Multitier_architecture)**: The codebase is divided into layers, each with a specific responsibility, as per the principles of [Domain-Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design). This makes the application easier to understand and maintain.
 
-Further documentation on the design and implementation of Velox be found in the [/docs folder](https://github.com/liamwh/velox/tree/main/docs).
+Further documentation on the design and implementation of Veloxide be found in the [/docs folder](https://github.com/liamwh/veloxide/tree/main/docs).
 
 ## What's included?
 
@@ -70,7 +70,7 @@ Further documentation on the design and implementation of Velox be found in the 
 
 ### Supporting containers
 
-Velox comes pre-configured with the following supporting containers found in the `docker-compose.yml` file:
+Veloxide comes pre-configured with the following supporting containers found in the `docker-compose.yml` file:
 
 - **[Jaeger](https://www.jaegertracing.io)**: Traces will be sent to Jaeger, which can be accessed at `http://localhost:16686`.
 - **[Prometheus](https://prometheus.io/)** will be available at `http://localhost:9090`.
@@ -79,7 +79,7 @@ Velox comes pre-configured with the following supporting containers found in the
 - **[Envoy](https://www.envoyproxy.io/)**: Coming soon.
 - **[Open Policy Agent](https://www.openpolicyagent.org/)**: Coming soon.
 
-Note that using the supporting containers is optional if you change the velox-config.yaml to use the memory database instead of postgres.
+Note that using the supporting containers is optional if you change the veloxide-config.yaml to use the memory database instead of postgres.
 
 ## Getting started
 
@@ -121,7 +121,10 @@ Note that using the supporting containers is optional if you change the velox-co
 
 ## Why the name?
 
-Velox is latin for "swift", "rapid" or "quick". Just like this stack 😉
+Velox + Oxide = Veloxide
+
+- Velox: latin for "swift", "rapid" or "quick", just like development with this stack 😉
+- Oxide: Rust is an iron oxide, and all components of Veloxide are written in Rust.
 
 ## Additional Documentation
 

@@ -1,4 +1,4 @@
-name: "velox-ci"
+name: "veloxide-ci"
 
 on:
   push:

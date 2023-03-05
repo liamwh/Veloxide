@@ -1,10 +1,10 @@
 [package]
-name = "velox"
-description = "Velox: Example Bank Account API"
+name = "example-veloxide-app"
+description = "Veloxide: Example Bank Account API"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-authors = ["Liam Woodleigh-Hardinge liam.woodleigh@gmail.com"]
+authors = ["Liam Woodleigh-Hardinge <liam.woodleigh@gmail.com>"]
 
 [dependencies]
 # Web / Async

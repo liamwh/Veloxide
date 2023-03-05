@@ -106,7 +106,7 @@ Rust has a growing and active community of developers who contribute to its ecos
 
 When evaluating the performance of programming languages, individual benchmarks may be vulnerable to manipulation and difficult to interpret. To mitigate this issue, the [Benchmarks Game](https://benchmarksgame-team.pages.debian.net/benchmarksgame/fastest/rust-go.html) has assessed multiple algorithms for each language, comparing various stats from their performance to provide a more comprehensive evaluation of language tradeoffs.
 
-[Test link](https://github.com/liamwh/Velox/blob/main/docs/Why-Rust.md#performance)
+[Test link](https://github.com/liamwh/Veloxide/blob/main/docs/Why-Rust.md#performance)
 
 In the Benchmarks Game's evaluation of various algorithms, Rust demonstrated superior optimization compared to Go. The most optimized Rust code outperformed the most optimized Go code by at least 30% across all tested algorithms, with some benchmarks showing even greater differences. For instance, in the binary-trees benchmark, Rust's most optimized code was 12 times faster than Go's. Additionally, in many cases, even the least optimized Rust code was faster than the most optimized Go code.
 

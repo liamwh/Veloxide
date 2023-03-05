@@ -5,7 +5,7 @@ services:
     image: postgres:latest
     restart: always
     environment:
-      - POSTGRES_DB=veloxdb
+      - POSTGRES_DB=veloxidedb
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=thisisnotsecure
     ports:
