@@ -5,8 +5,6 @@ use serde::{Deserialize, Serialize};
 use tracing::*;
 
 use crate::application::BankAccountServices;
-use crate::domain::bank_account_commands::BankAccountCommand;
-use crate::domain::bank_account_events::{BankAccountError, BankAccountEvent};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BankAccount {
@@ -173,10 +171,6 @@ impl BankAccount {
             balance,
         }])
     }
-
-    pub fn balance(&self) -> f64 {
-        self.balance
-    }
 }
 
 impl Default for BankAccount {
@@ -194,6 +188,7 @@ impl Default for BankAccount {
 #[cfg(test)]
 mod aggregate_tests {
     use async_trait::async_trait;
+    use coverage_helper::test;
     use cqrs_es::test::TestFramework;
     use std::sync::Mutex;
 
@@ -247,7 +242,7 @@ mod aggregate_tests {
     }
 
     #[test]
-    fn test_deposit_money() {
+    fn deposit_money() {
         let expected = BankAccountEvent::CustomerDepositedMoney {
             amount: 200.0,
             balance: 200.0,
@@ -266,7 +261,7 @@ mod aggregate_tests {
     }
 
     #[test]
-    fn test_deposit_money_with_balance() {
+    fn can_deposit_money_with_balance() {
         let previous = BankAccountEvent::CustomerDepositedMoney {
             amount: 200.0,
             balance: 200.0,
@@ -289,135 +284,132 @@ mod aggregate_tests {
     }
 
     #[test]
-    fn test_withdraw_money() {
-        let previous = BankAccountEvent::CustomerDepositedMoney {
-            amount: 200.0,
-            balance: 200.0,
-        };
-        let expected = BankAccountEvent::CustomerWithdrewCash {
-            amount: 100.0,
-            balance: 100.0,
-        };
+    fn can_withdraw_money_when_atm_withdrawal_response_is_ok() {
         let services = MockBankAccountServices::default();
         services.set_atm_withdrawal_response(Ok(()));
-        let command = BankAccountCommand::WithdrawMoney(BankAccountWithdrawMoneyCommandData {
-            amount: 100.0,
-            atm_id: "ATM34f1ba3c".to_string(),
-        });
 
         AccountTestFramework::with(BankAccountServices::new(Box::new(services)))
-            .given(vec![previous])
-            .when(command)
-            .then_expect_events(vec![expected]);
+            .given(vec![BankAccountEvent::CustomerDepositedMoney {
+                amount: 200.0,
+                balance: 200.0,
+            }])
+            .when(BankAccountCommand::WithdrawMoney(
+                BankAccountWithdrawMoneyCommandData {
+                    amount: 100.0,
+                    atm_id: "ATM34f1ba3c".to_string(),
+                },
+            ))
+            .then_expect_events(vec![BankAccountEvent::CustomerWithdrewCash {
+                amount: 100.0,
+                balance: 100.0,
+            }]);
     }
 
     #[test]
-    fn test_withdraw_money_client_error() {
-        let previous = BankAccountEvent::CustomerDepositedMoney {
-            amount: 200.0,
-            balance: 200.0,
-        };
+    fn cannot_withdraw_money_when_there_is_an_atm_error() {
         let services = MockBankAccountServices::default();
         services.set_atm_withdrawal_response(Err(AtmError));
-        let command = BankAccountCommand::WithdrawMoney(BankAccountWithdrawMoneyCommandData {
-            amount: 100.0,
-            atm_id: "ATM34f1ba3c".to_string(),
-        });
-
         let services = BankAccountServices::new(Box::new(services));
+
         AccountTestFramework::with(services)
-            .given(vec![previous])
-            .when(command)
+            .given(vec![BankAccountEvent::CustomerDepositedMoney {
+                amount: 200.0,
+                balance: 200.0,
+            }])
+            .when(BankAccountCommand::WithdrawMoney(
+                BankAccountWithdrawMoneyCommandData {
+                    amount: 100.0,
+                    atm_id: "ATM34f1ba3c".to_string(),
+                },
+            ))
             .then_expect_error_message(BankAccountError::AtmRuleViolation.to_string().as_str());
     }
 
     #[test]
-    fn test_withdraw_money_funds_not_available() {
-        let command = BankAccountCommand::WithdrawMoney(BankAccountWithdrawMoneyCommandData {
-            amount: 200.0,
-            atm_id: "ATM34f1ba3c".to_string(),
-        });
-
+    fn withdraw_money_funds_not_available_returns_insufficient_funds_error() {
         let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
         AccountTestFramework::with(services)
             .given_no_previous_events()
-            .when(command)
+            .when(BankAccountCommand::WithdrawMoney(
+                BankAccountWithdrawMoneyCommandData {
+                    amount: 200.0,
+                    atm_id: "ATM34f1ba3c".to_string(),
+                },
+            ))
             // Here we expect an error rather than any events
             .then_expect_error_message(BankAccountError::InsufficientFunds.to_string().as_str());
     }
 
     #[test]
-    fn test_wrote_check() {
-        let previous = BankAccountEvent::CustomerDepositedMoney {
-            amount: 200.0,
-            balance: 200.0,
-        };
-        let expected = BankAccountEvent::CustomerWroteCheck {
-            check_number: "1170".to_string(),
-            amount: 100.0,
-            balance: 100.0,
-        };
+    fn wrote_check() {
         let services = MockBankAccountServices::default();
         services.set_validate_check_response(Ok(()));
         let services = BankAccountServices::new(Box::new(services));
-        let command = BankAccountCommand::WriteCheck(BankAccountWriteCheckCommandData {
-            check_number: "1170".to_string(),
-            amount: 100.0,
-        });
 
         AccountTestFramework::with(services)
-            .given(vec![previous])
-            .when(command)
-            .then_expect_events(vec![expected]);
+            .given(vec![BankAccountEvent::CustomerDepositedMoney {
+                amount: 200.0,
+                balance: 200.0,
+            }])
+            .when(BankAccountCommand::WriteCheck(
+                BankAccountWriteCheckCommandData {
+                    check_number: "1170".to_string(),
+                    amount: 100.0,
+                },
+            ))
+            .then_expect_events(vec![BankAccountEvent::CustomerWroteCheck {
+                check_number: "1170".to_string(),
+                amount: 100.0,
+                balance: 100.0,
+            }]);
     }
 
     #[test]
-    fn test_wrote_check_bad_check() {
-        let previous = BankAccountEvent::CustomerDepositedMoney {
-            amount: 200.0,
-            balance: 200.0,
-        };
+    fn wrote_check_bad_check() {
         let services = MockBankAccountServices::default();
         services.set_validate_check_response(Err(CheckingError));
         let services = BankAccountServices::new(Box::new(services));
-        let command = BankAccountCommand::WriteCheck(BankAccountWriteCheckCommandData {
-            check_number: "1170".to_string(),
-            amount: 100.0,
-        });
 
         AccountTestFramework::with(services)
-            .given(vec![previous])
-            .when(command)
+            .given(vec![BankAccountEvent::CustomerDepositedMoney {
+                amount: 200.0,
+                balance: 200.0,
+            }])
+            .when(BankAccountCommand::WriteCheck(
+                BankAccountWriteCheckCommandData {
+                    check_number: "1170".to_string(),
+                    amount: 100.0,
+                },
+            ))
             .then_expect_error_message(BankAccountError::InvalidCheck.to_string().as_str());
     }
 
     #[test]
-    fn test_wrote_check_funds_not_available() {
-        let command = BankAccountCommand::WriteCheck(BankAccountWriteCheckCommandData {
-            check_number: "1170".to_string(),
-            amount: 100.0,
-        });
-
+    fn wrote_check_funds_not_available() {
         let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
         AccountTestFramework::with(services)
             .given_no_previous_events()
-            .when(command)
+            .when(BankAccountCommand::WriteCheck(
+                BankAccountWriteCheckCommandData {
+                    check_number: "1170".to_string(),
+                    amount: 100.0,
+                },
+            ))
             .then_expect_error_message(BankAccountError::InsufficientFunds.to_string().as_str())
     }
 
     #[test]
-    fn test_open_account() {
-        let command = BankAccountCommand::OpenAccount(BankAccountOpenAccountCommandData {
-            account_id: "1234".to_string(),
-        });
+    fn open_account() {
         let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
-
-        let expected = BankAccountEvent::AccountOpened {
-            account_id: "1234".to_string(),
-        };
         AccountTestFramework::with(services)
             .given_no_previous_events()
-            .when(command)
-            .then_expect_events(vec![expected]);
+            .when(BankAccountCommand::OpenAccount(
+                BankAccountOpenAccountCommandData {
+                    account_id: "1234".to_string(),
+                },
+            ))
+            .then_expect_events(vec![BankAccountEvent::AccountOpened {
+                account_id: "1234".to_string(),
+            }]);
     }
 }

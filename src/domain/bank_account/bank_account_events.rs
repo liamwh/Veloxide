@@ -37,55 +37,52 @@ impl DomainEvent for BankAccountEvent {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
-pub enum BankAccountError {
-    #[error("account already open")]
-    AccountAlreadyOpen,
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pretty_assertions::assert_eq;
 
-    #[error("cannot deposit negative amount")]
-    CannotDepositNegativeAmount,
+    #[test]
+    fn bank_account_event_version_is_1_0() {
+        let event = BankAccountEvent::AccountOpened {
+            account_id: "123".to_string(),
+        };
+        assert_eq!(event.event_version(), "1.0".to_string());
+    }
 
-    #[error("cannot withdraw negative amount")]
-    CannotWithdrawNegativeAmount,
+    #[test]
+    fn bank_account_event_type_is_account_opened() {
+        let event = BankAccountEvent::AccountOpened {
+            account_id: "123".to_string(),
+        };
+        assert_eq!(event.event_type(), "AccountOpened".to_string());
+    }
 
-    #[error("insufficient funds")]
-    InsufficientFunds,
+    #[test]
+    fn bank_account_event_type_is_customer_deposited_money() {
+        let event = BankAccountEvent::CustomerDepositedMoney {
+            amount: 100.0,
+            balance: 100.0,
+        };
+        assert_eq!(event.event_type(), "CustomerDepositedMoney".to_string());
+    }
 
-    #[error("invalid amount")]
-    InvalidAmount,
+    #[test]
+    fn bank_account_event_type_is_customer_withdrew_cash() {
+        let event = BankAccountEvent::CustomerWithdrewCash {
+            amount: 100.0,
+            balance: 100.0,
+        };
+        assert_eq!(event.event_type(), "CustomerWithdrewCash".to_string());
+    }
 
-    #[error("invalid check number")]
-    InvalidCheckNumber,
-
-    #[error("invalid account id")]
-    InvalidAccountId,
-
-    #[error("invalid check")]
-    InvalidCheck,
-
-    #[error("atm rule violation")]
-    AtmRuleViolation,
-
-    #[error("cannot write negative check amount")]
-    CannotWriteNegativeCheckAmount,
-
-    #[error("Unexpected Error: {0}")]
-    UnexpectedError(String),
-}
-
-impl From<&str> for BankAccountError {
-    fn from(msg: &str) -> Self {
-        match msg {
-            "AccountAlreadyOpen" => BankAccountError::AccountAlreadyOpen,
-            "CannotDepositNegativeAmount" => BankAccountError::CannotDepositNegativeAmount,
-            "InsufficientFunds" => BankAccountError::InsufficientFunds,
-            "InvalidAmount" => BankAccountError::InvalidAmount,
-            "InvalidCheckNumber" => BankAccountError::InvalidCheckNumber,
-            "InvalidAccountId" => BankAccountError::InvalidAccountId,
-            "InvalidCheck" => BankAccountError::InvalidCheck,
-            "AtmRuleViolation" => BankAccountError::AtmRuleViolation,
-            "CannotWriteNegativeCheckAmount" => BankAccountError::CannotWriteNegativeCheckAmount,
-            _ => BankAccountError::UnexpectedError(msg.to_string()),
-        }
+    #[test]
+    fn bank_account_event_type_is_customer_wrote_check() {
+        let event = BankAccountEvent::CustomerWroteCheck {
+            check_number: "123".to_string(),
+            amount: 100.0,
+            balance: 100.0,
+        };
+        assert_eq!(event.event_type(), "CustomerWroteCheck".to_string());
     }
 }
