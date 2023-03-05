@@ -83,41 +83,27 @@ Note that using the supporting containers is optional if you change the veloxide
 
 ## Getting started
 
-1. First, make sure you have the required dependencies installed. You can install them by runnning the below command:
+To create your own app:
 
-    ```zsh
-    make tools.required
-    ````
+```zsh
+> veloxide init my-app
 
-    OR alternatively, install them as per their documentation:
+# Go to created folder
+> cd my-app
 
-   - [Rust](https://www.rust-lang.org/tools/install)
-   - [SQLx CLI](https://github.com/launchbadge/sqlx/tree/main/sqlx-cli)
-   - [Docker](https://docs.docker.com/get-docker/)
+# Install tools
+> make tools.required
 
-2. Clone this repo
+# Start the supporting containers, followed by the build process
+> make dev
 
-3. Run the below command to start the supporting containers:
+# Once done, open `my-app/` in your IDE
 
-   ```bash
-   docker-compose up -d
-   ```
+# Happy Coding!
+```
 
-4. Run the below command to run the database migrations:
-
-   ```bash
-   sqlx migrate run
-   ```
-
-5. Run the below command to start the application:
-
-   ```bash
-   cargo run
-   ```
-
-6. Browse to `http://localhost:4005/swagger-ui/` to see the OpenAPI Interactive documentation.
-   - To use the login security restricted endpoints, the api key is `example_api_key`.
-7. Browse to `http://localhost:9000/` to see GraphQL Playground, the GraphQL interactive documentation.
+- The OpenAPI interactive documentation is available at `http://localhost:4005/swagger-ui/`
+- GraphQL Playground is available at `http://localhost:9000/`
 
 ## Why the name?
 

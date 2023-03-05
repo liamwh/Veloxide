@@ -10,9 +10,7 @@ lint:
 	@echo "It is advised to lint in your IDE instead of running this command"
 	cargo clippy
 
-dev: docker.run ## Run the application and supporting containers
-dr: docker.run
-docker.run: ## Run the containers in docker (this starts the docker stack), alias: dr
+dev: ## Run the application and supporting containers
 	docker-compose up -d
 	sqlx migrate run
 	cargo run
@@ -23,7 +21,7 @@ docker.stop: ## Stop the containers in docker (this stops the docker stack), ali
 	docker-compose down
 
 restart: docker.restart
-docker.restart: docker.stop docker.run ## Restart the containers in docker (this restarts the docker stack), alias: restart
+docker.restart: docker.stop dev ## Restart the containers in docker (this restarts the docker stack), alias: restart
 
 cover: ## Generates a code coverage report to be viewed in your IDE.
 	cargo llvm-cov report --lcov --output-path ./coverage/lcov.info
