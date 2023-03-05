@@ -17,6 +17,9 @@ use crate::presentation::*;
             BankAccountView,
             BankAccountCommand,
             BankAccountOpenAccountCommandData,
+            BankAccountDepositMoneyCommandData,
+            BankAccountWithdrawMoneyCommandData,
+            BankAccountWriteCheckCommandData,
             AccountTransaction),
     ),
       modifiers(&SecurityAddon),
@@ -24,9 +27,9 @@ use crate::presentation::*;
           (name = "Bank Accounts", description = "Bank Account Management API")
       ),
         info(
-            title = "Bank Account API: built with Velox",
+            title = "Bank Account API: built with Veloxide",
             version = "0.1.0",
-            description = "An event-sourced bank account API built with Velox",
+            description = "An event-sourced bank account API built with Veloxide",
             contact(name = "Liam Woodleigh", url="https://github.com/liamwh/"),
         ),
   )]

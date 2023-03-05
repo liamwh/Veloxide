@@ -40,9 +40,9 @@ Some of the key benefits and value propositions of Prometheus are:
 
 Overall, the value of Prometheus lies in its ability to provide a flexible, scalable, and powerful monitoring and alerting solution that can help DevOps teams and other stakeholders to gain deep insights into the performance and health of their applications and infrastructure, enabling them to proactively identify and resolve issues before they become critical.
 
-### Velox and Prometheus
+### Veloxide and Prometheus
 
-Velox exposes a /metrics endpoint by default, which the Prometheus instance spun up by docker compose will scrape by default.
+Veloxide exposes a /metrics endpoint by default, which the Prometheus instance spun up by docker compose will scrape by default.
 
 ## Grafana
 
@@ -64,6 +64,6 @@ Grafana is a popular open-source data visualization and monitoring tool that pro
 
 Overall, Grafana provides a powerful and flexible platform for data visualization and monitoring, allowing users to gain deep insights into their data, collaborate effectively with others, and quickly identify and respond to issues as they arise.
 
-### Velox and Grafana
+### Veloxide and Grafana
 
 The Grafana instance spun up by docker compose is configured to use Prometheus as a datasource, which in turn collects the metrics from /metrics. The Grafana instance is configured to use the Prometheus datasource by default. At the time of writing, there are no dashboards configured by default, but you can create your own however.

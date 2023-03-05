@@ -10,7 +10,7 @@ pub async fn configure_tracing() -> std::result::Result<(), crate::error::Error>
 
     // Get the service name from the environment
     let tracing_service_name =
-        dotenvy::var("TRACING_SERVICE_NAME").unwrap_or_else(|_| "velox-todo-app".to_string());
+        dotenvy::var("TRACING_SERVICE_NAME").unwrap_or_else(|_| "veloxide-todo-app".to_string());
 
     // Create a new Jaeger tracer
     let tracer = opentelemetry_jaeger::new_agent_pipeline()

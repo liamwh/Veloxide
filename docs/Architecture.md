@@ -1,4 +1,4 @@
-# Velox Architecture
+# Veloxide Architecture
 
 ## Domain Driven Design (DDD)
 
@@ -18,17 +18,17 @@ Domain-driven design (DDD) is an approach to software development that aims to a
 
 DDD is a holistic approach to software design that prioritizes understanding the business domain and building a model that reflects it. By using a common language and focusing on the core concepts of the domain, developers can create more maintainable and scalable software systems.
 
-### Domain Driven Design in Velox
+### Domain Driven Design in Veloxide
 
-The concepts of Aggregates, Entities, Value Objects, and Domain Events are all implemented in Velox using the [CQRS](https://docs.rs/cqrs-es/latest/cqrs_es/) crate. Further docs on the CQRS crate can be [found here](https://doc.rust-cqrs.org/intro.html).
+The concepts of Aggregates, Entities, Value Objects, and Domain Events are all implemented in Veloxide using the [CQRS](https://docs.rs/cqrs-es/latest/cqrs_es/) crate. Further docs on the CQRS crate can be [found here](https://doc.rust-cqrs.org/intro.html).
 
 Repositories are implemented using traits to provide a simple interface for the application to interact with, although this implementation is subject to change.
 
-The concepts of Bounded Contexts and Ubiquitous Language are important concepts to apply when designing a domain model, however are not implemented in Velox as there isn't a real domain for the stack itself.
+The concepts of Bounded Contexts and Ubiquitous Language are important concepts to apply when designing a domain model, however are not implemented in Veloxide as there isn't a real domain for the stack itself.
 
 ## Domain Driven Design Layers
 
-Velox implements the layers as specified in domain driven design.
+Veloxide implements the layers as specified in domain driven design.
 
 ![Domain Driven Design Layers](./.assets/ddd-layers.png)
 

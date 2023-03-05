@@ -10,6 +10,7 @@ lint:
 	@echo "It is advised to lint in your IDE instead of running this command"
 	cargo clippy
 
+dev: docker.run ## Run the application and supporting containers
 dr: docker.run
 docker.run: ## Run the containers in docker (this starts the docker stack), alias: dr
 	docker-compose up -d
@@ -32,7 +33,7 @@ cover.html: ## Generate a HTML coverage report and open it
 	open target/llvm-cov/html/index.html
 
 
-tools.required: ## Install the required tools for development with Velox
+tools.required: ## Install the required tools for development with Veloxide
 	@echo "Installing tools..."
 
 	@echo "Installing cargo-llvm-cov (code coverage report generation: https://github.com/taiki-e/cargo-llvm-cov)"
