@@ -55,8 +55,8 @@ impl From<&str> for BankAccountError {
 
 #[cfg(test)]
 mod tests {
-    use coverage_helper::test;
     use super::*;
+    use coverage_helper::test;
     use pretty_assertions::assert_eq;
 
     #[test]
