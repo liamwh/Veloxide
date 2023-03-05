@@ -46,3 +46,22 @@ impl BankAccountApi for HappyPathBankAccountServices {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn happy_path_bank_account_services_atm_withdrawal_returns_ok() {
+        let services = HappyPathBankAccountServices;
+        let result = services.atm_withdrawal("123", 100.0).await;
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn happy_path_bank_account_services_validate_check_returns_ok() {
+        let services = HappyPathBankAccountServices;
+        let result = services.validate_check("123", "123").await;
+        assert!(result.is_ok());
+    }
+}

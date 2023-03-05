@@ -42,7 +42,6 @@ impl BankAccountGraphQlMutation {
         let cqrs = ctx.data::<Arc<PostgresCqrs<BankAccount>>>()?;
         let view_repo = ctx.data::<Arc<PostgresViewRepository<BankAccountView, BankAccount>>>()?;
 
-        // TODO: Consider using execute_with_metadata() here by using middleware
         match cqrs.execute(&id, command).await {
             Ok(_) => {}
             Err(err) => {
