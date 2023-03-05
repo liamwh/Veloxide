@@ -25,7 +25,7 @@ restart: docker.restart
 docker.restart: docker.stop docker.run ## Restart the containers in docker (this restarts the docker stack), alias: restart
 
 cover: ## Generates a code coverage report to be viewed in your IDE.
-	argo llvm-cov report --lcov --output-path ./coverage/lcov.info
+	cargo llvm-cov report --lcov --output-path ./coverage/lcov.info
 
 cover.html: ## Generate a HTML coverage report and open it
 	cargo llvm-cov --html
