@@ -121,7 +121,10 @@ Note that using the supporting containers is optional if you change the veloxide
 
 ## Why the name?
 
-Veloxide is latin for "swift", "rapid" or "quick". Just like this stack 😉
+Velox + Oxide = Veloxide
+
+- Velox: latin for "swift", "rapid" or "quick", just like development with this stack 😉
+- Oxide: Rust is an iron oxide, and all components of Veloxide are written in Rust.
 
 ## Additional Documentation
 
