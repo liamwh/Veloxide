@@ -1,3 +1,5 @@
+#![cfg_attr(coverage_nightly, feature(no_coverage))]
+
 pub mod application;
 pub mod configuration;
 pub mod domain;
