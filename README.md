@@ -94,7 +94,7 @@ To create your own app:
 # Install tools
 > make tools.required
 
-# Start the build
+# Start the supporting containers, followed by the build process
 > make dev
 
 # Once done, open `my-app/` in your IDE
