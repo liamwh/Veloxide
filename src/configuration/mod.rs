@@ -26,7 +26,7 @@ pub async fn load_app_configuration() -> crate::prelude::Result<AppConfiguration
 #[instrument]
 async fn get_database_environment_variable() -> String {
     dotenvy::var("DATABASE_URL").unwrap_or_else(|_| {
-        "postgres://postgres:thisisnotsecure@localhost:5432/veloxtodoapi".to_string()
+        "postgres://postgres:thisisnotsecure@localhost:5432/veloxdb".to_string()
     })
 }
 
