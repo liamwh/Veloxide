@@ -83,6 +83,17 @@ Note that using the supporting containers is optional if you change the veloxide
 
 ## Getting started
 
+Install the pre-requisites:
+
+- [Rust](https://www.rust-lang.org/tools/install)
+- [Docker](https://docs.docker.com/get-docker/)
+
+Install the Veloxide CLI:
+
+```sh
+> cargo install veloxide
+```
+
 To create your own app:
 
 ```zsh
