@@ -1,14 +1,10 @@
-# Veloxide: A template for building web APIs in Rust
-
 <!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD041 -->
 
 <p align="center">
-    <a href="https://github.com/liamwh/Veloxide"><img src="./docs/.assets/under-construction.jpg" alt="Veloxide"
+    <a href="https://github.com/liamwh/Veloxide"><img src="./docs/.assets/veloxide-banner.png" alt="Veloxide"
             width=100%></a>
     <p align="center">
-        <em>Veloxide: high performance, easy to learn, fast to code, ready for production*</em>
-        <br>
-        <em>*Production quality coming soon :)</em>
     </p>
     <p align="center">
         <a href="https://github.com/liamwh/veloxide/actions?query=workflow%3AVeloxide-ci+event%3Apush+branch%3Amain">
@@ -18,16 +14,18 @@
             <img src="https://codecov.io/gh/liamwh/veloxide/branch/main/graph/badge.svg?token=CFVJ2XAMNL" />
         </a>
         <a href="https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html">
-            <img src="https://img.shields.io/badge/rustc-1.65+-lightgray.svg"></a>
+            <img src="https://img.shields.io/badge/rustc-1.65+-success.svg"></a>
         <a href="https://github.com/rust-secure-code/safety-dance/">
             <img src="https://img.shields.io/badge/unsafe-forbidden-success.svg" />
         </a>
         <a href="https://github.com/liamwh/veloxide/blob/main/README.md">
-            <img src="https://img.shields.io/badge/License-MIT-blue.svg">
+            <img src="https://img.shields.io/badge/License-MIT-success.svg">
         </a>
     </p>
 
 ---
+
+Veloxide is a modern, high-performance, cloud-native web API template written in Rust.
 
 The key features are:
 
