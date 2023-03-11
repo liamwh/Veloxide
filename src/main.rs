@@ -6,9 +6,13 @@
 
 use std::net::{Ipv4Addr, SocketAddr};
 
-use axum::{routing::get, Extension, Router, Server};
+use axum::{
+    headers::{self, Header},
+    routing::get,
+    Extension, Router, Server,
+};
 use axum_prometheus::PrometheusMetricLayer;
-use hyper::Method;
+use hyper::{header::CONTENT_TYPE, Method};
 use presentation::ApiDoc;
 use tower::ServiceBuilder;
 use tower_http::cors::{Any, CorsLayer};
@@ -59,6 +63,8 @@ async fn main() -> Result<()> {
     let cors = CorsLayer::new()
         // allow `GET` and `POST` when accessing the resource
         .allow_methods([Method::GET, Method::POST])
+        // Allow headers
+        .allow_headers([CONTENT_TYPE])
         // allow requests from any origin
         .allow_origin(Any);
 
