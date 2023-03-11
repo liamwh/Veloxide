@@ -24,7 +24,7 @@
 	<div class="card-body">
 		<h2 class="card-title">Deposit Money</h2>
 		<div class="form-control">
-			<div class="grid grid-flow-row auto-rows-max">
+			<div class="grid grid-flow-row auto-rows-max space-y-1">
 				<!-- svelte-ignore a11y-label-has-associated-control -->
 				<label class="label">
 					<span class="label-text">Enter amount to deposit</span>
