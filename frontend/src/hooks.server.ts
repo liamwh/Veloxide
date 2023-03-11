@@ -28,6 +28,15 @@ async function authorization({ event, resolve }) {
 }
 
 export const handle: Handle = sequence(SvelteKitAuth({
+  adapter: PrismaAdapter(prisma) as Adapter<boolean>,
+  // the session override fixes a weird bug in the adapter
+  // src: https://github.com/nextauthjs/next-auth/issues/6076#issuecomment-1354087465
+  session: {
+    strategy: "database",
+    generateSessionToken: () => {
+      return crypto.randomUUID();
+    }
+  },
   providers: [
     GitHub({ clientId: GITHUB_ID, clientSecret: GITHUB_SECRET }),
     GoogleProvider({

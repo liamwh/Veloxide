@@ -12,9 +12,6 @@
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write ."
 	},
-	"prisma": {
-		"schema": "../prisma/schema.prisma"
-	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
@@ -26,7 +23,6 @@
 		"eslint-plugin-svelte3": "^4.0.0",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.8.1",
-		"prisma": "^4.11.0",
 		"svelte": "^3.54.0",
 		"svelte-check": "^2.9.2",
 		"tslib": "^2.4.1",
@@ -39,7 +35,7 @@
 		"@auth/core": "^0.5.1",
 		"@auth/sveltekit": "^0.3.0",
 		"@next-auth/prisma-adapter": "^1.0.5",
-		"@prisma/client": "^4.11.0",
+		"@prisma/client": "^4.8.1",
 		"next-auth": "^4.20.1"
 	}
 }

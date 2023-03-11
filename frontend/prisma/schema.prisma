@@ -60,7 +60,7 @@ model VerificationToken {
 model events {
   aggregate_type String
   aggregate_id   String
-  sequence       Int      @id @default(autoincrement())
+  sequence       Int      @default(autoincrement())
   event_type     String
   event_version  String
   payload        Json
@@ -68,7 +68,7 @@ model events {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now()) @updatedAt
 
-  @@unique([aggregate_type, aggregate_id, sequence])
+  @@id([sequence, aggregate_type, aggregate_id])
 }
 
 model account_query {
