@@ -27,6 +27,10 @@ npm run dev
 npm run dev -- --open
 ```
 
+## Authentication
+
+The frontend uses OAuth to authenticate. This is done using Auth.js. See more [here](https://authjs.dev/getting-started/oauth-tutorial).
+
 ## Building
 
 To create a production version of your app:

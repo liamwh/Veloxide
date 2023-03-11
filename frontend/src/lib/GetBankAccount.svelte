@@ -31,9 +31,10 @@
 		/>
 	</label>
 </div>
+
 <div class="card w-96 bg-base-100 shadow-xl">
 	<div class="card-body">
-		<p>Balance: {bankAccount.balance}</p>
+		<p><b>Balance:</b> {bankAccount.balance}</p>
 		<br />
 		<h2 class="card-title">Account Tansactions</h2>
 		<table class="table table-compact w-full">
