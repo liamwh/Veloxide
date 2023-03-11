@@ -1,9 +1,11 @@
 pub mod config;
+pub mod mysql_db_sqlx;
 pub mod postgres_db_sqlx;
 pub mod tracing_config;
 
 // Re-exports
 pub use config::*;
+pub use mysql_db_sqlx::*;
 pub use postgres_db_sqlx::*;
 pub use tracing::*;
 

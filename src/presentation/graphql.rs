@@ -10,13 +10,24 @@ use axum::{
     Router, Server,
 };
 
-use postgres_es::{PostgresCqrs, PostgresViewRepository};
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
 
 use crate::domain::BankAccount;
 
 use super::{BankAccountGraphQlMutation, BankAccountGraphQlQuery, BankAccountView};
+
+use cfg_if::cfg_if;
+
+cfg_if! {
+    if #[cfg(feature = "postgres")] {
+        use postgres_es::{PostgresCqrs, PostgresViewRepository};
+    } else if #[cfg(feature = "mysql")] {
+        use mysql_es::{MysqlCqrs, MysqlViewRepository};
+    } else {
+        compile_error!("Must specify either mysql or postgres feature");
+    }
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct GraphQlConfiguration {
@@ -53,7 +64,9 @@ struct QueryRoot(BankAccountGraphQlQuery);
 #[derive(MergedObject, Default)]
 struct MutationRoot(BankAccountGraphQlMutation);
 
-#[instrument(skip(bank_account_view_repsitory, bank_account_cqrs_framework))]
+cfg_if! {
+    if #[cfg(feature = "postgres")] {
+        #[instrument(skip(bank_account_view_repsitory, bank_account_cqrs_framework))]
 pub async fn run_graphql_server(
     config: &GraphQlConfiguration,
     bank_account_cqrs_framework: Arc<PostgresCqrs<BankAccount>>,
@@ -80,6 +93,39 @@ pub async fn run_graphql_server(
         .serve(app.into_make_service())
         .await
         .unwrap();
+}
+    } else if #[cfg(feature = "mysql")] {
+        #[instrument(skip(bank_account_view_repsitory, bank_account_cqrs_framework))]
+pub async fn run_graphql_server(
+    config: &GraphQlConfiguration,
+    bank_account_cqrs_framework: Arc<MysqlCqrs<BankAccount>>,
+    bank_account_view_repsitory: Arc<MysqlViewRepository<BankAccountView, BankAccount>>,
+) {
+    tracing::debug!("Starting graphql server");
+    let serve_address = config.parse_serve_address();
+
+    // create the schema
+    let schema = Schema::build(
+        QueryRoot::default(),
+        MutationRoot::default(),
+        EmptySubscription,
+    )
+    .data(bank_account_view_repsitory)
+    .data(bank_account_cqrs_framework)
+    .finish();
+
+    let app = Router::new()
+        .route("/", get(graphql_playground).post(graphql_handler))
+        .layer(Extension(schema));
+
+    Server::bind(&serve_address)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+}
+    } else {
+        compile_error!("Must specify either mysql or postgres feature");
+    }
 }
 
 #[cfg(test)]
