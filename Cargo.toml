@@ -14,7 +14,7 @@ tokio = { version = "~1", features = ["full"] }
 tower = "~0"
 axum-prometheus = "~0"
 async-trait = "~0"
-tower-http = "~0"
+tower-http = {version= "~0", features = ["cors"]}
 
 # OpenAPI
 utoipa = { version = "~3", features = ["axum_extras"] }
@@ -59,11 +59,13 @@ cqrs-es = "~0"
 postgres-es = "~0"
 chrono = "~0"
 derivative = "~2"
+ts-rs = { version = "~6", optional = true }
 
 [features]
-default = ["tracing", "graphql"]
+default = ["tracing", "graphql", "frontend"]
 tracing = ["tracing-log", "tracing-subscriber", "tracing-opentelemetry", "opentelemetry", "opentelemetry-jaeger"]
 graphql = ["async-graphql", "async-graphql-axum"]
+frontend = ["ts-rs"]
 
 [workspace]
 members = ["."]

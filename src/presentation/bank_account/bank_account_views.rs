@@ -1,4 +1,5 @@
 use async_graphql::SimpleObject;
+use ts_rs::TS;
 
 use super::*;
 
@@ -14,7 +15,9 @@ pub type AccountQuery = GenericQuery<
 // The view for a BankAccount query, for a standard http application this should
 // be designed to reflect the response dto that will be returned to a user.
 
-#[derive(SimpleObject, Debug, Default, Serialize, Deserialize, ToSchema, ToResponse)]
+#[derive(SimpleObject, Debug, Default, Serialize, Deserialize, ToSchema, ToResponse, TS)]
+#[ts(export, export_to = "frontend/src/bindings/")]
+#[ts(export)]
 pub struct BankAccountView {
     account_id: Option<String>,
     balance: f64,
@@ -58,7 +61,8 @@ impl View<BankAccount> for BankAccountView {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, ToResponse, SimpleObject)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, ToResponse, SimpleObject, TS)]
+#[ts(export, export_to = "frontend/src/bindings/")]
 pub struct AccountTransaction {
     description: String,
     amount: f64,

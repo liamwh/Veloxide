@@ -8,8 +8,10 @@ use std::net::{Ipv4Addr, SocketAddr};
 
 use axum::{routing::get, Extension, Router, Server};
 use axum_prometheus::PrometheusMetricLayer;
+use hyper::Method;
 use presentation::ApiDoc;
 use tower::ServiceBuilder;
+use tower_http::cors::{Any, CorsLayer};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -53,6 +55,13 @@ async fn main() -> Result<()> {
     // Configure prometheus layer for Axum
     let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
 
+    // Configure CORS (TODO: Make me more secure)
+    let cors = CorsLayer::new()
+        // allow `GET` and `POST` when accessing the resource
+        .allow_methods([Method::GET, Method::POST])
+        // allow requests from any origin
+        .allow_origin(Any);
+
     // Set up the router
     let app = Router::new()
         .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
@@ -66,7 +75,8 @@ async fn main() -> Result<()> {
             ServiceBuilder::new()
                 .layer(Extension(cqrs))
                 .layer(Extension(account_query))
-                .layer(prometheus_layer),
+                .layer(prometheus_layer)
+                .layer(cors),
         );
 
     // Run the router
