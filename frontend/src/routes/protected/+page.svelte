@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import SignInButton from '$lib/SignInButton.svelte';
 </script>
 
 {#if $page.data.session}
@@ -12,5 +11,4 @@
 	<p>
 		<a href="/auth/signin"> You must be signed in to view this page </a>
 	</p>
-	<SignInButton provider="github" />
 {/if}
