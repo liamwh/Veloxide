@@ -2,7 +2,7 @@
 <!-- markdownlint-disable MD041 -->
 
 <p align="center">
-    <a href="https://github.com/liamwh/Veloxide"><img src="./docs/.assets/veloxide-banner.png" alt="Veloxide"
+    <a href="https://github.com/liamwh/Veloxide"><img src="./docs/.assets/Veloxide-Wordmark-FullBanner.jpg" alt="Veloxide"
             width=100%></a>
     <p align="center">
     </p>
