@@ -1,10 +1,11 @@
-name: "veloxide-ci"
+name: "veloxide-backend-ci"
 
 on:
   push:
     paths-ignore:
       - "docs/**"
       - "**.md"
+      - "frontend/**"
   pull_request:
     branches:
       - main

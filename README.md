@@ -127,3 +127,9 @@ Velox + Oxide = Veloxide
 ## Additional Documentation
 
 Can be found in the [docs](docs) folder.
+
+## Contributors
+
+- **[Liam Woodleigh-Hardinge](https://bit.ly/422Y4Lo)**: Creator
+- **[Lucas Moulton-Wotherspoon](https://bit.ly/3l5zqsS)**: Graphics and Design
+- You? 😊
