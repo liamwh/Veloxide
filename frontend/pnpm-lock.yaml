@@ -4,28 +4,30 @@ specifiers:
   '@auth/core': ^0.5.1
   '@auth/sveltekit': ^0.3.0
   '@next-auth/prisma-adapter': ^1.0.5
-  '@sveltejs/adapter-auto': next
-  '@sveltejs/kit': next
+  '@prisma/client': ^4.11.0
+  '@sveltejs/adapter-auto': 1.0.0-next.91
+  '@sveltejs/kit': 1.0.0-next.589
   '@tailwindcss/typography': ^0.5.9
-  '@typescript-eslint/eslint-plugin': ^5.45.0
-  '@typescript-eslint/parser': ^5.45.0
-  eslint: ^8.28.0
-  eslint-config-prettier: ^8.5.0
+  '@typescript-eslint/eslint-plugin': ^5.54.1
+  '@typescript-eslint/parser': ^5.54.1
+  eslint: ^8.36.0
+  eslint-config-prettier: ^8.7.0
   eslint-plugin-svelte3: ^4.0.0
   next-auth: ^4.20.1
-  prettier: ^2.8.0
-  prettier-plugin-svelte: ^2.8.1
-  svelte: ^3.54.0
-  svelte-check: ^2.9.2
-  tslib: ^2.4.1
-  typescript: ^4.9.3
-  vite: ^4.0.0
-  vitest: ^0.25.3
+  prettier: ^2.8.4
+  prettier-plugin-svelte: ^2.9.0
+  svelte: ^3.56.0
+  svelte-check: ^2.10.3
+  tslib: ^2.5.0
+  typescript: ^4.9.5
+  vite: ^4.1.4
+  vitest: ^0.25.8
 
 dependencies:
   '@auth/core': 0.5.1
   '@auth/sveltekit': 0.3.0_c76jb2m4cfeqfzkcbtccfv6lfe
-  '@next-auth/prisma-adapter': 1.0.5_next-auth@4.20.1
+  '@next-auth/prisma-adapter': 1.0.5_knaw3qxw4zwoiwojd3fn43zthi
+  '@prisma/client': 4.11.0
   next-auth: 4.20.1
 
 devDependencies:
@@ -332,12 +334,13 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@next-auth/prisma-adapter/1.0.5_next-auth@4.20.1:
+  /@next-auth/prisma-adapter/1.0.5_knaw3qxw4zwoiwojd3fn43zthi:
     resolution: {integrity: sha512-VqMS11IxPXrPGXw6Oul6jcyS/n8GLOWzRMrPr3EMdtD6eOalM6zz05j08PcNiis8QzkfuYnCv49OvufTuaEwYQ==}
     peerDependencies:
       '@prisma/client': '>=2.26.0 || >=3'
       next-auth: ^4
     dependencies:
+      '@prisma/client': 4.11.0
       next-auth: 4.20.1
     dev: false
 
@@ -368,6 +371,23 @@ packages:
 
   /@polka/url/1.0.0-next.21:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
+
+  /@prisma/client/4.11.0:
+    resolution: {integrity: sha512-0INHYkQIqgAjrt7NzhYpeDQi8x3Nvylc2uDngKyFDDj1tTRQ4uV1HnVmd1sQEraeVAN63SOK0dgCKQHlvjL0KA==}
+    engines: {node: '>=14.17'}
+    requiresBuild: true
+    peerDependencies:
+      prisma: '*'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+    dependencies:
+      '@prisma/engines-version': 4.11.0-57.8fde8fef4033376662cad983758335009d522acb
+    dev: false
+
+  /@prisma/engines-version/4.11.0-57.8fde8fef4033376662cad983758335009d522acb:
+    resolution: {integrity: sha512-3Vd8Qq06d5xD8Ch5WauWcUUrsVPdMC6Ge8ILji8RFfyhUpqon6qSyGM0apvr1O8n8qH8cKkEFqRPsYjuz5r83g==}
+    dev: false
 
   /@sveltejs/adapter-auto/1.0.0-next.91_l5ueyfihz3gpzzvvyo2ean5u3e:
     resolution: {integrity: sha512-U57tQdzTfFINim8tzZSARC9ztWPzwOoHwNOpGdb2o6XrD0mEQwU9DsII7dBblvzg+xCnmd0pw7PDtXz5c5t96w==}
@@ -1399,8 +1419,8 @@ packages:
       jose: 4.13.1
       oauth: 0.9.15
       openid-client: 5.4.0
-      preact: 10.11.3
-      preact-render-to-string: 5.2.3_preact@10.11.3
+      preact: 10.13.1
+      preact-render-to-string: 5.2.6_preact@10.13.1
       uuid: 8.3.2
     dev: false
 
@@ -1535,8 +1555,21 @@ packages:
       pretty-format: 3.8.0
     dev: false
 
+  /preact-render-to-string/5.2.6_preact@10.13.1:
+    resolution: {integrity: sha512-JyhErpYOvBV1hEPwIxc/fHWXPfnEGdRKxc8gFdAZ7XV4tlzyzG847XAyEZqoDnynP88akM4eaHcSOzNcLWFguw==}
+    peerDependencies:
+      preact: '>=10'
+    dependencies:
+      preact: 10.13.1
+      pretty-format: 3.8.0
+    dev: false
+
   /preact/10.11.3:
     resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
+    dev: false
+
+  /preact/10.13.1:
+    resolution: {integrity: sha512-KyoXVDU5OqTpG9LXlB3+y639JAGzl8JSBXLn1J9HTSB3gbKcuInga7bZnXLlxmK94ntTs1EFeZp0lrja2AuBYQ==}
     dev: false
 
   /prelude-ls/1.2.1:
