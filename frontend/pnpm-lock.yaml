@@ -10,6 +10,7 @@ specifiers:
   '@tailwindcss/typography': ^0.5.9
   '@typescript-eslint/eslint-plugin': ^5.54.1
   '@typescript-eslint/parser': ^5.54.1
+  '@zerodevx/svelte-toast': ^0.9.2
   autoprefixer: ^10.4.14
   daisyui: ^2.51.3
   eslint: ^8.36.0
@@ -42,6 +43,7 @@ devDependencies:
   '@tailwindcss/typography': 0.5.9_tailwindcss@3.2.7
   '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
   '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
+  '@zerodevx/svelte-toast': 0.9.2_svelte@3.56.0
   autoprefixer: 10.4.14_postcss@8.4.21
   eslint: 8.36.0
   eslint-config-prettier: 8.7.0_eslint@8.36.0
@@ -631,6 +633,14 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.54.1
       eslint-visitor-keys: 3.3.0
+    dev: true
+
+  /@zerodevx/svelte-toast/0.9.2_svelte@3.56.0:
+    resolution: {integrity: sha512-9Ope024toXZpc9uk/WNMQMm9o15xeLnQwkWk1L8ZAaThFJJksiEWvGo1qXwO6ISfhA0GtafF9rR83TsEcpRLTg==}
+    peerDependencies:
+      svelte: ^3.55.1
+    dependencies:
+      svelte: 3.56.0
     dev: true
 
   /acorn-jsx/5.3.2_acorn@8.8.2:

@@ -2,6 +2,7 @@
 	export let accountId: string;
 	import type { BankAccountCommand } from 'src/bindings/BankAccountCommand';
 	import { PUBLIC_BANK_ACCOUNT_SERVICE_API_URL } from '$env/static/public';
+	import { toast } from '@zerodevx/svelte-toast';
 
 	let amount: number;
 	let atmId: string;
@@ -23,6 +24,16 @@
 				body: JSON.stringify(command, null, 2)
 			}
 		);
+		switch (response.status) {
+			case 200:
+				return;
+			case 404:
+				toast.push('Account not found');
+				return;
+			default:
+				toast.push('Error fetching account balance');
+				return;
+		}
 	}
 </script>
 

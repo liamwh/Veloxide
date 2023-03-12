@@ -2,6 +2,7 @@
 	import type { BankAccountView } from 'src/bindings/BankAccountView';
 	import { PUBLIC_BANK_ACCOUNT_SERVICE_API_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
+	import { toast } from '@zerodevx/svelte-toast';
 
 	export let accountId: string;
 
@@ -20,11 +21,16 @@
 		const response = await fetch(
 			`${PUBLIC_BANK_ACCOUNT_SERVICE_API_URL}/bank-accounts/${accountId}`
 		);
-		const account = await response.json();
-		console.log(account);
-		if (response.status === 200) {
-			bankAccount = account;
-			return;
+		switch (response.status) {
+			case 200:
+				bankAccount = await response.json();
+				return;
+			case 404:
+				toast.push('Account not found');
+				return;
+			default:
+				toast.push('Error fetching account balance');
+				return;
 		}
 	}
 </script>
