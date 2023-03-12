@@ -7,6 +7,14 @@
 	let amount: number;
 	let atmId: string;
 	export async function withdrawMoney() {
+		if (amount <= 0 || amount == null) {
+			toast.push('Amount must be greater than 0');
+			return;
+		}
+		if (atmId == null) {
+			toast.push('ATM ID must be provided');
+			return;
+		}
 		let command: BankAccountCommand = {
 			WithdrawMoney: {
 				atm_id: atmId,
@@ -26,6 +34,8 @@
 			);
 			switch (response.status) {
 				case 200:
+					return;
+				case 204:
 					return;
 				case 404:
 					toast.push('Account not found');

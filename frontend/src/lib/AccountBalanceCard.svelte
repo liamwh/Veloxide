@@ -26,6 +26,8 @@
 				case 200:
 					bankAccount = await response.json();
 					return;
+				case 204:
+					return;
 				case 404:
 					toast.push('Account not found');
 					return;

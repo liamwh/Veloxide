@@ -11,7 +11,10 @@
 				amount: amount
 			}
 		};
-		let body = JSON.stringify(command, null, 2);
+		if (amount <= 0 || amount == null) {
+			toast.push('Amount must be greater than 0');
+			return;
+		}
 		try {
 			const response = await fetch(
 				`${PUBLIC_BANK_ACCOUNT_SERVICE_API_URL}/bank-accounts/${accountId}`,
@@ -25,6 +28,8 @@
 			);
 			switch (response.status) {
 				case 200:
+					return;
+				case 204:
 					return;
 				case 404:
 					toast.push('Account not found');
