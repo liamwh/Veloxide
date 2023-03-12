@@ -57,6 +57,9 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+// Above models are required for Auth.js to work
+// Below models are for the domain of the application
+
 model events {
   aggregate_type String
   aggregate_id   String
