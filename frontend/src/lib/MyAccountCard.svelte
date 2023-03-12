@@ -1,7 +1,7 @@
 <script lang="ts">
-	import DepositMoney from './DepositMoney.svelte';
+	import DepositMoneyCard from './DepositMoneyCard.svelte';
 	import AccountTransactionsCard from './AccountTransactionsCard.svelte';
-	import WithdrawMoney from './WithdrawMoney.svelte';
+	import WithdrawMoneyCard from './WithdrawMoneyCard.svelte';
 	import AccountBalanceCard from './AccountBalanceCard.svelte';
 
 	export let accountId: string;
@@ -15,8 +15,8 @@
 <div class="flex flex-wrap justify-center w-screen">
 	<div class="flex flex-wrap space-x-2 space-y-2">
 		<AccountBalanceCard {accountId} />
-		<DepositMoney {accountId} />
-		<WithdrawMoney {accountId} />
+		<DepositMoneyCard {accountId} />
+		<WithdrawMoneyCard {accountId} />
 		<AccountTransactionsCard {accountId} />
 	</div>
 </div>

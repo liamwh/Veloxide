@@ -99,6 +99,9 @@ impl BankAccount {
         _services: &BankAccountServices,
         amount: f64,
     ) -> Result<Vec<BankAccountEvent>, BankAccountError> {
+        if self.account_id.is_empty() {
+            return Err(BankAccountError::AccountNotOpen);
+        }
         if amount < 0_f64 {
             return Err(BankAccountError::CannotDepositNegativeAmount);
         }
@@ -116,6 +119,9 @@ impl BankAccount {
         amount: f64,
         atm_id: String,
     ) -> Result<Vec<BankAccountEvent>, BankAccountError> {
+        if self.account_id.is_empty() {
+            return Err(BankAccountError::AccountNotOpen);
+        }
         if amount < 0_f64 {
             error!("cannot withdraw negative amount");
             return Err(BankAccountError::CannotWithdrawNegativeAmount);
@@ -147,6 +153,9 @@ impl BankAccount {
         check_number: String,
         amount: f64,
     ) -> Result<Vec<BankAccountEvent>, BankAccountError> {
+        if self.account_id.is_empty() {
+            return Err(BankAccountError::AccountNotOpen);
+        }
         if amount < 0_f64 {
             error!("cannot write negative check amount");
             return Err(BankAccountError::CannotWriteNegativeCheckAmount);
@@ -243,44 +252,52 @@ mod aggregate_tests {
 
     #[test]
     fn deposit_money() {
-        let expected = BankAccountEvent::CustomerDepositedMoney {
-            amount: 200.0,
-            balance: 200.0,
-        };
-        let command =
-            BankAccountCommand::DepositMoney(BankAccountDepositMoneyCommandData { amount: 200.0 });
         let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
-        // Obtain a new test framework
         AccountTestFramework::with(services)
-            // In a test case with no previous events
+            .given(vec![BankAccountEvent::AccountOpened {
+                account_id: "1234".to_string(),
+            }])
+            .when(BankAccountCommand::DepositMoney(
+                BankAccountDepositMoneyCommandData { amount: 200.0 },
+            ))
+            .then_expect_events(vec![BankAccountEvent::CustomerDepositedMoney {
+                amount: 200.0,
+                balance: 200.0,
+            }]);
+    }
+
+    #[test]
+    fn cannot_deposit_money_into_account_that_does_not_exist() {
+        let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
+        AccountTestFramework::with(services)
             .given_no_previous_events()
-            // Wnen we fire this command
-            .when(command)
-            // then we expect these results
-            .then_expect_events(vec![expected]);
+            .when(BankAccountCommand::DepositMoney(
+                BankAccountDepositMoneyCommandData { amount: 200.0 },
+            ))
+            .then_expect_error(BankAccountError::AccountNotOpen);
     }
 
     #[test]
     fn can_deposit_money_with_balance() {
-        let previous = BankAccountEvent::CustomerDepositedMoney {
-            amount: 200.0,
-            balance: 200.0,
-        };
-        let expected = BankAccountEvent::CustomerDepositedMoney {
-            amount: 200.0,
-            balance: 400.0,
-        };
-        let command =
-            BankAccountCommand::DepositMoney(BankAccountDepositMoneyCommandData { amount: 200.0 });
         let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
 
         AccountTestFramework::with(services)
-            // Given this previously applied event
-            .given(vec![previous])
-            // When we fire this command
-            .when(command)
-            // Then we expect this resultant event
-            .then_expect_events(vec![expected]);
+            .given(vec![
+                BankAccountEvent::AccountOpened {
+                    account_id: "1234".to_string(),
+                },
+                BankAccountEvent::CustomerDepositedMoney {
+                    amount: 200.0,
+                    balance: 200.0,
+                },
+            ])
+            .when(BankAccountCommand::DepositMoney(
+                BankAccountDepositMoneyCommandData { amount: 200.0 },
+            ))
+            .then_expect_events(vec![BankAccountEvent::CustomerDepositedMoney {
+                amount: 200.0,
+                balance: 400.0,
+            }]);
     }
 
     #[test]
@@ -289,10 +306,15 @@ mod aggregate_tests {
         services.set_atm_withdrawal_response(Ok(()));
 
         AccountTestFramework::with(BankAccountServices::new(Box::new(services)))
-            .given(vec![BankAccountEvent::CustomerDepositedMoney {
-                amount: 200.0,
-                balance: 200.0,
-            }])
+            .given(vec![
+                BankAccountEvent::AccountOpened {
+                    account_id: "1234".to_string(),
+                },
+                BankAccountEvent::CustomerDepositedMoney {
+                    amount: 200.0,
+                    balance: 200.0,
+                },
+            ])
             .when(BankAccountCommand::WithdrawMoney(
                 BankAccountWithdrawMoneyCommandData {
                     amount: 100.0,
@@ -312,10 +334,15 @@ mod aggregate_tests {
         let services = BankAccountServices::new(Box::new(services));
 
         AccountTestFramework::with(services)
-            .given(vec![BankAccountEvent::CustomerDepositedMoney {
-                amount: 200.0,
-                balance: 200.0,
-            }])
+            .given(vec![
+                BankAccountEvent::AccountOpened {
+                    account_id: "1234".to_string(),
+                },
+                BankAccountEvent::CustomerDepositedMoney {
+                    amount: 200.0,
+                    balance: 200.0,
+                },
+            ])
             .when(BankAccountCommand::WithdrawMoney(
                 BankAccountWithdrawMoneyCommandData {
                     amount: 100.0,
@@ -329,7 +356,9 @@ mod aggregate_tests {
     fn withdraw_money_funds_not_available_returns_insufficient_funds_error() {
         let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
         AccountTestFramework::with(services)
-            .given_no_previous_events()
+            .given(vec![BankAccountEvent::AccountOpened {
+                account_id: "1234".to_string(),
+            }])
             .when(BankAccountCommand::WithdrawMoney(
                 BankAccountWithdrawMoneyCommandData {
                     amount: 200.0,
@@ -347,10 +376,15 @@ mod aggregate_tests {
         let services = BankAccountServices::new(Box::new(services));
 
         AccountTestFramework::with(services)
-            .given(vec![BankAccountEvent::CustomerDepositedMoney {
-                amount: 200.0,
-                balance: 200.0,
-            }])
+            .given(vec![
+                BankAccountEvent::AccountOpened {
+                    account_id: "1234".to_string(),
+                },
+                BankAccountEvent::CustomerDepositedMoney {
+                    amount: 200.0,
+                    balance: 200.0,
+                },
+            ])
             .when(BankAccountCommand::WriteCheck(
                 BankAccountWriteCheckCommandData {
                     check_number: "1170".to_string(),
@@ -371,10 +405,15 @@ mod aggregate_tests {
         let services = BankAccountServices::new(Box::new(services));
 
         AccountTestFramework::with(services)
-            .given(vec![BankAccountEvent::CustomerDepositedMoney {
-                amount: 200.0,
-                balance: 200.0,
-            }])
+            .given(vec![
+                BankAccountEvent::AccountOpened {
+                    account_id: "1234".to_string(),
+                },
+                BankAccountEvent::CustomerDepositedMoney {
+                    amount: 200.0,
+                    balance: 200.0,
+                },
+            ])
             .when(BankAccountCommand::WriteCheck(
                 BankAccountWriteCheckCommandData {
                     check_number: "1170".to_string(),
@@ -388,7 +427,9 @@ mod aggregate_tests {
     fn wrote_check_funds_not_available() {
         let services = BankAccountServices::new(Box::<MockBankAccountServices>::default());
         AccountTestFramework::with(services)
-            .given_no_previous_events()
+            .given(vec![BankAccountEvent::AccountOpened {
+                account_id: "1234".to_string(),
+            }])
             .when(BankAccountCommand::WriteCheck(
                 BankAccountWriteCheckCommandData {
                     check_number: "1170".to_string(),

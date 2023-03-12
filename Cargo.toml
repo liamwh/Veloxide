@@ -1,5 +1,5 @@
 [package]
-name = "example-veloxide-app"
+name = "example-veloxide-api"
 description = "Veloxide: Example Bank Account API"
 version = "0.1.0"
 edition = "2021"
@@ -52,17 +52,21 @@ opentelemetry-jaeger = { version = "~0", features = [
 tracing-opentelemetry = { version = "~0", optional = true }
 tracing-log = { version = "~0", optional = true }
 
+# Frontend
+ts-rs = { version = "~6", optional = true }
+
 # Misc
 thiserror = "~1"
 log = "~0"
 dotenvy = "~0"
-cqrs-es = "~0"
-postgres-es = { version = "~0", optional = true}
 chrono = "~0"
 derivative = "~2"
-ts-rs = { version = "~6", optional = true }
-mysql-es = { version = "~0", optional = true}
 cfg-if = "1.0.0"
+
+# Event sourcing
+cqrs-es = "~0"
+mysql-es = { version = "~0", optional = true}
+postgres-es = { version = "~0", optional = true}
 
 [features]
 default = ["tracing", "graphql", "frontend", "mysql"]

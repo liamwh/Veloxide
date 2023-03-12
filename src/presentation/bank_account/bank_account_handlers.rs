@@ -7,7 +7,7 @@ cfg_if::cfg_if! {
 #[utoipa::path(
     get,
     tag = "Bank Accounts",
-    path = "/bank-accounts/{id}",
+    path = "/api/bank-accounts/{id}",
     params(
         ("id" = i32, Path, description = "Bank account ID")
     ),
@@ -36,7 +36,7 @@ cfg_if::cfg_if! {
   #[utoipa::path(
     post,
     tag = "Bank Accounts",
-    path = "/bank-accounts/{id}",
+    path = "/api/bank-accounts/{id}",
     responses(
       (status = 204, description = "Command issued successfully"),
       (status = 400, description = "Command failed", body = [String])
@@ -64,7 +64,7 @@ cfg_if::cfg_if! {
 #[utoipa::path(
     get,
     tag = "Bank Accounts",
-    path = "/bank-accounts/{id}",
+    path = "/api/bank-accounts/{id}",
     params(
         ("id" = i32, Path, description = "Bank account ID")
     ),
@@ -93,7 +93,7 @@ cfg_if::cfg_if! {
   #[utoipa::path(
     post,
     tag = "Bank Accounts",
-    path = "/bank-accounts/{id}",
+    path = "/api/bank-accounts/{id}",
     responses(
       (status = 204, description = "Command issued successfully"),
       (status = 400, description = "Command failed", body = [String])

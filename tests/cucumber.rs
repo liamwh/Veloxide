@@ -1,5 +1,4 @@
-use cucumber::{gherkin::Step, given, then, when, World};
-use pretty_assertions::assert_eq;
+use cucumber::World;
 
 mod cucumber_todo;
 

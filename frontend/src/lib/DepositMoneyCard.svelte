@@ -1,6 +1,8 @@
 <script lang="ts">
 	export let accountId: string;
 	import type { BankAccountCommand } from 'src/bindings/BankAccountCommand';
+	import { PUBLIC_BANK_ACCOUNT_SERVICE_API_URL } from '$env/static/public';
+	import { toast } from '@zerodevx/svelte-toast';
 
 	let amount: number;
 	export async function depositMoney() {
@@ -9,14 +11,37 @@
 				amount: amount
 			}
 		};
-		let body = JSON.stringify(command, null, 2);
-		const response = await fetch(`http://localhost:4005/bank-accounts/${accountId}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(command, null, 2)
-		});
+		if (amount <= 0 || amount == null) {
+			toast.push('Amount must be greater than 0');
+			return;
+		}
+		try {
+			const response = await fetch(
+				`${PUBLIC_BANK_ACCOUNT_SERVICE_API_URL}/bank-accounts/${accountId}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(command, null, 2)
+				}
+			);
+			switch (response.status) {
+				case 200:
+					return;
+				case 204:
+					return;
+				case 404:
+					toast.push('Account not found');
+					return;
+				default:
+					toast.push('Error fetching account');
+					return;
+			}
+		} catch {
+			toast.push('Error fetching account');
+			return;
+		}
 	}
 </script>
 

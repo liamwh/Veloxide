@@ -4,8 +4,6 @@
 #![warn(clippy::all)]
 #![cfg_attr(coverage_nightly, feature(no_coverage))]
 
-use std::net::{Ipv4Addr, SocketAddr};
-
 use axum::{routing::get, Extension, Router, Server};
 use axum_prometheus::PrometheusMetricLayer;
 use hyper::{header::CONTENT_TYPE, Method};
@@ -30,13 +28,13 @@ use tracing_log::LogTracer;
 cfg_if! {
     if #[cfg(feature = "postgres")] {
         use sqlx::{Pool, Postgres};
-        async fn get_db_connection(app_config: &configuration::AppConfiguration) -> crate::prelude::Result<Pool<Postgres>> {
-            configuration::get_db_connection_postgres_sqlx(&app_config).await
+        async fn get_db_connection() -> crate::prelude::Result<Pool<Postgres>> {
+            configuration::get_db_connection_postgres_sqlx().await
         }
     } else if #[cfg(feature = "mysql")] {
         use sqlx::{Pool, mysql};
-        async fn get_db_connection(app_config: &configuration::AppConfiguration) -> crate::prelude::Result<Pool<mysql::MySql>> {
-            configuration::get_db_connection_mysql_sqlx(app_config).await
+        async fn get_db_connection() -> crate::prelude::Result<Pool<mysql::MySql>> {
+            configuration::get_db_connection_mysql_sqlx().await
         }
     } else {
         compile_error!("Must specify either mysql or postgres feature");
@@ -56,53 +54,48 @@ async fn main() -> Result<()> {
         }
     };
 
-    let configuration = configuration::load_app_configuration().await?;
-    let pool = get_db_connection(&configuration).await?;
+    let pool = get_db_connection().await?;
     let (cqrs, account_query) = presentation::get_bank_account_cqrs_framework(pool);
 
-    // Start the GraphQL server
-    if configuration.graphql.enabled {
-        let cqrs = cqrs.clone();
-        let account_query = account_query.clone();
-        tokio::spawn(async move {
-            presentation::graphql::run_graphql_server(&configuration.graphql, cqrs, account_query)
-                .await;
-        });
-    }
+    // Set up Axum
 
     // Configure prometheus layer for Axum
     let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
 
-    // Configure CORS
+    // Configure CORS middleware for axum
     let cors = CorsLayer::new()
-        // allow `GET` and `POST` when accessing the resource
         .allow_methods([Method::GET, Method::POST])
-        // Allow headers
         .allow_headers([CONTENT_TYPE])
         // allow requests from any origin TODO: Make me more secure
         .allow_origin(Any);
+
+    // Set up the GraphQL router
+    let graphql_router =
+        presentation::graphql::new_graphql_router(cqrs.clone(), account_query.clone()).await;
 
     // Set up the router
     let app = Router::new()
         .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
         .route(
-            "/bank-accounts/:id",
+            "/api/bank-accounts/:id",
             get(presentation::bank_account::query_handler)
                 .post(presentation::bank_account::command_handler),
         )
         .route("/metrics", get(|| async move { metric_handle.render() }))
+        .nest("/graphql", graphql_router)
         .layer(
             ServiceBuilder::new()
-                .layer(Extension(cqrs))
-                .layer(Extension(account_query))
+                .layer(Extension(cqrs.clone()))
+                .layer(Extension(account_query.clone()))
                 .layer(prometheus_layer)
                 .layer(cors),
-        );
+        )
+        .route("/health", get(|| async move { "HEALTHY" }));
 
     // Run the router
-    let port = dotenvy::var("HTTP_PORT").unwrap_or_else(|_| "4005".to_string());
+    let port = dotenvy::var("HTTP_PORT").unwrap_or_else(|_| "8080".to_string());
     let port = port.parse::<u16>()?;
-    let address = SocketAddr::from((Ipv4Addr::UNSPECIFIED, port));
+    let address = format!("[::]:{}", port).parse().unwrap();
     Ok(Server::bind(&address)
         .serve(app.into_make_service())
         .await?)

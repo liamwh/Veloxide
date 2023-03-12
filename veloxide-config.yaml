@@ -1,4 +1,0 @@
-repository: "Postgres"
-graphql:
-  enabled: true
-  port: 9000
