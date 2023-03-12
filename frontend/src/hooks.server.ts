@@ -37,11 +37,12 @@ export const handle: Handle = sequence(SvelteKitAuth({
       return crypto.randomUUID();
     }
   },
+  trustHost: true,
   providers: [
     GitHub({ clientId: GITHUB_ID, clientSecret: GITHUB_SECRET }),
     GoogleProvider({
       clientId: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET
+      clientSecret: GOOGLE_CLIENT_SECRET,
     })
   ]
 }), authorization);
