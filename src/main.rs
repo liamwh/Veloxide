@@ -28,13 +28,13 @@ use tracing_log::LogTracer;
 cfg_if! {
     if #[cfg(feature = "postgres")] {
         use sqlx::{Pool, Postgres};
-        async fn get_db_connection(app_config: &configuration::AppConfiguration) -> crate::prelude::Result<Pool<Postgres>> {
-            configuration::get_db_connection_postgres_sqlx(&app_config).await
+        async fn get_db_connection() -> crate::prelude::Result<Pool<Postgres>> {
+            configuration::get_db_connection_postgres_sqlx().await
         }
     } else if #[cfg(feature = "mysql")] {
         use sqlx::{Pool, mysql};
-        async fn get_db_connection(app_config: &configuration::AppConfiguration) -> crate::prelude::Result<Pool<mysql::MySql>> {
-            configuration::get_db_connection_mysql_sqlx(app_config).await
+        async fn get_db_connection() -> crate::prelude::Result<Pool<mysql::MySql>> {
+            configuration::get_db_connection_mysql_sqlx().await
         }
     } else {
         compile_error!("Must specify either mysql or postgres feature");
@@ -54,8 +54,7 @@ async fn main() -> Result<()> {
         }
     };
 
-    let configuration = configuration::load_app_configuration().await?;
-    let pool = get_db_connection(&configuration).await?;
+    let pool = get_db_connection().await?;
     let (cqrs, account_query) = presentation::get_bank_account_cqrs_framework(pool);
 
     // Set up Axum
@@ -70,8 +69,12 @@ async fn main() -> Result<()> {
         // allow requests from any origin TODO: Make me more secure
         .allow_origin(Any);
 
+    // Set up the GraphQL router
+    let graphql_router =
+        presentation::graphql::new_graphql_router(cqrs.clone(), account_query.clone()).await;
+
     // Set up the router
-    let mut app = Router::new()
+    let app = Router::new()
         .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
         .route(
             "/api/bank-accounts/:id",
@@ -85,16 +88,8 @@ async fn main() -> Result<()> {
                 .layer(Extension(account_query.clone()))
                 .layer(prometheus_layer)
                 .layer(cors),
-        );
-    if configuration.graphql.enabled {
-        let graphql_router = presentation::graphql::new_graphql_router(
-            &configuration.graphql,
-            cqrs.clone(),
-            account_query.clone(),
         )
-        .await;
-        app = app.clone().nest("/graphql", graphql_router);
-    }
+        .nest("/graphql", graphql_router);
 
     // Run the router
     let port = dotenvy::var("HTTP_PORT").unwrap_or_else(|_| "8080".to_string());

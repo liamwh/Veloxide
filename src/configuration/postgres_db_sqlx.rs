@@ -2,9 +2,7 @@ use super::*;
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 
 #[instrument]
-pub async fn get_db_connection_postgres_sqlx(
-    app_config: &config::AppConfiguration,
-) -> crate::prelude::Result<Pool<Postgres>> {
+pub async fn get_db_connection_postgres_sqlx() -> crate::prelude::Result<Pool<Postgres>> {
     let db_connection_url = get_database_environment_variable().await;
 
     tracing::event!(Level::DEBUG, "connecting to db");
