@@ -10,6 +10,8 @@ ARG APP_NAME="example-veloxide-api"
 
 RUN cargo new --bin ${APP_NAME}
 
+WORKDIR ./${APP_NAME}
+
 COPY . ./
 
 RUN cargo build --release
