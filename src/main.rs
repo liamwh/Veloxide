@@ -6,11 +6,7 @@
 
 use std::net::{Ipv4Addr, SocketAddr};
 
-use axum::{
-    headers::{self, Header},
-    routing::get,
-    Extension, Router, Server,
-};
+use axum::{routing::get, Extension, Router, Server};
 use axum_prometheus::PrometheusMetricLayer;
 use hyper::{header::CONTENT_TYPE, Method};
 use presentation::ApiDoc;
@@ -40,7 +36,7 @@ cfg_if! {
     } else if #[cfg(feature = "mysql")] {
         use sqlx::{Pool, mysql};
         async fn get_db_connection(app_config: &configuration::AppConfiguration) -> crate::prelude::Result<Pool<mysql::MySql>> {
-            configuration::get_db_connection_mysql_sqlx(&app_config).await
+            configuration::get_db_connection_mysql_sqlx(app_config).await
         }
     } else {
         compile_error!("Must specify either mysql or postgres feature");
