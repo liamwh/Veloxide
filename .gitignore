@@ -44,3 +44,5 @@ coverage/*
 .env
 .env.*
 !.env.example
+
+fly.toml
