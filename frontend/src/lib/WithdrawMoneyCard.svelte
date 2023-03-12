@@ -32,17 +32,20 @@
 					body: JSON.stringify(command, null, 2)
 				}
 			);
-			switch (response.status) {
-				case 200:
-					return;
-				case 204:
-					return;
-				case 404:
-					toast.push('Account not found');
-					return;
-				default:
-					toast.push('Error fetching account');
-					return;
+			if (!response.ok) {
+				switch (response.status) {
+					case 404:
+						toast.push('Account not found');
+						return;
+					default:
+						if (response.body) {
+							response.text().then((text) => {
+								toast.push(text);
+							});
+							return;
+						}
+						toast.push('Error fetching account');
+				}
 			}
 		} catch {
 			toast.push('Error fetching account');
