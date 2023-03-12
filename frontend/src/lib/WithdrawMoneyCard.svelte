@@ -13,26 +13,30 @@
 				amount: amount
 			}
 		};
-		let body = JSON.stringify(command, null, 2);
-		const response = await fetch(
-			`${PUBLIC_BANK_ACCOUNT_SERVICE_API_URL}/bank-accounts/${accountId}`,
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(command, null, 2)
+		try {
+			const response = await fetch(
+				`${PUBLIC_BANK_ACCOUNT_SERVICE_API_URL}/bank-accounts/${accountId}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(command, null, 2)
+				}
+			);
+			switch (response.status) {
+				case 200:
+					return;
+				case 404:
+					toast.push('Account not found');
+					return;
+				default:
+					toast.push('Error fetching account');
+					return;
 			}
-		);
-		switch (response.status) {
-			case 200:
-				return;
-			case 404:
-				toast.push('Account not found');
-				return;
-			default:
-				toast.push('Error fetching account balance');
-				return;
+		} catch {
+			toast.push('Error fetching account');
+			return;
 		}
 	}
 </script>

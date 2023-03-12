@@ -18,19 +18,24 @@
 	});
 
 	export async function getBankAccount() {
-		const response = await fetch(
-			`${PUBLIC_BANK_ACCOUNT_SERVICE_API_URL}/bank-accounts/${accountId}`
-		);
-		switch (response.status) {
-			case 200:
-				bankAccount = await response.json();
-				return;
-			case 404:
-				toast.push('Account not found');
-				return;
-			default:
-				toast.push('Error fetching account balance');
-				return;
+		try {
+			const response = await fetch(
+				`${PUBLIC_BANK_ACCOUNT_SERVICE_API_URL}/bank-accounts/${accountId}`
+			);
+			switch (response.status) {
+				case 200:
+					bankAccount = await response.json();
+					return;
+				case 404:
+					toast.push('Account not found');
+					return;
+				default:
+					toast.push('Error fetching account');
+					return;
+			}
+		} catch {
+			toast.push('Error fetching account');
+			return;
 		}
 	}
 </script>
