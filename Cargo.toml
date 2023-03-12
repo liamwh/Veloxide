@@ -14,7 +14,7 @@ tokio = { version = "~1", features = ["full"] }
 tower = "~0"
 axum-prometheus = "~0"
 async-trait = "~0"
-tower-http = "~0"
+tower-http = {version= "~0", features = ["cors"]}
 
 # OpenAPI
 utoipa = { version = "~3", features = ["axum_extras"] }
@@ -36,6 +36,7 @@ sqlx = { version = "~0", features = [
   "sqlite",
   "chrono",
   "postgres",
+  "mysql",
   "json",
   "uuid",
   "offline",
@@ -56,14 +57,20 @@ thiserror = "~1"
 log = "~0"
 dotenvy = "~0"
 cqrs-es = "~0"
-postgres-es = "~0"
+postgres-es = { version = "~0", optional = true}
 chrono = "~0"
 derivative = "~2"
+ts-rs = { version = "~6", optional = true }
+mysql-es = { version = "~0", optional = true}
+cfg-if = "1.0.0"
 
 [features]
-default = ["tracing", "graphql"]
+default = ["tracing", "graphql", "frontend", "mysql"]
+mysql = ["mysql-es", "sqlx/mysql"]
+postgres = ["postgres-es", "sqlx/postgres"]
 tracing = ["tracing-log", "tracing-subscriber", "tracing-opentelemetry", "opentelemetry", "opentelemetry-jaeger"]
 graphql = ["async-graphql", "async-graphql-axum"]
+frontend = ["ts-rs"]
 
 [workspace]
 members = ["."]

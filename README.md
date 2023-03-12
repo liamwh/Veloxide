@@ -2,7 +2,7 @@
 <!-- markdownlint-disable MD041 -->
 
 <p align="center">
-    <a href="https://github.com/liamwh/Veloxide"><img src="./docs/.assets/veloxide-banner.png" alt="Veloxide"
+    <a href="https://github.com/liamwh/Veloxide"><img src="./docs/.assets/Veloxide-Wordmark-FullBanner.jpg" alt="Veloxide"
             width=100%></a>
     <p align="center">
     </p>
@@ -31,8 +31,8 @@ The key features are:
 
 - **Fast to code**: Veloxide increases the speed of development by being simple, flexible and easy to use. Rust naturally [shifts bugs left](https://en.wikipedia.org/wiki/Shift-left_testing) to the compiler, so less time is spent debugging code, and more time is spent delivering value.
 - **Fewer bugs**: All components of Veloxide are written in [Rust](https://www.rust-lang.org), which is known for its safety and reliability [[1]](https://www.infoq.com/news/2021/04/rust-linux-kernel-development/) [[2]](https://security.googleblog.com/2023/01/supporting-use-of-rust-in-chromium.html) [[3]](https://security.googleblog.com/2022/12/memory-safe-languages-in-android-13.html)
-- **Highly Performant**: Veloxide is built on top of the [Tokio](https://tokio.rs) async runtime and [Axum framework](https://github.com/tokio-rs/axum), which leverage the power of Rust's [async/await syntax](https://doc.rust-lang.org/reference/expressions/await-expr.html) and [zero-cost abstractions](https://doc.rust-lang.org/beta/embedded-book/static-guarantees/zero-cost-abstractions.html) to give blazingly fast bare-metal performance.
-- **Cloud Native**: Veloxide comes pre-configured with [OpenTelemetry](https://opentelemetry.io/) for distributed tracing and a /metrics endpoint preconfigured for collection from [Prometheus](https://prometheus.io/).
+- **Highly performant**: Veloxide is built on top of the [Tokio](https://tokio.rs) async runtime and [Axum framework](https://github.com/tokio-rs/axum), which leverage the power of Rust's [async/await syntax](https://doc.rust-lang.org/reference/expressions/await-expr.html) and [zero-cost abstractions](https://doc.rust-lang.org/beta/embedded-book/static-guarantees/zero-cost-abstractions.html) to give blazingly fast bare-metal performance.
+- **Cloud native**: Veloxide comes pre-configured with [OpenTelemetry](https://opentelemetry.io/) for distributed tracing and a /metrics endpoint preconfigured for collection from [Prometheus](https://prometheus.io/).
 - **Standards-based**: Veloxide leverages the open standards for APIs: [OpenAPI](https://github.com/OAI/OpenAPI-Specification), [JSON Schema](https://json-schema.org/specification.html) and [GraphQL](https://graphql.org/). You choose how you want your API to be consumed.
 
 ## Design Patterns
@@ -47,7 +47,9 @@ Further documentation on the design and implementation of Veloxide be found in t
 
 ## What's included?
 
-| Feature                                                   | Crate(s) of Significance                                                                                                                                                                                                                                                      | Notes                                                                                                                         |
+### Key Components
+
+| Component                                                   | Crate(s) of Significance                                                                                                                                                                                                                                                      | Notes                                                                                                                         |
 | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | Web Server                                                | [Axum](https://docs.rs/axum/latest/axum/), [Tower](https://docs.rs/tower/0.4.13/tower/)                                                                                                                                                                                                                                     | The endpoint path and timestamp metadata for each issued command are captured and stored in the database in the events table. |
 | GraphQL | [async-graphql](https://docs.rs/async-graphql/latest/async_graphql/), [async-graphql-axum](https://docs.rs/async-graphql-axum/5.0.6/async_graphql_axum/)  |
@@ -65,6 +67,7 @@ Further documentation on the design and implementation of Veloxide be found in t
 | Improved assertion difference identification              | [Pretty Assertions](https://docs.rs/pretty_assertions/latest/pretty_assertions/)                                                                                                                                                                                              | Highlights the difference in tests character by character                                                                     |
 | Supercharged derive attributes                            | [Derivative](https://mcarton.github.io/rust-derivative/latest/index.html)                                                                                                                                                                                                     |
 | Code coverage generation | [cargo-llmvm-cov](https://github.com/taiki-e/cargo-llvm-cov) | |
+| Automatic Typescript Binding Generation | [ts-rs](https://docs.rs/ts-rs/latest/ts_rs) | Automatically generates TypeScript interfaces for your Rust view models! |
 
 ### Supporting containers
 

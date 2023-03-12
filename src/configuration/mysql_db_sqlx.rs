@@ -1,14 +1,14 @@
 use super::*;
-use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
+use sqlx::{mysql::MySqlPoolOptions, MySql, Pool};
 
 #[instrument]
-pub async fn get_db_connection_postgres_sqlx(
+pub async fn get_db_connection_mysql_sqlx(
     app_config: &config::AppConfiguration,
-) -> crate::prelude::Result<Pool<Postgres>> {
+) -> crate::prelude::Result<Pool<MySql>> {
     let db_connection_url = get_database_environment_variable().await;
 
-    tracing::event!(Level::DEBUG, "connecting to db");
-    let pool = PgPoolOptions::new()
+    tracing::event!(Level::DEBUG, "connecting to mysql db");
+    let pool = MySqlPoolOptions::new()
         .max_connections(5)
         .connect(db_connection_url.as_str())
         .await?;

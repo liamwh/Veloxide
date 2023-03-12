@@ -8,13 +8,17 @@ use std::net::{Ipv4Addr, SocketAddr};
 
 use axum::{routing::get, Extension, Router, Server};
 use axum_prometheus::PrometheusMetricLayer;
+use hyper::{header::CONTENT_TYPE, Method};
 use presentation::ApiDoc;
+
 use tower::ServiceBuilder;
+use tower_http::cors::{Any, CorsLayer};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
 use crate::prelude::*;
 mod error;
+use cfg_if::cfg_if;
 use dotenvy::dotenv;
 mod application;
 mod configuration;
@@ -22,6 +26,22 @@ mod domain;
 mod prelude;
 mod presentation;
 use tracing_log::LogTracer;
+
+cfg_if! {
+    if #[cfg(feature = "postgres")] {
+        use sqlx::{Pool, Postgres};
+        async fn get_db_connection(app_config: &configuration::AppConfiguration) -> crate::prelude::Result<Pool<Postgres>> {
+            configuration::get_db_connection_postgres_sqlx(&app_config).await
+        }
+    } else if #[cfg(feature = "mysql")] {
+        use sqlx::{Pool, mysql};
+        async fn get_db_connection(app_config: &configuration::AppConfiguration) -> crate::prelude::Result<Pool<mysql::MySql>> {
+            configuration::get_db_connection_mysql_sqlx(app_config).await
+        }
+    } else {
+        compile_error!("Must specify either mysql or postgres feature");
+    }
+}
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -37,7 +57,7 @@ async fn main() -> Result<()> {
     };
 
     let configuration = configuration::load_app_configuration().await?;
-    let pool = configuration::get_db_connection_sqlx(&configuration).await?;
+    let pool = get_db_connection(&configuration).await?;
     let (cqrs, account_query) = presentation::get_bank_account_cqrs_framework(pool);
 
     // Start the GraphQL server
@@ -53,6 +73,15 @@ async fn main() -> Result<()> {
     // Configure prometheus layer for Axum
     let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
 
+    // Configure CORS
+    let cors = CorsLayer::new()
+        // allow `GET` and `POST` when accessing the resource
+        .allow_methods([Method::GET, Method::POST])
+        // Allow headers
+        .allow_headers([CONTENT_TYPE])
+        // allow requests from any origin TODO: Make me more secure
+        .allow_origin(Any);
+
     // Set up the router
     let app = Router::new()
         .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
@@ -66,7 +95,8 @@ async fn main() -> Result<()> {
             ServiceBuilder::new()
                 .layer(Extension(cqrs))
                 .layer(Extension(account_query))
-                .layer(prometheus_layer),
+                .layer(prometheus_layer)
+                .layer(cors),
         );
 
     // Run the router
