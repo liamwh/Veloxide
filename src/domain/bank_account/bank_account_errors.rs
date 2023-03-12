@@ -32,6 +32,9 @@ pub enum BankAccountError {
     #[error("cannot write negative check amount")]
     CannotWriteNegativeCheckAmount,
 
+    #[error("account not open")]
+    AccountNotOpen,
+
     #[error("Unexpected Error: {0}")]
     UnexpectedError(String),
 }
