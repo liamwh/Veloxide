@@ -86,7 +86,7 @@ async fn main() -> Result<()> {
     let app = Router::new()
         .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
         .route(
-            "/bank-accounts/:id",
+            "/api/bank-accounts/:id",
             get(presentation::bank_account::query_handler)
                 .post(presentation::bank_account::command_handler),
         )

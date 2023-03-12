@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { BankAccountView } from 'src/bindings/BankAccountView';
+	import { PUBLIC_BANK_ACCOUNT_SERVICE_API_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
 
 	export let accountId: string;
@@ -16,7 +17,9 @@
 	});
 
 	export async function getBankAccount() {
-		const response = await fetch(`http://localhost:4005/bank-accounts/${accountId}`);
+		const response = await fetch(
+			`${PUBLIC_BANK_ACCOUNT_SERVICE_API_URL}/bank-accounts/${accountId}`
+		);
 		const account = await response.json();
 		console.log(account);
 		if (response.status === 200) {

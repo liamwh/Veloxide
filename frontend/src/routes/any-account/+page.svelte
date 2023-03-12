@@ -1,5 +1,5 @@
 <script lang="ts">
-	import MyAccount from '$lib/MyAccount.svelte';
+	import MyAccount from '$lib/MyAccountCard.svelte';
 	let accountId: string;
 </script>
 

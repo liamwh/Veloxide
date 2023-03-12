@@ -1,7 +1,7 @@
 <script lang="ts">
-	import MyAccount from '$lib/MyAccount.svelte';
+	import MyAccountCard from '$lib/MyAccountCard.svelte';
 
 	let accountId = '123';
 </script>
 
-<MyAccount {accountId} />
+<MyAccountCard {accountId} />
