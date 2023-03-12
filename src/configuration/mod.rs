@@ -27,9 +27,10 @@ pub async fn load_app_configuration() -> crate::prelude::Result<AppConfiguration
 
 #[instrument]
 async fn get_database_environment_variable() -> String {
-    dotenvy::var("DATABASE_URL").unwrap_or_else(|_| {
-        "postgres://postgres:thisisnotsecure@localhost:5432/veloxidedb".to_string()
-    })
+    tracing::event!(Level::INFO, "getting database environment variable");
+    let db_url = dotenvy::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    tracing::event!(Level::INFO, "database environment variable set: {db_url}");
+    db_url
 }
 
 #[instrument]
