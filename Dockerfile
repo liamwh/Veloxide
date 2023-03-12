@@ -23,7 +23,6 @@ RUN cargo build --release
 FROM debian:buster-slim
 
 ARG APP=/usr/src/app
-ARG APP_NAME="example-veloxide-api"
 
 RUN apt-get update \
     && apt-get install -y ca-certificates tzdata \
@@ -36,7 +35,7 @@ RUN groupadd $APP_USER \
     && useradd -g $APP_USER $APP_USER \
     && mkdir -p ${APP}
 
-COPY --from=builder /${APP_NAME}/target/release/${APP_NAME} ${APP}/${APP_NAME}
+COPY --from=builder /example-veloxide-api/target/release/example-veloxide-api ${APP}/example-veloxide-api
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
 
@@ -47,4 +46,4 @@ WORKDIR ${APP}
 
 # HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 CMD curl -f http://localhost:8080/health || exit 1
 
-ENTRYPOINT [${APP_NAME}]
+ENTRYPOINT ["./example-veloxide-api"]
