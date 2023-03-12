@@ -1,2 +1,2 @@
 export const ssr = true;
-export const prerender = "auto";
+export const prerender = false;
