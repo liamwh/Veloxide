@@ -29,8 +29,6 @@ RUN apt-get update \
     && apt-get install -y ca-certificates tzdata \
     && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 8080
-
 ENV TZ=Europe/Amsterdam \
     APP_USER=appuser
 
@@ -41,6 +39,8 @@ RUN groupadd $APP_USER \
 COPY --from=builder /${APP_NAME}/target/release/${APP_NAME} ${APP}/${APP_NAME}
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
+
+EXPOSE 8080
 
 USER $APP_USER
 WORKDIR ${APP}
