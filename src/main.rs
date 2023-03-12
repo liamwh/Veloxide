@@ -82,6 +82,7 @@ async fn main() -> Result<()> {
                 .post(presentation::bank_account::command_handler),
         )
         .route("/metrics", get(|| async move { metric_handle.render() }))
+        .nest("/graphql", graphql_router)
         .layer(
             ServiceBuilder::new()
                 .layer(Extension(cqrs.clone()))
@@ -89,7 +90,7 @@ async fn main() -> Result<()> {
                 .layer(prometheus_layer)
                 .layer(cors),
         )
-        .nest("/graphql", graphql_router);
+        .route("/health", get(|| async move { "HEALTHY" }));
 
     // Run the router
     let port = dotenvy::var("HTTP_PORT").unwrap_or_else(|_| "8080".to_string());
