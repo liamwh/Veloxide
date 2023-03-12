@@ -114,7 +114,7 @@ To create your own app:
 # Happy Coding!
 ```
 
-- The OpenAPI interactive documentation is available at `http://localhost:4005/swagger-ui/`
+- The OpenAPI interactive documentation is available at `http://localhost:8080/swagger-ui/`
 - GraphQL Playground is available at `http://localhost:9000/`
 
 ## Why the name?

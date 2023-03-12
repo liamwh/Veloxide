@@ -7,7 +7,7 @@ use axum::{
     extract::Extension,
     response::{self, IntoResponse},
     routing::get,
-    Router, Server,
+    Router,
 };
 
 use serde::{Deserialize, Serialize};
@@ -67,82 +67,51 @@ struct MutationRoot(BankAccountGraphQlMutation);
 cfg_if! {
     if #[cfg(feature = "postgres")] {
         #[instrument(skip(bank_account_view_repsitory, bank_account_cqrs_framework))]
-pub async fn run_graphql_server(
-    config: &GraphQlConfiguration,
-    bank_account_cqrs_framework: Arc<PostgresCqrs<BankAccount>>,
-    bank_account_view_repsitory: Arc<PostgresViewRepository<BankAccountView, BankAccount>>,
-) {
-    tracing::debug!("Starting graphql server");
-    let serve_address = config.parse_serve_address();
+        pub async fn new_graphql_router(
+            config: &GraphQlConfiguration,
+            bank_account_cqrs_framework: Arc<PostgresCqrs<BankAccount>>,
+            bank_account_view_repsitory: Arc<PostgresViewRepository<BankAccountView, BankAccount>>,
+        ) -> Router {
+            tracing::debug!("Starting graphql server");
 
-    // create the schema
-    let schema = Schema::build(
-        QueryRoot::default(),
-        MutationRoot::default(),
-        EmptySubscription,
-    )
-    .data(bank_account_view_repsitory)
-    .data(bank_account_cqrs_framework)
-    .finish();
+            // create the schema
+            let schema = Schema::build(
+                QueryRoot::default(),
+                MutationRoot::default(),
+                EmptySubscription,
+            )
+            .data(bank_account_view_repsitory)
+            .data(bank_account_cqrs_framework)
+            .finish();
 
-    let app = Router::new()
-        .route("/", get(graphql_playground).post(graphql_handler))
-        .layer(Extension(schema));
-
-    Server::bind(&serve_address)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
-}
+            Router::new()
+                .route("/", get(graphql_playground).post(graphql_handler))
+                .layer(Extension(schema))
+        }
     } else if #[cfg(feature = "mysql")] {
         #[instrument(skip(bank_account_view_repsitory, bank_account_cqrs_framework))]
-pub async fn run_graphql_server(
-    config: &GraphQlConfiguration,
-    bank_account_cqrs_framework: Arc<MysqlCqrs<BankAccount>>,
-    bank_account_view_repsitory: Arc<MysqlViewRepository<BankAccountView, BankAccount>>,
-) {
-    tracing::debug!("Starting graphql server");
-    let serve_address = config.parse_serve_address();
+        pub async fn new_graphql_router(
+            config: &GraphQlConfiguration,
+            bank_account_cqrs_framework: Arc<MysqlCqrs<BankAccount>>,
+            bank_account_view_repsitory: Arc<MysqlViewRepository<BankAccountView, BankAccount>>,
+        ) -> Router {
+            tracing::debug!("Starting graphql server");
 
-    // create the schema
-    let schema = Schema::build(
-        QueryRoot::default(),
-        MutationRoot::default(),
-        EmptySubscription,
-    )
-    .data(bank_account_view_repsitory)
-    .data(bank_account_cqrs_framework)
-    .finish();
+            // create the schema
+            let schema = Schema::build(
+                QueryRoot::default(),
+                MutationRoot::default(),
+                EmptySubscription,
+            )
+            .data(bank_account_view_repsitory)
+            .data(bank_account_cqrs_framework)
+            .finish();
 
-    let app = Router::new()
-        .route("/", get(graphql_playground).post(graphql_handler))
-        .layer(Extension(schema));
-
-    Server::bind(&serve_address)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
-}
+            Router::new()
+                .route("/", get(graphql_playground).post(graphql_handler))
+                .layer(Extension(schema))
+        }
     } else {
         compile_error!("Must specify either mysql or postgres feature");
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use pretty_assertions::assert_eq;
-
-    #[tokio::test]
-    async fn parse_serve_address_parses_correctly() {
-        let config = GraphQlConfiguration {
-            enabled: true,
-            port: 8080,
-        };
-        let serve_address = config.parse_serve_address();
-        assert_eq!(
-            serve_address,
-            "127.0.0.1:8080".parse::<SocketAddr>().unwrap()
-        );
     }
 }

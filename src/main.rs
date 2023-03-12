@@ -60,30 +60,20 @@ async fn main() -> Result<()> {
     let pool = get_db_connection(&configuration).await?;
     let (cqrs, account_query) = presentation::get_bank_account_cqrs_framework(pool);
 
-    // Start the GraphQL server
-    if configuration.graphql.enabled {
-        let cqrs = cqrs.clone();
-        let account_query = account_query.clone();
-        tokio::spawn(async move {
-            presentation::graphql::run_graphql_server(&configuration.graphql, cqrs, account_query)
-                .await;
-        });
-    }
+    // Set up Axum
 
     // Configure prometheus layer for Axum
     let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
 
-    // Configure CORS
+    // Configure CORS middleware for axum
     let cors = CorsLayer::new()
-        // allow `GET` and `POST` when accessing the resource
         .allow_methods([Method::GET, Method::POST])
-        // Allow headers
         .allow_headers([CONTENT_TYPE])
         // allow requests from any origin TODO: Make me more secure
         .allow_origin(Any);
 
     // Set up the router
-    let app = Router::new()
+    let mut app = Router::new()
         .merge(SwaggerUi::new("/swagger-ui").url("/api-doc/openapi.json", ApiDoc::openapi()))
         .route(
             "/api/bank-accounts/:id",
@@ -93,14 +83,23 @@ async fn main() -> Result<()> {
         .route("/metrics", get(|| async move { metric_handle.render() }))
         .layer(
             ServiceBuilder::new()
-                .layer(Extension(cqrs))
-                .layer(Extension(account_query))
+                .layer(Extension(cqrs.clone()))
+                .layer(Extension(account_query.clone()))
                 .layer(prometheus_layer)
                 .layer(cors),
         );
+    if configuration.graphql.enabled {
+        let graphql_router = presentation::graphql::new_graphql_router(
+            &configuration.graphql,
+            cqrs.clone(),
+            account_query.clone(),
+        )
+        .await;
+        app = app.clone().nest("/graphql", graphql_router);
+    }
 
     // Run the router
-    let port = dotenvy::var("HTTP_PORT").unwrap_or_else(|_| "4005".to_string());
+    let port = dotenvy::var("HTTP_PORT").unwrap_or_else(|_| "8080".to_string());
     let port = port.parse::<u16>()?;
     let address = SocketAddr::from((Ipv4Addr::UNSPECIFIED, port));
     Ok(Server::bind(&address)

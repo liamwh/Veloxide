@@ -1,5 +1,5 @@
 [package]
-name = "example-veloxide-app"
+name = "example-veloxide-api"
 description = "Veloxide: Example Bank Account API"
 version = "0.1.0"
 edition = "2021"
