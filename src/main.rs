@@ -4,8 +4,6 @@
 #![warn(clippy::all)]
 #![cfg_attr(coverage_nightly, feature(no_coverage))]
 
-use std::net::{Ipv4Addr, SocketAddr};
-
 use axum::{routing::get, Extension, Router, Server};
 use axum_prometheus::PrometheusMetricLayer;
 use hyper::{header::CONTENT_TYPE, Method};
@@ -101,7 +99,7 @@ async fn main() -> Result<()> {
     // Run the router
     let port = dotenvy::var("HTTP_PORT").unwrap_or_else(|_| "8080".to_string());
     let port = port.parse::<u16>()?;
-    let address = SocketAddr::from((Ipv4Addr::UNSPECIFIED, port));
+    let address = format!("[::]:{}", port).parse().unwrap();
     Ok(Server::bind(&address)
         .serve(app.into_make_service())
         .await?)
