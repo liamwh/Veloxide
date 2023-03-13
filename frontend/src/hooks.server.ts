@@ -1,14 +1,16 @@
 /* eslint-disable */
 // @ts-nocheck
 import { SvelteKitAuth } from "@auth/sveltekit"
-import GitHub from '@auth/core/providers/github';
-import GoogleProvider from '@auth/core/providers/google';
 import { sequence } from '@sveltejs/kit/hooks';
 import { redirect, type Handle } from '@sveltejs/kit';
 import { GITHUB_ID, GITHUB_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, EMAIL_SERVER, EMAIL_FROM } from "$env/static/private"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client"
-import EmailProvider from "next-auth/providers/email";
+
+import GitHub from '@auth/core/providers/github';
+import GoogleProvider from '@auth/core/providers/google';
+import EmailProvider from "@auth/core/providers/email";
+
 
 const prisma = new PrismaClient()
 
