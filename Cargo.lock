@@ -919,7 +919,7 @@ dependencies = [
  "thiserror",
  "tokio",
  "tower",
- "tower-http 0.3.5",
+ "tower-http 0.4.0",
  "tracing",
  "tracing-log",
  "tracing-opentelemetry",
@@ -2232,9 +2232,9 @@ checksum = "26f6a7b87c2e435a3241addceeeff740ff8b7e76b74c13bf9acb17fa454ea00b"
 
 [[package]]
 name = "postgres-es"
-version = "0.4.5"
+version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df3feb6bb54682e223eddf1460d155b340b66e1605941a2fa42965820fba3146"
+checksum = "69aa7585cf0eaf34764faba61574297f586829d4184e605dfb980554fea5ef18"
 dependencies = [
  "async-trait",
  "cqrs-es",
